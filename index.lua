@@ -91,6 +91,52 @@ function safe_reroll_boss(blind_name)
     }))
 end
 
+function pick_blind(eligible_bosses)
+    local min_use = 100
+    for k, v in pairs(G.GAME.bosses_used) do
+        if eligible_bosses[k] then
+            eligible_bosses[k] = v
+            if eligible_bosses[k] <= min_use then
+                min_use = eligible_bosses[k]
+            end
+        end
+    end
+    for k, v in pairs(eligible_bosses) do
+        if eligible_bosses[k] then
+            if eligible_bosses[k] > min_use then
+                eligible_bosses[k] = nil
+            end
+        end
+    end
+    local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('twbl_boss_pick'))
+    G.GAME.bosses_used[boss] = G.GAME.bosses_used[boss] + 1
+
+    return boss
+end
+
+function pick_blinds_to_vote()
+    local initial_pool = {}
+    for k, v in pairs(TWITCH_BLINDS.BLINDS) do
+        initial_pool[v] = true
+    end
+    local result = {}
+    for i = 1, 3 do
+        local boss = pick_blind(initial_pool);
+        -- I hope setting nil in table change this value
+        if #initial_pool <= 1 then
+            -- This means that single picked blind remains, we need new pool
+            for k, v in pairs(TWITCH_BLINDS.BLINDS) do
+                initial_pool[v] = true
+            end
+        end
+        initial_pool[boss] = nil
+        table.insert(result, boss)
+    end
+    -- Write selected blinds to game save
+    G.GAME.pool_flags.twitch_blinds = result
+    return result
+end
+
 --
 
 function SMODS.INIT.TwitchBlinds()
@@ -116,16 +162,20 @@ function SMODS.INIT.TwitchBlinds()
     --
 
     local collector = TWITCH_BLINDS.collector
+    local needs_reconnect = false
+    local reconnect_timeout = 0;
+
+    function collector:ondisconnect()
+        -- Request reconnect
+        needs_reconnect = true
+        reconnect_timeout = 2;
+    end
 
     function collector:onvote(username, variant)
-        print('Vote collected: ' .. username .. ' -> ' .. variant)
-
         -- Blinds effects
     end
 
     function collector:ontoggle(username, index)
-        print('Toggle collected: ' .. username .. ' -> ' .. tostring(index))
-
         -- Blinds effects
         blind_chaos_toggle_card(username, index)
         blind_flashlight_toggle_card_flip(username, index)
@@ -135,20 +185,25 @@ function SMODS.INIT.TwitchBlinds()
     collector.variants = { '1', '2', '3' }
     -- TODO: blocking mechanism for each command separately
     -- TODO: voters list for each command separately
-    -- TODO: reconnect mechanism
     -- TODO: insert channel name from config
     collector:connect(test_channel_name)
 
     local love_update_ref = love.update;
     function love.update(dt)
         love_update_ref(dt)
-        collector:update()
+        if reconnect_timeout >= 0 then
+            reconnect_timeout = reconnect_timeout - dt
+        else
+            if needs_reconnect then
+                needs_reconnect = false
+                if collector.channel_name then collector:connect(collector.channel_name) end
+            end
+            collector:update()
+        end
 
         -- Blinds effects
         blind_clock_request_increment_mult(dt)
     end
-
-    --
 
     local start_run_ref = G.FUNCS.start_run
     function G.FUNCS.start_run(e, args)
@@ -156,12 +211,25 @@ function SMODS.INIT.TwitchBlinds()
         collector:reset()
     end
 
+    --
+
     local select_blind_ref = G.FUNCS.select_blind
     function G.FUNCS.select_blind(e)
-        -- Replace with blind selected by chat
+        -- Replace with blind selected by chat (or use first if no votes)
         if G.GAME.blind_on_deck == 'Boss' and G.GAME.round_resets.blind_choices.Boss and G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
-            -- TODO: picking mechanism
-            safe_reroll_boss('bl_twbl_circus') -- For now only direct blind picking, for test purposes
+            local max_score = -1
+            local win_index = 1
+            for _, v in ipairs(collector.variants) do
+                if collector.score[v] and collector.score[v] > max_score then
+                    max_score = collector.score[v]
+                    win_index = tonumber(v) or win_index
+                end
+            end
+
+            local picked_blind = G.GAME.pool_flags.twitch_blinds[win_index]
+            -- If chat boss can be rerolled then this function should be moved to get_new_boss
+            G.GAME.bosses_used[picked_blind] = G.GAME.bosses_used[picked_blind] + 1
+            safe_reroll_boss(picked_blind)
         else
             select_blind_ref(e)
         end
@@ -169,37 +237,51 @@ function SMODS.INIT.TwitchBlinds()
 
     local get_new_boss_ref = get_new_boss;
     function get_new_boss(e)
-        return 'bl_chat'
-        -- -- Final boss works as usual
-        -- if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(e) end
-        -- local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
-        --     G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
+        -- Final boss works as usual
+        if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(e) end
 
-        -- if G.GAME.round_resets.blind_choices.Boss then
-        --     if G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
-        --         -- Can't reroll chat
-        --         return 'bl_chat'
-        --     end
-        --     if string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
-        --         if caused_by_boss_defeate then
-        --             -- Return new vanilla boss
-        --             return get_new_boss_ref(e)
-        --         else
-        --             -- Can't reroll blind selected by chat
-        --             -- Subject to change?
-        --             return G.GAME.round_resets.blind_choices.Boss
-        --         end
-        --     else
-        --         if caused_by_boss_defeate then
-        --             -- Spawn chat blind
-        --             return 'bl_chat'
-        --         else
-        --             -- Reroll vanilla boss as usual
-        --             return get_new_boss_ref(e)
-        --         end
-        --     end
-        -- end
-        -- return get_new_boss_ref(e)
+        local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
+            G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
+
+        if G.GAME.round_resets.blind_choices.Boss then
+            if G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
+                -- Can't reroll chat
+                return 'bl_chat'
+            end
+            if string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
+                if caused_by_boss_defeate then
+                    -- Not start voting if next boss is final, because it's pointless
+                    if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
+                        pick_blinds_to_vote()
+                        collector:reset()
+                    end
+                    -- Return new vanilla boss
+                    return get_new_boss_ref(e)
+                else
+                    -- Can't reroll blind selected by chat
+                    -- Subject to change?
+                    return G.GAME.round_resets.blind_choices.Boss
+                end
+            else
+                if caused_by_boss_defeate then
+                    -- Spawn chat blind
+                    return 'bl_chat'
+                else
+                    if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
+                        pick_blinds_to_vote()
+                        collector:reset()
+                    end
+                    -- Reroll vanilla boss as usual
+                    return get_new_boss_ref(e)
+                end
+            end
+        else
+            if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
+                pick_blinds_to_vote()
+                collector:reset()
+            end
+            return get_new_boss_ref(e)
+        end
     end
 end
 

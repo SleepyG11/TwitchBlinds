@@ -19,11 +19,12 @@ local tw_blind = SMODS.Blind {
 
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_lock');
 
-function blind_lock_toggle_eternal_joker(index)
+function blind_lock_toggle_eternal_joker(username, index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_lock" then return end
     if G.jokers and G.jokers.cards and G.jokers.cards[index] then
         G.GAME.blind:wiggle()
         local card = G.jokers.cards[index]
+        card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
         card:set_eternal(not card.ability.eternal)
         card:juice_up()
     end

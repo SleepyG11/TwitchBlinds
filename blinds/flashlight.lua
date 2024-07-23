@@ -19,11 +19,12 @@ local tw_blind = SMODS.Blind {
 
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_flashlight');
 
-function blind_flashlight_toggle_card_flip(index)
+function blind_flashlight_toggle_card_flip(username, index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_flashlight" then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then
         G.GAME.blind:wiggle()
         local card = G.hand.cards[index]
+        card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
         card:flip()
     end
 end

@@ -127,9 +127,9 @@ function SMODS.INIT.TwitchBlinds()
         print('Toggle collected: ' .. username .. ' -> ' .. tostring(index))
 
         -- Blinds effects
-        blind_chaos_toggle_card(index)
-        blind_flashlight_toggle_card_flip(index)
-        blind_lock_toggle_eternal_joker(index)
+        blind_chaos_toggle_card(username, index)
+        blind_flashlight_toggle_card_flip(username, index)
+        blind_lock_toggle_eternal_joker(username, index)
     end
 
     collector.variants = { '1', '2', '3' }

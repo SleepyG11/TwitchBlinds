@@ -19,11 +19,12 @@ local tw_blind = SMODS.Blind {
 
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_chaos');
 
-function blind_chaos_toggle_card(index)
+function blind_chaos_toggle_card(username, index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_chaos" then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then
         G.GAME.blind:wiggle()
         local card = G.hand.cards[index]
+        card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
         for i = #G.hand.highlighted, 1, -1 do
             if G.hand.highlighted[i] == card then
                 table.remove(G.hand.highlighted, i)

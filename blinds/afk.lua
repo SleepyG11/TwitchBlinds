@@ -24,7 +24,7 @@ local tw_blind = SMODS.Blind {
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_afk');
 
 function tw_blind:set_blind()
-    _first_dissolve = nil
+    local _first_dissolve = nil
     for k, v in ipairs(G.jokers.cards) do
         if pseudorandom(pseudoseed('twbl_afk')) < G.GAME.probabilities.normal / self.config.extra.odds then
             G.GAME.blind:wiggle()

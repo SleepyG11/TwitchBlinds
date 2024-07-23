@@ -22,11 +22,7 @@ table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_taxes');
 function tw_blind:set_blind()
     G.GAME.blind:wiggle()
     for k, v in ipairs(G.jokers.cards) do
-        G.E_MANAGER:add_event(Event({
-            func = function()
-                v:juice_up(); return true
-            end
-        }))
+        v:juice_up()
         v:set_rental(true)
         delay(0.23)
     end

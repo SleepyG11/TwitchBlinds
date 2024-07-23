@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Chaos',
-            text = { 'Chat also can (de)select cards', 'Use: select <card position>' }
+            text = { 'Chat can (de)select cards', 'Use: toggle <card position>' }
         }
     },
     dollars = 5,
@@ -22,6 +22,7 @@ table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_chaos');
 function blind_chaos_toggle_card(index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_chaos" then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then
+        G.GAME.blind:wiggle()
         local card = G.hand.cards[index]
         for i = #G.hand.highlighted, 1, -1 do
             if G.hand.highlighted[i] == card then

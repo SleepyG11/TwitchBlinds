@@ -50,10 +50,10 @@ function _TwitchCollector:process_message(username, message)
         self:onvote(username, vote_match)
         return
     end
-    local select_match = message:match('select (.+)')
-    if select_match then
-        local value = tonumber(select_match)
-        if value then self:onselect(username, value) end
+    local toggle_match = message:match('toggle (.+)')
+    if toggle_match then
+        local value = tonumber(toggle_match)
+        if value then self:ontoggle(username, value) end
         return
     end
 end
@@ -64,10 +64,10 @@ end
 function _TwitchCollector:onvote(username, variant)
 end
 
---- Called every time when select index is collected
+--- Called every time when toggle index is collected
 --- @param username string Twitch username
 --- @param index number Variant selected by user
-function _TwitchCollector:onselect(username, index)
+function _TwitchCollector:ontoggle(username, index)
 end
 
 --- Called when socket is closed

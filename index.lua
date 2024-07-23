@@ -26,6 +26,9 @@ local blinds_to_load = {
     'precision',
     'clock',
     'chaos',
+    'circus',
+    'flashlight',
+    'lock',
 }
 
 local test_channel_name = 'sleepyg11_'
@@ -120,11 +123,13 @@ function SMODS.INIT.TwitchBlinds()
         -- Blinds effects
     end
 
-    function collector:onselect(username, index)
-        print('Select collected: ' .. username .. ' -> ' .. tostring(index))
+    function collector:ontoggle(username, index)
+        print('Toggle collected: ' .. username .. ' -> ' .. tostring(index))
 
         -- Blinds effects
         blind_chaos_toggle_card(index)
+        blind_flashlight_toggle_card_flip(index)
+        blind_lock_toggle_eternal_joker(index)
     end
 
     collector.variants = { '1', '2', '3' }
@@ -156,7 +161,7 @@ function SMODS.INIT.TwitchBlinds()
         -- Replace with blind selected by chat
         if G.GAME.blind_on_deck == 'Boss' and G.GAME.round_resets.blind_choices.Boss and G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
             -- TODO: picking mechanism
-            safe_reroll_boss('bl_twbl_chaos') -- For now only direct blind picking, for test purposes
+            safe_reroll_boss('bl_twbl_circus') -- For now only direct blind picking, for test purposes
         else
             select_blind_ref(e)
         end
@@ -164,36 +169,37 @@ function SMODS.INIT.TwitchBlinds()
 
     local get_new_boss_ref = get_new_boss;
     function get_new_boss(e)
-        -- Final boss works as usual
-        if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(e) end
-        local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
-            G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
+        return 'bl_chat'
+        -- -- Final boss works as usual
+        -- if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(e) end
+        -- local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
+        --     G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
-        if G.GAME.round_resets.blind_choices.Boss then
-            if G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
-                -- Can't reroll chat
-                return 'bl_chat'
-            end
-            if string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
-                if caused_by_boss_defeate then
-                    -- Return new vanilla boss
-                    return get_new_boss_ref(e)
-                else
-                    -- Can't reroll blind selected by chat
-                    -- Subject to change?
-                    return G.GAME.round_resets.blind_choices.Boss
-                end
-            else
-                if caused_by_boss_defeate then
-                    -- Spawn chat blind
-                    return 'bl_chat'
-                else
-                    -- Reroll vanilla boss as usual
-                    return get_new_boss_ref(e)
-                end
-            end
-        end
-        return get_new_boss_ref(e)
+        -- if G.GAME.round_resets.blind_choices.Boss then
+        --     if G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
+        --         -- Can't reroll chat
+        --         return 'bl_chat'
+        --     end
+        --     if string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
+        --         if caused_by_boss_defeate then
+        --             -- Return new vanilla boss
+        --             return get_new_boss_ref(e)
+        --         else
+        --             -- Can't reroll blind selected by chat
+        --             -- Subject to change?
+        --             return G.GAME.round_resets.blind_choices.Boss
+        --         end
+        --     else
+        --         if caused_by_boss_defeate then
+        --             -- Spawn chat blind
+        --             return 'bl_chat'
+        --         else
+        --             -- Reroll vanilla boss as usual
+        --             return get_new_boss_ref(e)
+        --         end
+        --     end
+        -- end
+        -- return get_new_boss_ref(e)
     end
 end
 

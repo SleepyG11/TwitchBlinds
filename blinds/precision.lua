@@ -1,4 +1,4 @@
-SMODS.Blind {
+local tw_blind = SMODS.Blind {
     key = 'twbl_precision',
     loc_txt = {
         ['en-us'] = {

@@ -1,4 +1,4 @@
-SMODS.Blind {
+local tw_blind = SMODS.Blind {
     key = 'twbl_trash_can',
     loc_txt = {
         ['en-us'] = {

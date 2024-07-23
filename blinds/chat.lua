@@ -1,4 +1,4 @@
-SMODS.Blind {
+local tw_blind = SMODS.Blind {
     key = 'chat',
     loc_txt = {
         ['en-us'] = {

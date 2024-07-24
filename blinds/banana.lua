@@ -5,7 +5,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Banana',
-            text = { '#1# in #2# chance to replace', 'Joker with Gros Michel' }
+            text = { "#1# in #2# chance to replace", "Joker with Gros Michel" }
         }
     },
     dollars = 5,

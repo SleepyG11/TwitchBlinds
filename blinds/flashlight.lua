@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Flashlight',
-            text = { "All cards face down. Chat can flip them.", "Use: toggle <card position>" }
+            text = { "All cards face down, chat can flip them", "Single-Use: toggle <card position>" }
         }
     },
     dollars = 5,
@@ -20,7 +20,11 @@ local tw_blind = SMODS.Blind {
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_flashlight');
 
 function tw_blind:set_blind()
-    TWITCH_BLINDS.collector.single_use.toggle = true
+    TWITCH_BLINDS.toggle_single_use('toggle', true, true)
+end
+
+function tw_blind:defeat()
+    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
 end
 
 function blind_flashlight_toggle_card_flip(username, index)

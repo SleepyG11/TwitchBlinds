@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The End',
-            text = { 'ALL cards are debuffed' }
+            text = { "ALL cards are debuffed" }
         }
     },
     dollars = 5,

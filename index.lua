@@ -10,6 +10,8 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+local test__force_blind = nil
+
 local blinds_to_load = {
     'chat',
 
@@ -29,6 +31,7 @@ local blinds_to_load = {
     'circus',
     'flashlight',
     'lock',
+    'chisel',
 }
 
 local test_channel_name = 'sleepyg11_'
@@ -155,6 +158,48 @@ function SMODS.INIT.TwitchBlinds()
         collector = TwitchCollector.new()
     }
 
+    function TWITCH_BLINDS.toggle_can_collect(command, b, write)
+        TWITCH_BLINDS.collector.can_collect[command] = b
+        print('Can collect ' .. command .. ': ' .. tostring(b))
+        if write and G.GAME and G.GAME.pool_flags then G.GAME.pool_flags['twitch_can_collect_' .. command] = b end
+        print(inspectDepth(G.GAME.pool_flags))
+    end
+
+    function TWITCH_BLINDS.get_can_collect_from_save(game, default_values)
+        print(inspectDepth(game.pool_flags))
+        local commands = { 'vote', 'toggle' }
+        for _, command in ipairs(commands) do
+            local set_value = nil
+            if (default_values) then set_value = default_values[command] end
+            if game and game.pool_flags and game.pool_flags['twitch_can_collect_' .. command] ~= nil then
+                set_value = game.pool_flags['twitch_can_collect_' .. command]
+            end
+            TWITCH_BLINDS.collector.can_collect[command] = set_value or false
+            print('Can collect from save ' .. command .. ': ' .. tostring(set_value))
+        end
+    end
+
+    function TWITCH_BLINDS.toggle_single_use(command, b, write)
+        TWITCH_BLINDS.collector.single_use[command] = b
+        print('Single use ' .. command .. ': ' .. tostring(b))
+        if write and G.GAME and G.GAME.pool_flags then G.GAME.pool_flags['twitch_single_use_' .. command] = b end
+        print(inspectDepth(G.GAME.pool_flags))
+    end
+
+    function TWITCH_BLINDS.get_single_use_from_save(game, default_values)
+        print(inspectDepth(game.pool_flags))
+        local commands = { 'vote', 'toggle' }
+        for _, command in ipairs(commands) do
+            local set_value = nil
+            if (default_values) then set_value = default_values[command] end
+            if game and game.pool_flags and game.pool_flags['twitch_single_use_' .. command] ~= nil then
+                set_value = game.pool_flags['twitch_single_use_' .. command]
+            end
+            TWITCH_BLINDS.collector.single_use[command] = set_value or false
+            print('Single use from save ' .. command .. ': ' .. tostring(set_value))
+        end
+    end
+
     for _, blind_name in ipairs(blinds_to_load) do
         assert(load(nativefs.read(SMODS.current_mod.path .. "/blinds/" .. blind_name .. ".lua")))()
     end
@@ -163,7 +208,10 @@ function SMODS.INIT.TwitchBlinds()
 
     local collector = TWITCH_BLINDS.collector
     local needs_reconnect = false
-    local reconnect_timeout = 0;
+    local reconnect_timeout = 0
+
+    local needs_game_check = false
+    local game_check_timeout = 1
 
     function collector:ondisconnect()
         -- Request reconnect
@@ -200,6 +248,25 @@ function SMODS.INIT.TwitchBlinds()
             collector:update()
         end
 
+        -- Read save
+        if game_check_timeout >= 0 then
+            game_check_timeout = game_check_timeout - dt
+        else
+            if needs_game_check then
+                needs_game_check = false
+                if G.GAME then
+                    TWITCH_BLINDS.get_can_collect_from_save(G.GAME, {
+                        vote = false,
+                        toggle = false,
+                    })
+                    TWITCH_BLINDS.get_single_use_from_save(G.GAME, {
+                        vote = false,
+                        toggle = false,
+                    })
+                end
+            end
+        end
+
         -- Blinds effects
         blind_clock_request_increment_mult(dt)
     end
@@ -207,22 +274,9 @@ function SMODS.INIT.TwitchBlinds()
     local start_run_ref = G.FUNCS.start_run
     function G.FUNCS.start_run(arg1, arg2, arg3)
         start_run_ref(arg1, arg2, arg3)
-
-        local can_vote = true
-        if (G.GAME.round_resets.ante % 8 == 0) or ((G.GAME.round_resets.ante + 1) % 8 == 0) then
-            -- Can't vote if we are on final boss blind or next boss blind is final
-            can_vote = false
-        end
-        if G.GAME.blind_on_deck == 'Boss' and string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
-            -- Can't vote if current boss blind picked by chat
-            can_vote = false
-        end
-        if G.GAME.round_resets.blind_choices.Boss == 'bl_twitch_chat' then
-            -- Can vote if current boss blind is chat
-            can_vote = true
-        end
-        collector.can_collect.vote = can_vote
-        collector.can_collect.toggle = true
+        -- idk, without delay it's not working
+        game_check_timeout = 1
+        needs_game_check = true
         collector:reset()
     end
 
@@ -230,8 +284,9 @@ function SMODS.INIT.TwitchBlinds()
     function G.main_menu(arg1, arg2)
         main_menu_ref(arg1, arg2)
 
-        collector.can_collect.vote = false
-        collector.can_collect.toggle = false
+        TWITCH_BLINDS.toggle_can_collect('vote', false, false)
+        TWITCH_BLINDS.toggle_can_collect('toggle', false, false)
+        collector:reset()
     end
 
     --
@@ -249,11 +304,12 @@ function SMODS.INIT.TwitchBlinds()
                 end
             end
 
-            local picked_blind = G.GAME.pool_flags.twitch_blinds[win_index]
+            if not G.GAME.pool_flags.twitch_blinds then pick_blinds_to_vote() end
+            local picked_blind = test__force_blind or G.GAME.pool_flags.twitch_blinds[win_index]
             -- WARN: If chat boss can be rerolled then this function should be moved to get_new_boss
             G.GAME.bosses_used[picked_blind] = G.GAME.bosses_used[picked_blind] + 1
             safe_reroll_boss(picked_blind)
-            collector.can_collect.vote = false
+            TWITCH_BLINDS.toggle_can_collect('vote', false, true)
         else
             select_blind_ref(arg1, arg2)
         end
@@ -267,6 +323,15 @@ function SMODS.INIT.TwitchBlinds()
         local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
+        if test__force_blind then
+            if not G.GAME.round_resets.blind_choices.Boss or caused_by_boss_defeate then
+                pick_blinds_to_vote()
+                TWITCH_BLINDS.toggle_can_collect('vote', true, true)
+                collector:reset()
+            end
+            return 'bl_twitch_chat'
+        end
+
         if G.GAME.round_resets.blind_choices.Boss then
             if G.GAME.round_resets.blind_choices.Boss == 'bl_twitch_chat' then
                 -- Can't reroll chat
@@ -277,8 +342,8 @@ function SMODS.INIT.TwitchBlinds()
                     -- Not start voting if next boss is final, because it's pointless
                     if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                         pick_blinds_to_vote()
+                        TWITCH_BLINDS.toggle_can_collect('vote', true, true)
                         collector:reset()
-                        collector.can_collect.vote = true
                     end
                     -- Return new vanilla boss
                     return get_new_boss_ref(arg1, arg2)
@@ -294,8 +359,8 @@ function SMODS.INIT.TwitchBlinds()
                 else
                     if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                         pick_blinds_to_vote()
+                        TWITCH_BLINDS.toggle_can_collect('vote', true, true)
                         collector:reset()
-                        collector.can_collect.vote = true
                     end
                     -- Reroll vanilla boss as usual
                     return get_new_boss_ref(arg1, arg2)
@@ -304,8 +369,8 @@ function SMODS.INIT.TwitchBlinds()
         else
             if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                 pick_blinds_to_vote()
+                TWITCH_BLINDS.toggle_can_collect('vote', true, true)
                 collector:reset()
-                collector.can_collect.vote = true
             end
             return get_new_boss_ref(arg1, arg2)
         end

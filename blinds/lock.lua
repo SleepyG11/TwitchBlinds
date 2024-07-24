@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Lock',
-            text = { "Chat can toggle eternal Jokers", "Use: toggle <joker position>" }
+            text = { "Chat can toggle eternal Jokers", "Single-Use: toggle <joker position>" }
         }
     },
     dollars = 5,
@@ -20,7 +20,11 @@ local tw_blind = SMODS.Blind {
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_lock');
 
 function tw_blind:set_blind()
-    TWITCH_BLINDS.collector.single_use.toggle = true
+    TWITCH_BLINDS.toggle_single_use('toggle', true, true)
+end
+
+function tw_blind:defeat()
+    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
 end
 
 function blind_lock_toggle_eternal_joker(username, index)

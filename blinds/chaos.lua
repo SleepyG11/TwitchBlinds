@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Chaos',
-            text = { 'Chat can (de)select cards', 'Use: toggle <card position>' }
+            text = { "Chat can (de)select cards", "Multi-Use: toggle <card position>" }
         }
     },
     dollars = 5,
@@ -20,7 +20,11 @@ local tw_blind = SMODS.Blind {
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_chaos');
 
 function tw_blind:set_blind()
-    TWITCH_BLINDS.collector.single_use.toggle = false
+    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
+end
+
+function tw_blind:defeat()
+    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
 end
 
 function blind_chaos_toggle_card(username, index)

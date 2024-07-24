@@ -19,6 +19,10 @@ local tw_blind = SMODS.Blind {
 
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_lock');
 
+function tw_blind:set_blind()
+    TWITCH_BLINDS.collector.single_use.toggle = true
+end
+
 function blind_lock_toggle_eternal_joker(username, index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_lock" then return end
     if G.jokers and G.jokers.cards and G.jokers.cards[index] then

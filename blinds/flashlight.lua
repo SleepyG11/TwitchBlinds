@@ -19,6 +19,10 @@ local tw_blind = SMODS.Blind {
 
 table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_flashlight');
 
+function tw_blind:set_blind()
+    TWITCH_BLINDS.collector.single_use.toggle = true
+end
+
 function blind_flashlight_toggle_card_flip(username, index)
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_flashlight" then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then

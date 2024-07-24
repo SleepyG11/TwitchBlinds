@@ -3,29 +3,48 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "websocket.lua")))()
 
 --
 
----@class _TwitchCollector
----@field score { [string]: number }
----@field variants string[]
----@field voters string[]
+---@class TwitchCollector
+---@field vote_score { [string]: number }
+---@field vote_variants string[]
+---@field users { [string]: { [string]: number } }
+---@field single_use { [string]: boolean }
+---@field can_collect { [string]: boolean }
 ---@field channel_name string?
 ---@field socket wsclient?
-local _TwitchCollector = {}
-_TwitchCollector.__index = _TwitchCollector
+TwitchCollector = {}
+TwitchCollector.__index = TwitchCollector
 
----@return _TwitchCollector
-function _TwitchCollector.new()
+---@return TwitchCollector
+function TwitchCollector.new()
     local collector = {
         --- Collected score
         --- @type { [string]: number }
-        score = {},
+        vote_score = {},
 
         --- All variant users can vote
         --- @type string[]
-        variants = {},
+        vote_variants = {},
 
-        --- List of usernames who vote
-        --- @type string[]
-        voters = {},
+        --- List of usernames who use commands
+        --- @type { [string]: { [string]: number } }
+        users = {
+            vote = {},
+            toggle = {},
+        },
+
+        --- Can user use commands more than one time
+        --- @type { [string]: boolean }
+        single_use = {
+            vote = true,
+            toggle = true,
+        },
+
+        --- Can collector process commands
+        --- @type { [string]: boolean }
+        can_collect = {
+            vote = false,
+            toggle = false,
+        },
 
         --- Twitch channel name connected to
         --- @type string?
@@ -36,24 +55,29 @@ function _TwitchCollector.new()
         socket = nil,
     }
 
-    setmetatable(collector, _TwitchCollector)
+    setmetatable(collector, TwitchCollector)
     return collector;
 end
 
-function _TwitchCollector:process_message(username, message)
+function TwitchCollector:process_message(username, message)
     local vote_match = message:match('vote (.+)')
     if vote_match then
-        -- if table_check(self.voters, username) then return end
-        if not table_check(self.variants, vote_match) then return end
-        -- table.insert(self.voters, username)
-        self.score[vote_match] = (self.score[vote_match] or 0) + 1
+        if not self.can_collect.vote then return end
+        if self.single_use.vote and self.users.vote[username] then return end
+        if not table_check(self.vote_variants, vote_match) then return end
+        self.users.vote[username] = (self.users.vote[username] or 0) + 1
+        self.vote_score[vote_match] = (self.vote_score[vote_match] or 0) + 1
         self:onvote(username, vote_match)
         return
     end
     local toggle_match = message:match('toggle (.+)')
     if toggle_match then
+        if not self.can_collect.toggle then return end
+        if self.single_use.toggle and self.users.toggle[username] then return end
         local value = tonumber(toggle_match)
-        if value then self:ontoggle(username, value) end
+        if not value then return end
+        self.users.toggle[username] = (self.users.toggle[username] or 0) + 1
+        self:ontoggle(username, value)
         return
     end
 end
@@ -61,22 +85,22 @@ end
 --- Called every time when vote for boss blind is collected
 --- @param username string Twitch username
 --- @param variant string Variant selected by user
-function _TwitchCollector:onvote(username, variant)
+function TwitchCollector:onvote(username, variant)
 end
 
 --- Called every time when toggle index is collected
 --- @param username string Twitch username
 --- @param index number Variant selected by user
-function _TwitchCollector:ontoggle(username, index)
+function TwitchCollector:ontoggle(username, index)
 end
 
 --- Called when socket is closed
-function _TwitchCollector:ondisconnect()
+function TwitchCollector:ondisconnect()
 end
 
 --- Connect to Twitch chat
 --- @param channel_name string Channel name
-function _TwitchCollector:connect(channel_name)
+function TwitchCollector:connect(channel_name)
     if self.socket then self.socket:close() end
     self.channel_name = channel_name
 
@@ -108,20 +132,25 @@ function _TwitchCollector:connect(channel_name)
 end
 
 --- Disconnect
-function _TwitchCollector:disconnect()
+function TwitchCollector:disconnect()
     if self.socket then self.socket:close() end
     self.channel_name = nil
 end
 
+--- Reconnect
+function TwitchCollector:reconnect()
+    if self.channel_name then self:connect(self.channel_name) end
+end
+
 --- Clear score and list of voters
-function _TwitchCollector:reset()
-    self.score = {}
-    self.voters = {}
+function TwitchCollector:reset()
+    self.vote_score = {}
+    for k, v in pairs(self.users) do
+        self.users[k] = {}
+    end
 end
 
 --- Update socket status. Should be called inside `love.update()`
-function _TwitchCollector:update()
+function TwitchCollector:update()
     if self.socket then self.socket:update() end
 end
-
-TwitchCollector = _TwitchCollector

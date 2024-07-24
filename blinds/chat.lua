@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'chat',
+    key = 'twitch_chat',
     loc_txt = {
         ['en-us'] = {
             name = 'The Chat',

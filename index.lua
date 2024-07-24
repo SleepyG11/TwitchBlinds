@@ -182,9 +182,8 @@ function SMODS.INIT.TwitchBlinds()
         blind_lock_toggle_eternal_joker(username, index)
     end
 
-    collector.variants = { '1', '2', '3' }
-    -- TODO: blocking mechanism for each command separately
-    -- TODO: voters list for each command separately
+    collector.vote_variants = { '1', '2', '3' }
+    collector.single_use.vote = true
     -- TODO: insert channel name from config
     collector:connect(test_channel_name)
 
@@ -196,7 +195,7 @@ function SMODS.INIT.TwitchBlinds()
         else
             if needs_reconnect then
                 needs_reconnect = false
-                if collector.channel_name then collector:connect(collector.channel_name) end
+                collector:reconnect()
             end
             collector:update()
         end
@@ -206,47 +205,72 @@ function SMODS.INIT.TwitchBlinds()
     end
 
     local start_run_ref = G.FUNCS.start_run
-    function G.FUNCS.start_run(e, args)
-        start_run_ref(e, args)
+    function G.FUNCS.start_run(arg1, arg2, arg3)
+        start_run_ref(arg1, arg2, arg3)
+
+        local can_vote = true
+        if (G.GAME.round_resets.ante % 8 == 0) or ((G.GAME.round_resets.ante + 1) % 8 == 0) then
+            -- Can't vote if we are on final boss blind or next boss blind is final
+            can_vote = false
+        end
+        if G.GAME.blind_on_deck == 'Boss' and string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
+            -- Can't vote if current boss blind picked by chat
+            can_vote = false
+        end
+        if G.GAME.round_resets.blind_choices.Boss == 'bl_twitch_chat' then
+            -- Can vote if current boss blind is chat
+            can_vote = true
+        end
+        collector.can_collect.vote = can_vote
+        collector.can_collect.toggle = true
         collector:reset()
+    end
+
+    local main_menu_ref = G.main_menu
+    function G.main_menu(arg1, arg2)
+        main_menu_ref(arg1, arg2)
+
+        collector.can_collect.vote = false
+        collector.can_collect.toggle = false
     end
 
     --
 
     local select_blind_ref = G.FUNCS.select_blind
-    function G.FUNCS.select_blind(e)
+    function G.FUNCS.select_blind(arg1, arg2)
         -- Replace with blind selected by chat (or use first if no votes)
-        if G.GAME.blind_on_deck == 'Boss' and G.GAME.round_resets.blind_choices.Boss and G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
+        if G.GAME.blind_on_deck == 'Boss' and G.GAME.round_resets.blind_choices.Boss and G.GAME.round_resets.blind_choices.Boss == 'bl_twitch_chat' then
             local max_score = -1
             local win_index = 1
-            for _, v in ipairs(collector.variants) do
-                if collector.score[v] and collector.score[v] > max_score then
-                    max_score = collector.score[v]
+            for _, v in ipairs(collector.vote_variants) do
+                if collector.vote_score[v] and collector.vote_score[v] > max_score then
+                    max_score = collector.vote_score[v]
                     win_index = tonumber(v) or win_index
                 end
             end
 
             local picked_blind = G.GAME.pool_flags.twitch_blinds[win_index]
-            -- If chat boss can be rerolled then this function should be moved to get_new_boss
+            -- WARN: If chat boss can be rerolled then this function should be moved to get_new_boss
             G.GAME.bosses_used[picked_blind] = G.GAME.bosses_used[picked_blind] + 1
             safe_reroll_boss(picked_blind)
+            collector.can_collect.vote = false
         else
-            select_blind_ref(e)
+            select_blind_ref(arg1, arg2)
         end
     end
 
     local get_new_boss_ref = get_new_boss;
-    function get_new_boss(e)
+    function get_new_boss(arg1, arg2)
         -- Final boss works as usual
-        if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(e) end
+        if G.GAME.round_resets.ante % 8 == 0 then get_new_boss_ref(arg1, arg2) end
 
         local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
         if G.GAME.round_resets.blind_choices.Boss then
-            if G.GAME.round_resets.blind_choices.Boss == 'bl_chat' then
+            if G.GAME.round_resets.blind_choices.Boss == 'bl_twitch_chat' then
                 -- Can't reroll chat
-                return 'bl_chat'
+                return 'bl_twitch_chat'
             end
             if string_starts(G.GAME.round_resets.blind_choices.Boss, 'bl_twbl_') then
                 if caused_by_boss_defeate then
@@ -254,9 +278,10 @@ function SMODS.INIT.TwitchBlinds()
                     if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                         pick_blinds_to_vote()
                         collector:reset()
+                        collector.can_collect.vote = true
                     end
                     -- Return new vanilla boss
-                    return get_new_boss_ref(e)
+                    return get_new_boss_ref(arg1, arg2)
                 else
                     -- Can't reroll blind selected by chat
                     -- Subject to change?
@@ -265,22 +290,24 @@ function SMODS.INIT.TwitchBlinds()
             else
                 if caused_by_boss_defeate then
                     -- Spawn chat blind
-                    return 'bl_chat'
+                    return 'bl_twitch_chat'
                 else
                     if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                         pick_blinds_to_vote()
                         collector:reset()
+                        collector.can_collect.vote = true
                     end
                     -- Reroll vanilla boss as usual
-                    return get_new_boss_ref(e)
+                    return get_new_boss_ref(arg1, arg2)
                 end
             end
         else
             if (G.GAME.round_resets.ante + 1) % 8 ~= 0 then
                 pick_blinds_to_vote()
                 collector:reset()
+                collector.can_collect.vote = true
             end
-            return get_new_boss_ref(e)
+            return get_new_boss_ref(arg1, arg2)
         end
     end
 end

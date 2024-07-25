@@ -59,6 +59,7 @@ end
 
 function tw_blind:debuff_hand(cards, hand, handname, check)
     if G.GAME.blind.hands and G.GAME.blind.hands.debuffed == handname then
+        G.GAME.blind.triggered = true
         if not check then G.GAME.blind.hands.debuffed = nil end
         return true
     end

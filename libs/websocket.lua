@@ -1,3 +1,4 @@
+---@diagnostic disable: deprecated
 --[[
 websocket client pure lua implement for love2d
 by flaribbit

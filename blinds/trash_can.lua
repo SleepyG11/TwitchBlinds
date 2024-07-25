@@ -40,4 +40,6 @@ function blind_trash_can_remove_scored_cards(scoring_hand)
     for i = 1, #G.jokers.cards do
         G.jokers.cards[i]:calculate_joker({ remove_playing_cards = true, removed = scoring_hand })
     end
+    -- Basically every hand triggers boss, but isn't that too op?
+    -- G.GAME.blind.triggered = true
 end

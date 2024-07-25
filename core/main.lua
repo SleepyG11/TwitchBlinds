@@ -52,10 +52,9 @@ function TwitchBlinds:init()
     local start_run_ref = G.FUNCS.start_run
     function G.FUNCS.start_run(arg1, arg2, arg3)
         start_run_ref(arg1, arg2, arg3)
-        -- idk, without delay it's not working
+        -- Without delay G.GAME.pool_flags not present
         game_check_timeout = 1
         needs_game_check = true
-        self.CHAT_COMMANDS.collector:reset()
     end
 
     local main_menu_ref = G.main_menu
@@ -97,6 +96,7 @@ function TwitchBlinds:init()
                         toggle = false,
                     })
                 end
+                self.CHAT_COMMANDS.collector:reset()
             end
         end
 
@@ -176,10 +176,13 @@ function TwitchBlinds:start_new_twitch_blinds_voting(final_boss)
     self.CHAT_COMMANDS.collector:reset()
 end
 
+--- @param dt number
 function TwitchBlinds:on_update_trigger_blinds(dt)
     blind_clock_request_increment_mult(dt)
 end
 
+--- @param username string
+--- @param index number
 function TwitchBlinds:on_toggle_trigger_blinds(username, index)
     blind_chaos_toggle_card(username, index)
     blind_flashlight_toggle_card_flip(username, index)

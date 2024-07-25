@@ -10,7 +10,7 @@ target = "functions/state_events.lua"
 pattern = "for k, v in ipairs(scoring_hand) do v.ability.perma_debuff = true end"
 position = "after"
 payload = '''
-elseif G.GAME.blind.name == "bl_twbl_trash_can" then
+elseif G.GAME.blind.name == get_twitch_blind_key("trash_can") then
     blind_trash_can_remove_scored_cards(scoring_hand)
 '''
 match_indent = true
@@ -23,7 +23,7 @@ target = "functions/button_callbacks.lua"
 pattern = "G.FUNCS.can_discard = function(e)"
 position = "after"
 payload = '''
-if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == "bl_twbl_precision" and #G.hand.highlighted <= 4) then 
+if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == get_twitch_blind_key("precision") and #G.hand.highlighted <= 4) then 
     e.config.colour = G.C.UI.BACKGROUND_INACTIVE
     e.config.button = nil
     return

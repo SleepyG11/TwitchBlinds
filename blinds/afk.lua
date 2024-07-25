@@ -1,7 +1,7 @@
 local REPLACE_ODDS = 1000
 
 local tw_blind = SMODS.Blind {
-    key = 'twbl_afk',
+    key = register_twitch_blind('afk', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The AFK',
@@ -20,8 +20,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_afk');
 
 function tw_blind:set_blind()
     local _first_dissolve = nil

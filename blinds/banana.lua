@@ -1,7 +1,7 @@
 local REPLACE_ODDS = 6
 
 local tw_blind = SMODS.Blind {
-    key = 'twbl_banana',
+    key = register_twitch_blind('banana', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Banana',
@@ -20,7 +20,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_banana');
 
 function tw_blind:set_blind()
     local _first_dissolve = nil

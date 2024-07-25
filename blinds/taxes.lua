@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_taxes',
+    key = register_twitch_blind('taxes', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Taxes',
@@ -16,8 +16,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_taxes');
 
 function tw_blind:set_blind()
     G.GAME.blind:wiggle()

@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_end',
+    key = register_twitch_blind('end', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The End',
@@ -16,8 +16,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_end');
 
 function tw_blind:debuff_card()
     if card.area ~= G.jokers then

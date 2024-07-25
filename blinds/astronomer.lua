@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_astronomer',
+    key = register_twitch_blind('astronomer', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Astronomer',
@@ -16,7 +16,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_astronomer');
 
 function tw_blind:set_blind()
     G.GAME.blind:wiggle()

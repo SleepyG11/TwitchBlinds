@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_precision',
+    key = register_twitch_blind('precision', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Precision',
@@ -16,7 +16,5 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_precision');
 
 -- Mechanic injection implemented via lovely

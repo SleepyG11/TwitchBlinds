@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_chaos',
+    key = register_twitch_blind('chaos', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Chaos',
@@ -17,18 +17,18 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('8e15ad'),
 }
 
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_chaos');
-
 function tw_blind:set_blind()
-    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
+    TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
 end
 
 function tw_blind:defeat()
-    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
 end
 
 function blind_chaos_toggle_card(username, index)
-    if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_chaos" then return end
+    if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key('chaos') then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then
         G.GAME.blind:wiggle()
         local card = G.hand.cards[index]

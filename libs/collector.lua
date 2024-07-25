@@ -1,8 +1,3 @@
-local nativefs = require("nativefs")
-assert(load(nativefs.read(SMODS.current_mod.path .. "websocket.lua")))()
-
---
-
 ---@class TwitchCollector
 ---@field vote_score { [string]: number }
 ---@field vote_variants string[]
@@ -101,7 +96,12 @@ end
 --- Connect to Twitch chat
 --- @param channel_name string Channel name
 function TwitchCollector:connect(channel_name)
-    if self.socket then self.socket:close() end
+    if self.socket then
+        -- Ignore this event
+        function self.socket:onclose() end
+
+        self.socket:close()
+    end
     self.channel_name = channel_name
 
     local selfRef = self

@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_chisel',
+    key = register_twitch_blind('chisel', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Chisel',
@@ -16,8 +16,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_chisel');
 
 function tw_blind:loc_vars()
     local selected_hand = nil

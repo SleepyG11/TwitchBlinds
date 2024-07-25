@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_lock',
+    key = register_twitch_blind('lock', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Lock',
@@ -17,18 +17,18 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('8e15ad'),
 }
 
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_lock');
-
 function tw_blind:set_blind()
-    TWITCH_BLINDS.toggle_single_use('toggle', true, true)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
+    TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', true, true)
 end
 
 function tw_blind:defeat()
-    TWITCH_BLINDS.toggle_single_use('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
 end
 
 function blind_lock_toggle_eternal_joker(username, index)
-    if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= "bl_twbl_lock" then return end
+    if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key('lock') then return end
     if G.jokers and G.jokers.cards and G.jokers.cards[index] then
         G.GAME.blind:wiggle()
         local card = G.jokers.cards[index]

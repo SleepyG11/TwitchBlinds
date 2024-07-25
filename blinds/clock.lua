@@ -3,7 +3,7 @@ local MULT_INCREMENT = 0.25
 -- Total time to full grow: 4 * 4 * 6 = 92 seconds
 
 local tw_blind = SMODS.Blind {
-    key = 'twbl_clock',
+    key = register_twitch_blind('clock', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Clock',
@@ -21,8 +21,6 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('8e15ad'),
 }
 
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_clock');
-
 local timeout = TIME_DELAY
 
 function blind_clock_increment_mult(mult)
@@ -34,7 +32,7 @@ function blind_clock_request_increment_mult(dt)
     timeout = timeout - dt
     if timeout <= 0 then
         timeout = timeout + TIME_DELAY
-        if G.GAME and G.GAME.blind and G.GAME.blind.name == 'bl_twbl_clock' and G.GAME.round_resets.blind_states.Boss == 'Current' then
+        if G.GAME and G.GAME.blind and G.GAME.blind.name == get_twitch_blind_key('clock') and G.GAME.round_resets.blind_states.Boss == 'Current' then
             G.GAME.blind:wiggle()
             G.GAME.blind.mult = blind_clock_increment_mult(G.GAME.blind.mult)
             G.GAME.blind.chips = get_blind_amount(G.GAME.round_resets.ante) * G.GAME.blind.mult *

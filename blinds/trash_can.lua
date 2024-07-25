@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind {
-    key = 'twbl_trash_can',
+    key = register_twitch_blind('trash_can', false),
     loc_txt = {
         ['en-us'] = {
             name = 'The Trash Can',
@@ -16,8 +16,6 @@ local tw_blind = SMODS.Blind {
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
 }
-
-table.insert(TWITCH_BLINDS.BLINDS, 'bl_twbl_trash_can');
 
 -- Mechanic injection implemented via lovely
 function blind_trash_can_remove_scored_cards(scoring_hand)

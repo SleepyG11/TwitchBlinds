@@ -55,10 +55,14 @@ function twitch_blinds_init_blinds()
     BLINDS.chat_blind = 'bl_twitch_chat'
 
     --- Get one random boss blind from list
-    --- @param eligible_bosses string[] List to choose from
-    function BLINDS.get_random_boss_blind(eligible_bosses)
-        if not G.GAME then return nil end
-        local min_use = 100
+    --- @param pool string[] List to choose from
+    --- @return string
+    function BLINDS.get_random_boss_blind(pool)
+        local eligible_bosses = {}
+        for _, v in ipairs(pool) do
+            eligible_bosses[v] = 0
+        end
+        local min_use = 9999
         for k, v in pairs(G.GAME.bosses_used) do
             if eligible_bosses[k] then
                 eligible_bosses[k] = v
@@ -81,28 +85,29 @@ function twitch_blinds_init_blinds()
     end
 
     --- Get specified amount of random boss blinds from list
-    --- @param eligible_bosses string[] List to choose from
+    --- @param initial_pool string[] List to choose from
     --- @param count number Amount of blinds to choose
-    function BLINDS.get_list_of_random_boss_blinds(eligible_bosses, count)
-        local initial_pool = {}
-        for k, v in pairs(eligible_bosses) do
-            initial_pool[v] = true
+    --- @return string[]
+    function BLINDS.get_list_of_random_boss_blinds(initial_pool, count)
+        local pool = {}
+        for _, v in ipairs(initial_pool) do
+            pool[v] = true
         end
         local result = {}
         for i = 1, count do
-            local boss = BLINDS.get_random_boss_blind(initial_pool);
-            -- I hope setting nil in table change this value
-            if #initial_pool <= 1 then
+            local boss = BLINDS.get_random_boss_blind(pool);
+            if #pool <= 1 then
                 -- This means that single picked blind remains, we need new pool
-                for k, v in pairs(eligible_bosses) do
-                    initial_pool[v] = true
+                for _, v in ipairs(initial_pool) do
+                    pool[v] = true
                 end
             end
-            initial_pool[boss] = nil
             table.insert(result, boss)
+            for _, v in ipairs(result) do
+                -- No repeat bosses
+                pool[v] = nil
+            end
         end
-        -- -- Write selected blinds to game save
-        -- G.GAME.pool_flags.twitch_blinds = result
         return result
     end
 

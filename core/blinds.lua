@@ -55,12 +55,12 @@ function twitch_blinds_init_blinds()
     BLINDS.chat_blind = 'bl_twitch_chat'
 
     --- Get one random boss blind from list
-    --- @param pool string[] List to choose from
+    --- @param pool { [string]: boolean } List to choose from
     --- @return string
     function BLINDS.get_random_boss_blind(pool)
         local eligible_bosses = {}
-        for _, v in ipairs(pool) do
-            eligible_bosses[v] = 0
+        for k, v in pairs(pool) do
+            eligible_bosses[k] = 0
         end
         local min_use = 9999
         for k, v in pairs(G.GAME.bosses_used) do
@@ -80,7 +80,6 @@ function twitch_blinds_init_blinds()
         end
         local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('twbl_boss_pick'))
         G.GAME.bosses_used[boss] = G.GAME.bosses_used[boss] + 1
-
         return boss
     end
 

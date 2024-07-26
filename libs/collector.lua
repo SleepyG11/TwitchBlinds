@@ -95,10 +95,13 @@ end
 
 --- Connect to Twitch chat
 --- @param channel_name string Channel name
-function TwitchCollector:connect(channel_name)
+--- @param silent boolean? Supress onclose event
+function TwitchCollector:connect(channel_name, silent)
     if self.socket then
         -- Ignore this event
-        function self.socket:onclose() end
+        if silent then
+            function self.socket:onclose() end
+        end
 
         self.socket:close()
     end
@@ -126,15 +129,22 @@ function TwitchCollector:connect(channel_name)
 
     function socket:onclose(code, reason)
         selfRef:ondisconnect()
+        self.socket = nil
     end
 
     self.socket = socket
 end
 
 --- Disconnect
-function TwitchCollector:disconnect()
-    if self.socket then self.socket:close() end
-    self.channel_name = nil
+--- @param silent boolean? Supress onclose event
+function TwitchCollector:disconnect(silent)
+    if self.socket then
+        if silent then
+            function self.socket:onclose() end
+        end
+        self.socket:close()
+    end
+    self.socket = nil
 end
 
 --- Reconnect

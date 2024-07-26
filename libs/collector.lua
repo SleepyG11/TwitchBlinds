@@ -58,7 +58,7 @@ function TwitchCollector:process_message(username, message)
     local vote_match = message:match('vote (.+)')
     if vote_match then
         if not self.can_collect.vote then return end
-        if self.single_use.vote and self.users.vote[username] then return end
+        if self.single_use.vote and self.users.vote[username] and self.users.vote[username] > 0 then return end
         if not table_check(self.vote_variants, vote_match) then return end
         self.users.vote[username] = (self.users.vote[username] or 0) + 1
         self.vote_score[vote_match] = (self.vote_score[vote_match] or 0) + 1
@@ -68,7 +68,7 @@ function TwitchCollector:process_message(username, message)
     local toggle_match = message:match('toggle (.+)')
     if toggle_match then
         if not self.can_collect.toggle then return end
-        if self.single_use.toggle and self.users.toggle[username] then return end
+        if self.single_use.toggle and self.users.toggle[username] and self.users.toggle[username] > 0 then return end
         local value = tonumber(toggle_match)
         if not value then return end
         self.users.toggle[username] = (self.users.toggle[username] or 0) + 1

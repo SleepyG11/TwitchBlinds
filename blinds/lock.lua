@@ -35,5 +35,8 @@ function blind_lock_toggle_eternal_joker(username, index)
         card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
         card:set_eternal(not card.ability.eternal)
         card:juice_up()
+    else
+        TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
+        1
     end
 end

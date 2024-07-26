@@ -716,26 +716,29 @@ function twitch_blinds_init_ui()
     --- @param with_bosses boolean
     function UI.update_voting_process(with_bosses)
         if not UI.voting_process then return end
+
         local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(false)
-        if not blinds_to_vote then return end
-        local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
-        for i = 1, TW_BL.BLINDS.blinds_to_vote do
-            if with_bosses then
-                local boss_element = UI.voting_process:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_blind_name");
-                if boss_element then
-                    boss_element.config.text = blinds_to_vote[i] and
-                        localize { type = 'name_text', key = blinds_to_vote[i], set = 'Blind' } or "-"
+        if blinds_to_vote then
+            local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
+            for i = 1, TW_BL.BLINDS.blinds_to_vote do
+                if with_bosses then
+                    local boss_element = UI.voting_process:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_blind_name");
+                    if boss_element then
+                        boss_element.config.text = blinds_to_vote[i] and
+                            localize { type = 'name_text', key = blinds_to_vote[i], set = 'Blind' } or "-"
+                    end
+                end
+                local percent_element = UI.voting_process:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent");
+                if percent_element then
+                    local variant_status = vote_status[tostring(i)]
+                    percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. '%'
                 end
             end
-            local percent_element = UI.voting_process:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent");
-            if percent_element then
-                local variant_status = vote_status[tostring(i)]
-                percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. '%'
-            end
         end
-        UI.voting_process:recalculate()
+
         -- TODO: animate this
-        UI.voting_process.alignment.offset.y = TW_BL.CHAT_COMMANDS.collector.can_collect.vote and -6.1 or -8.1
+        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.collector.can_collect.vote and -6.1 or -8.1
+        UI.voting_process:recalculate()
     end
 
     function UI.draw_voting_process()
@@ -743,7 +746,6 @@ function twitch_blinds_init_ui()
             definition = UI.PARTS.create_UIBox_voting_process(),
             config = { align = "cmri", offset = { x = -0.2857, y = -6.1 }, major = G.ROOM_ATTACH, id = "twbl_voting_process" },
         })
-        G.I.NODE.twitch_voting_process = UI.voting_process
     end
 
     --
@@ -751,6 +753,7 @@ function twitch_blinds_init_ui()
     function G.FUNCS.twbl_settings_apply()
         TW_BL.SETTINGS.save()
         if TW_BL.CHAT_COMMANDS.collector.socket then
+            print('Connecting to ' .. TW_BL.SETTINGS.current.channel_name)
             TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
         end
     end

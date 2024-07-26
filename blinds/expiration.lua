@@ -14,7 +14,7 @@ local tw_blind = SMODS.Blind {
     key = register_twitch_blind('expiration', false),
     loc_txt = {
         ['en-us'] = {
-            name = 'The Expiration',
+            name = 'The Expiration Date',
             text = { "All food Jokers are", "out of expiration date" }
         }
     },

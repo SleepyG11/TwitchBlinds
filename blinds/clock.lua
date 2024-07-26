@@ -16,9 +16,9 @@ local tw_blind = SMODS.Blind {
         min = 40,
         max = 40
     },
-    pos = { x = 0, y = 1 },
+    pos = { x = 0, y = 13 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('8e15ad'),
+    boss_colour = HEX('896665'),
 }
 
 local timeout = TIME_DELAY

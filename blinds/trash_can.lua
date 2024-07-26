@@ -12,9 +12,9 @@ local tw_blind = SMODS.Blind {
         min = 40,
         max = 40
     },
-    pos = { x = 0, y = 1 },
+    pos = { x = 0, y = 2 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('8e15ad'),
+    boss_colour = HEX('dc6a10'),
 }
 
 -- Mechanic injection implemented via lovely

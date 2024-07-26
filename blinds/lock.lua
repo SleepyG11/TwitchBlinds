@@ -12,9 +12,9 @@ local tw_blind = SMODS.Blind {
         min = 40,
         max = 40
     },
-    pos = { x = 0, y = 1 },
+    pos = { x = 0, y = 8 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('8e15ad'),
+    boss_colour = HEX('c0c0c0'),
 }
 
 function tw_blind:set_blind()
@@ -37,6 +37,6 @@ function blind_lock_toggle_eternal_joker(username, index)
         card:juice_up()
     else
         TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
-        1
+            1
     end
 end

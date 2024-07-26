@@ -12,9 +12,9 @@ local tw_blind = SMODS.Blind {
         min = 40,
         max = 40
     },
-    pos = { x = 0, y = 1 },
+    pos = { x = 0, y = 12 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('8e15ad'),
+    boss_colour = HEX('0077e8'),
 }
 
 function tw_blind:set_blind()

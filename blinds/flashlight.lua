@@ -12,9 +12,9 @@ local tw_blind = SMODS.Blind {
         min = 40,
         max = 40
     },
-    pos = { x = 0, y = 1 },
+    pos = { x = 0, y = 3 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('8e15ad'),
+    boss_colour = HEX('e9db00'),
 }
 
 function tw_blind:set_blind()
@@ -36,7 +36,7 @@ function blind_flashlight_toggle_card_flip(username, index)
         card:flip()
     else
         TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
-        1
+            1
     end
 end
 

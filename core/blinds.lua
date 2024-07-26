@@ -19,6 +19,7 @@ local blinds_to_load = {
     'lock',
     'chisel',
     'expiration',
+    'isaac',
 }
 
 function twitch_blinds_init_blinds()

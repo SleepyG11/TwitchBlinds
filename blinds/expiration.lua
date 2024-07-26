@@ -1,13 +1,13 @@
 local FOOL_JOKERS = {
-    ["j_gros_michel"] = true,
-    ["j_egg"] = true,
-    ["j_ice_cream"] = true,
-    ["j_cavendish"] = true,
-    ["j_turtle_bean"] = true,
-    ["j_diet_cola"] = true,
-    ["j_popcorn"] = true,
-    ["j_ramen"] = true,
-    ["j_selzer"] = true,
+    ["Gros Michel"] = true,
+    ["Egg"] = true,
+    ["Ice Cream"] = true,
+    ["Cavendish"] = true,
+    ["Turtle Bean"] = true,
+    ["Diet Cola"] = true,
+    ["Popcorn"] = true,
+    ["Ramen"] = true,
+    ["Seltzer"] = true,
 }
 
 local tw_blind = SMODS.Blind {
@@ -32,7 +32,7 @@ local tw_blind = SMODS.Blind {
 function tw_blind:set_blind()
     local _first_dissolve = nil
     for k, v in ipairs(G.jokers.cards) do
-        if FOOL_JOKERS[G.jokers.cards.ability.name] then
+        if FOOL_JOKERS[v.ability.name] then
             G.GAME.blind:wiggle()
             card_eval_status_text(v, 'extra', nil, nil, nil,
                 { message = G.localization.misc.dictionaly.k_extinct_ex })

@@ -18,6 +18,7 @@ local blinds_to_load = {
     'flashlight',
     'lock',
     'chisel',
+    'expiration',
 }
 
 function twitch_blinds_init_blinds()

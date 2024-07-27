@@ -8,7 +8,6 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "core/blinds.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/chat_commands.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
 
-local test__force_blind = nil
 
 function TwitchBlinds:init()
     self.SETTINGS = twitch_blinds_init_settings()
@@ -119,7 +118,9 @@ function TwitchBlinds:init()
             local blinds_to_choose = TW_BL.BLINDS.get_twitch_blinds_from_game(true)
             if not blinds_to_choose then return select_blind_ref(arg1, arg2) end
             local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
-            local picked_blind = test__force_blind or blinds_to_choose[tonumber(win_variant or '1')]
+            local picked_blind = TW_BL.SETTINGS.current.forced_blind and
+                TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind] or
+                blinds_to_choose[tonumber(win_variant or '1')]
             TW_BL.BLINDS.set_boss_blind(picked_blind)
             TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
             TW_BL.UI.update_voting_process(false)
@@ -142,7 +143,7 @@ function TwitchBlinds:init()
         local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
-        if test__force_blind then
+        if TW_BL.SETTINGS.current.forced_blind then
             if not G.GAME.round_resets.blind_choices.Boss or caused_by_boss_defeate then
                 TW_BL:start_new_twitch_blinds_voting(false)
             end

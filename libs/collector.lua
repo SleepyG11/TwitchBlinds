@@ -105,6 +105,7 @@ function TwitchCollector:connect(channel_name, silent)
 
         self.socket:close()
     end
+    if not channel_name or channel_name == '' then return end
     self.channel_name = channel_name
 
     local selfRef = self
@@ -149,7 +150,7 @@ end
 
 --- Reconnect
 function TwitchCollector:reconnect()
-    if self.channel_name then self:connect(self.channel_name) end
+    if self.channel_name and self.channel_name ~= '' then self:connect(self.channel_name) end
 end
 
 --- Clear score and list of voters

@@ -29,15 +29,20 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('b35216'),
 }
 
-function tw_blind:set_blind()
-    local _first_dissolve = nil
-    for k, v in ipairs(G.jokers.cards) do
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
+    local cards_to_remove = {}
+    local _first_dissolve = false
+    for _, v in ipairs(G.jokers.cards) do
         if FOOL_JOKERS[v.ability.name] then
-            G.GAME.blind:wiggle()
-            card_eval_status_text(v, 'extra', nil, nil, nil,
-                { message = G.localization.misc.dictionaly.k_extinct_ex })
-            v:start_dissolve(nil, _first_dissolve)
-            _first_dissolve = true
+            table.insert(cards_to_remove, v)
         end
+    end
+    for _, v in ipairs(cards_to_remove) do
+        G.GAME.blind:wiggle()
+        v:start_dissolve(nil, _first_dissolve)
+        -- TODO: delay
+        -- card_eval_status_text(v, 'extra', nil, nil, nil,
+        --     { message = G.localization.misc.dictionary.k_extinct_ex })
     end
 end

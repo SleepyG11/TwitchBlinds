@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Voice of God',
-            text = { "To prove your love and", "devotion, I require a sacrifice!" }
+            text = { "To prove your love and devotion", "I require a sacrifice!" }
         }
     },
     dollars = 5,

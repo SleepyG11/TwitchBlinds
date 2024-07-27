@@ -4,7 +4,8 @@ function twitch_blinds_init_settings()
     local SETTINGS = {
         default = {
             blind_frequency = 2,
-            channel_name = 'sleepyg11_',
+            channel_name = '',
+            forced_blind = nil,
         },
         temp = nil,
         current = {},

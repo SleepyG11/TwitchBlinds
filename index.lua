@@ -1,12 +1,12 @@
 --- STEAMODDED HEADER
 --- MOD_NAME: Twitch Blinds
 --- MOD_ID: TwitchBlinds
---- MOD_AUTHOR: [SleepyG11]
---- MOD_DESCRIPTION: Let your Twitch chat decide what new boss will end your run ;)
+--- MOD_AUTHOR: [SleepyG11, Djynasty]
+--- MOD_DESCRIPTION: Let your Twitch chat decide which new boss will end your run ;)
 
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
---- VERSION: 0.1.0
+--- VERSION: 1.0.0-pre
 ----------------------------------------------
 ------------MOD CODE -------------------------
 

@@ -479,6 +479,12 @@ function twitch_blinds_init_ui()
     end
 
     function UI.PARTS.get_settings_tab(_tab)
+        local forcing_labels = { 'None' }
+
+        for i = 1, #TW_BL.BLINDS.regular do
+            table.insert(forcing_labels, TW_BL.BLINDS.regular[i])
+        end
+
         local result = {
             n = G.UIT.ROOT,
             config = { align = "cm", padding = 0.05, colour = G.C.CLEAR, minh = 5, minw = 5 },
@@ -564,6 +570,36 @@ function twitch_blinds_init_ui()
                         }),
                     }
                 },
+                -- {
+                --     n = G.UIT.R,
+                --     config = {
+                --         align = "cm",
+                --         padding = 0.05,
+                --         colour = box_colour,
+                --         r = 0.3,
+                --         minh = 0.2
+                --     },
+                --     nodes = {},
+                -- },
+                -- {
+                --     n = G.UIT.R,
+                --     config = {
+                --         align = "cm",
+                --         padding = 0.05,
+                --         colour = box_colour,
+                --         r = 0.3,
+                --     },
+                --     nodes = {
+                --         create_option_cycle({
+                --             w = 3,
+                --             label = "[DEV] Forced blind",
+                --             scale = 0.8,
+                --             options = forcing_labels,
+                --             opt_callback = 'twbl_settings_change_forced_blind',
+                --             current_option = (TW_BL.SETTINGS.temp.forced_blind or 0) + 1
+                --         }),
+                --     }
+                -- },
                 -- UI.PARTS.create_option_toggle({
                 --     name = "Chat can highlights cards",
                 --     toggle_ref = TW_BL.SETTINGS.temp,
@@ -765,6 +801,10 @@ function twitch_blinds_init_ui()
 
     function G.FUNCS.twbl_settings_change_blind_frequency(args)
         TW_BL.SETTINGS.temp.blind_frequency = args.to_key
+    end
+
+    function G.FUNCS.twbl_settings_change_forced_blind(args)
+        TW_BL.SETTINGS.temp.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
     end
 
     function G.FUNCS.twbl_settings_paste_channel_name(e)

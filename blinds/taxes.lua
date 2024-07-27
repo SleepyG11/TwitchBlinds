@@ -21,7 +21,8 @@ function tw_blind:set_blind()
     G.GAME.blind:wiggle()
     for k, v in ipairs(G.jokers.cards) do
         v:juice_up()
-        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.labels.rental .. '!' })
+        -- TODO: delay
+        -- card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.labels.rental .. '!' })
         v:set_rental(true)
         delay(0.23)
     end

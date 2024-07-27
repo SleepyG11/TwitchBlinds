@@ -21,18 +21,23 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('636c81'),
 }
 
-function tw_blind:set_blind()
-    local _first_dissolve = nil
-    for k, v in ipairs(G.jokers.cards) do
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
+    local cards_to_remove = {}
+    local _first_dissolve = false
+    for _, v in ipairs(G.jokers.cards) do
         if pseudorandom(pseudoseed('twbl_afk')) < G.GAME.probabilities.normal / self.config.extra.odds then
-            G.GAME.blind:wiggle()
-            card_eval_status_text(v, 'extra', nil, nil, nil,
-                { message = G.localization.misc.dictionaly.k_upgrade_ex })
-            v:start_dissolve(nil, _first_dissolve)
-            _first_dissolve = true
-            local card = create_card('Joker', G.jokers, false, nil, nil, nil, 'j_cavendish', nil)
-            card:add_to_deck()
-            G.jokers:emplace(card)
+            table.insert(cards_to_remove, v)
         end
+    end
+    for _, v in ipairs(cards_to_remove) do
+        G.GAME.blind:wiggle()
+        v:start_dissolve(nil, _first_dissolve)
+        -- TODO: make it sync with deletion animation
+        -- card_eval_status_text(v, 'extra', nil, nil, nil,
+        --     { message = G.localization.misc.dictionary.k_upgrade_ex })
+        local card = create_card('Joker', G.jokers, false, nil, nil, nil, 'j_cavendish', nil)
+        card:add_to_deck()
+        G.jokers:emplace(card)
     end
 end

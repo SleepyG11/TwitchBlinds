@@ -34,10 +34,11 @@ function TwitchBlinds:init()
     local needs_reconnect = false
     local reconnect_timeout = 0
 
-    print('Connecting to ' .. TW_BL.SETTINGS.current.channel_name)
-    TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
-
     -- Attach socket events
+
+    function self.CHAT_COMMANDS.collector:onnewconnectionstatus(status)
+        TW_BL.UI.update_voting_status(status)
+    end
 
     function self.CHAT_COMMANDS.collector:ondisconnect()
         -- Request reconnect
@@ -46,13 +47,14 @@ function TwitchBlinds:init()
     end
 
     function self.CHAT_COMMANDS.collector:onvote(username, variant)
-        print("Vote collected: " .. username .. " -> " .. variant)
         TW_BL.UI.update_voting_process(false)
     end
 
     function self.CHAT_COMMANDS.collector:ontoggle(username, index)
         TW_BL:on_toggle_trigger_blinds(username, index)
     end
+
+    TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
 
     -- Overriding
 

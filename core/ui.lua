@@ -656,14 +656,14 @@ function twitch_blinds_init_ui()
                     nodes = {
                         {
                             n = G.UIT.C,
-                            config = { minw = 1.165, align = 'c' },
+                            config = { minw = 1.915, align = 'c' },
                             nodes = {
-                                { n = G.UIT.O, config = { object = DynaText({ string = { "Vote!" }, colours = { G.C.UI.TEXT_LIGHT }, shadow = false, rotate = false, float = true, bump = true, scale = 0.35, spacing = 1, pop_in = 1 }) } },
+                                { n = G.UIT.O, config = { id = 'twbl_voting_status', object = DynaText({ string = { "" }, colours = { G.C.UI.TEXT_LIGHT }, shadow = false, rotate = false, float = true, bump = true, scale = 0.35, spacing = 1, pop_in = 1 }) } },
                             }
                         },
                         {
                             n = G.UIT.C,
-                            config = { minw = 4.5, align = "cm" },
+                            config = { minw = 4.25, align = "cm" },
                             nodes = {
                                 {
                                     n = G.UIT.C,
@@ -673,14 +673,14 @@ function twitch_blinds_init_ui()
                                     }
                                 },
                                 { n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-                                { n = G.UIT.T, config = { text = "-", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_1_blind_name" } },
-                                { n = G.UIT.C, config = { align = "cm", w = 0.2, minw = 0.2 } },
-                                { n = G.UIT.T, config = { text = "0%", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_1_percent" } },
+                                { n = G.UIT.T, config = { text = "-", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_1_blind_name" } },
+                                { n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+                                { n = G.UIT.T, config = { text = "0%", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_1_percent" } },
                             }
                         },
                         {
                             n = G.UIT.C,
-                            config = { minw = 4.5, align = "cm" },
+                            config = { minw = 4.25, align = "cm" },
                             nodes = {
                                 {
                                     n = G.UIT.C,
@@ -690,14 +690,14 @@ function twitch_blinds_init_ui()
                                     }
                                 },
                                 { n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-                                { n = G.UIT.T, config = { text = "-", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_2_blind_name" } },
-                                { n = G.UIT.C, config = { align = "cm", w = 0.2, minw = 0.2 } },
-                                { n = G.UIT.T, config = { text = "0%", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_2_percent" } },
+                                { n = G.UIT.T, config = { text = "-", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_2_blind_name" } },
+                                { n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+                                { n = G.UIT.T, config = { text = "0%", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_2_percent" } },
                             }
                         },
                         {
                             n = G.UIT.C,
-                            config = { minw = 4.5, align = "cm" },
+                            config = { minw = 4.25, align = "cm" },
                             nodes = {
                                 {
                                     n = G.UIT.C,
@@ -707,9 +707,9 @@ function twitch_blinds_init_ui()
                                     }
                                 },
                                 { n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-                                { n = G.UIT.T, config = { text = "-", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_3_blind_name" } },
-                                { n = G.UIT.C, config = { align = "cm", w = 0.2, minw = 0.2 } },
-                                { n = G.UIT.T, config = { text = "0%", scale = 0.35, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_3_percent" } },
+                                { n = G.UIT.T, config = { text = "-", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_3_blind_name" } },
+                                { n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+                                { n = G.UIT.T, config = { text = "0%", scale = 0.3, colour = G.C.UI.TEXT_LIGHT, shadow = false, id = "twbl_vote_3_percent" } },
                             }
                         },
                     }
@@ -809,11 +809,34 @@ function twitch_blinds_init_ui()
         UI.voting_process:recalculate()
     end
 
+    function UI.update_voting_status(status)
+        if not UI.voting_process then return end
+
+        local text = '...'
+        if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
+            text = "Vote!"
+        elseif status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTING then
+            text = "Connecting..."
+        elseif status == TW_BL.CHAT_COMMANDS.collector.STATUS.DISCONNECTED then
+            text = "Disconnected.."
+        else
+            text = "..."
+        end
+
+        local status_element = UI.voting_process:get_UIE_by_ID("twbl_voting_status");
+        if status_element then
+            status_element.config.object.config.string = { text }
+            status_element.config.object:update_text(true)
+            UI.voting_process:recalculate()
+        end
+    end
+
     function UI.draw_voting_process()
         UI.voting_process = UIBox({
             definition = UI.PARTS.create_UIBox_voting_process(),
             config = { align = "cmri", offset = { x = -0.2857, y = -6.1 }, major = G.ROOM_ATTACH, id = "twbl_voting_process" },
         })
+        UI.update_voting_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
     end
 
     --
@@ -821,7 +844,6 @@ function twitch_blinds_init_ui()
     function G.FUNCS.twbl_settings_apply()
         TW_BL.SETTINGS.save()
         if TW_BL.CHAT_COMMANDS.collector.socket then
-            print('Connecting to ' .. TW_BL.SETTINGS.current.channel_name)
             TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
         end
     end

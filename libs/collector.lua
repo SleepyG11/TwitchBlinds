@@ -6,6 +6,8 @@
 ---@field can_collect { [string]: boolean }
 ---@field channel_name string?
 ---@field socket wsclient?
+---@field connection_status integer
+---@field STATUS table<string, integer>
 TwitchCollector = {}
 TwitchCollector.__index = TwitchCollector
 
@@ -48,6 +50,17 @@ function TwitchCollector.new()
         --- Web socket connected to twitch chat
         --- @type table?
         socket = nil,
+
+        --- Connection status
+        --- @type integer
+        connection_status = 0,
+
+        STATUS = {
+            NO_CHANNEL_NAME = -1,
+            DISCONNECTED = 0,
+            CONNECTING = 1,
+            CONNECTED = 2,
+        }
     }
 
     setmetatable(collector, TwitchCollector)
@@ -93,26 +106,48 @@ end
 function TwitchCollector:ondisconnect()
 end
 
+--- Called when connection status is changed
+--- @param status integer New status
+function TwitchCollector:onnewconnectionstatus(status)
+end
+
+function TwitchCollector:set_connection_status(status)
+    if self.connection_status ~= status then
+        self.connection_status = status
+        self:onnewconnectionstatus(status)
+    end
+end
+
 --- Connect to Twitch chat
 --- @param channel_name string Channel name
 --- @param silent boolean? Supress onclose event
 function TwitchCollector:connect(channel_name, silent)
-    if self.socket then
+    local selfRef = self
+
+    if selfRef.socket then
         -- Ignore this event
         if silent then
-            function self.socket:onclose() end
+            function selfRef.socket:onclose() end
         end
 
-        self.socket:close()
+        selfRef.socket:close()
     end
-    if not channel_name or channel_name == '' then return end
-    self.channel_name = channel_name
 
-    local selfRef = self
+    selfRef.channel_name = channel_name
+
+    if not channel_name or channel_name == '' then
+        print('Connecting to [nothing]')
+        return selfRef:set_connection_status(selfRef.STATUS.NO_CHANNEL_NAME)
+    end
+    print('Connecting to ' .. channel_name)
 
     local socket = WebSocket.new("irc-ws.chat.twitch.tv", 80, '/')
 
     function socket:onmessage(message)
+        if string_starts(message, ":justinfan13847!justinfan13847@justinfan13847.tmi.twitch.tv JOIN #") then
+            selfRef:set_connection_status(selfRef.STATUS.CONNECTED)
+            return
+        end
         local display_name = message:match("display%-name=([^;]+)")
         local privmsg_content = message:match("PRIVMSG #" .. channel_name .. " :(.+)")
         if display_name and privmsg_content then
@@ -121,19 +156,21 @@ function TwitchCollector:connect(channel_name, silent)
     end
 
     function socket:onopen()
-        self:send("CAP REQ :twitch.tv/tags twitch.tv/commands")
-        self:send("PASS SCHMOOPIIE")
-        self:send("NICK justinfan13847")
-        self:send("USER justinfan13847 8 * :justinfan13847")
-        self:send("JOIN #" .. channel_name)
+        selfRef:set_connection_status(selfRef.STATUS.CONNECTING)
+        socket:send("CAP REQ :twitch.tv/tags twitch.tv/commands")
+        socket:send("PASS SCHMOOPIIE")
+        socket:send("NICK justinfan13847")
+        socket:send("USER justinfan13847 8 * :justinfan13847")
+        socket:send("JOIN #" .. channel_name)
     end
 
     function socket:onclose(code, reason)
         selfRef:ondisconnect()
-        self.socket = nil
+        selfRef.socket = nil
+        selfRef:set_connection_status(selfRef.STATUS.DISCONNECTED)
     end
 
-    self.socket = socket
+    selfRef.socket = socket
 end
 
 --- Disconnect
@@ -146,11 +183,12 @@ function TwitchCollector:disconnect(silent)
         self.socket:close()
     end
     self.socket = nil
+    self:set_connection_status(self.STATUS.DISCONNECTED)
 end
 
 --- Reconnect
 function TwitchCollector:reconnect()
-    if self.channel_name and self.channel_name ~= '' then self:connect(self.channel_name) end
+    self:connect(self.channel_name, true)
 end
 
 --- Clear score and list of voters

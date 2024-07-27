@@ -4,6 +4,7 @@ function twitch_blinds_init_settings()
     local SETTINGS = {
         default = {
             blind_frequency = 2,
+            pool_type = 1,
             channel_name = '',
             forced_blind = nil,
         },

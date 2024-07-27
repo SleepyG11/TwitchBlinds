@@ -81,7 +81,7 @@ function twitch_blinds_init_blinds()
             end
         end
         local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('twbl_boss_pick'))
-        G.GAME.bosses_used[boss] = G.GAME.bosses_used[boss] + 1
+        G.GAME.bosses_used[boss] = (G.GAME.bosses_used[boss] or 0) + 1
         return boss
     end
 
@@ -179,26 +179,74 @@ function twitch_blinds_init_blinds()
     end
 
     --- Get twitch blinds from game
+    --- @param pool_type integer Generate new list and save if not present
     --- @param generate_if_missing boolean Generate new list and save if not present
     --- @return string[]|nil
-    function BLINDS.get_twitch_blinds_from_game(generate_if_missing)
+    function BLINDS.get_twitch_blinds_from_game(pool_type, generate_if_missing)
         if G.GAME and G.GAME.pool_flags then
             if G.GAME.pool_flags.twitch_blinds then return G.GAME.pool_flags.twitch_blinds end
-            if generate_if_missing then return BLINDS.setup_new_twitch_blinds(false) end
-            -- if generate_if_missing then return BLINDS.setup_new_twitch_blinds(G.GAME.round_resets.ante % 8 == 0) end
+            if generate_if_missing then return BLINDS.setup_new_twitch_blinds(pool_type, false) end
+            -- TODO: final blinds
+            -- if generate_if_missing then return BLINDS.setup_new_twitch_blinds(pool_type, G.GAME.round_resets.ante % 8 == 0) end
         else
             return nil
         end
     end
 
+    --- Get all blinds from game except chat
+    --- @param final_boss boolean
+    --- @param exclude_twitch_blinds boolean
+    --- @return string[]
+    function BLINDS.get_all_blinds(final_boss, exclude_twitch_blinds)
+        local eligible_bosses = {}
+        for k, v in pairs(G.P_BLINDS) do
+            if not v.boss then
+
+            elseif (not v.boss.showdown and (not final_boss or G.GAME.round_resets.ante < 2)) and (v.boss.min <= math.max(1, G.GAME.round_resets.ante)) then
+                eligible_bosses[k] = true
+            elseif v.boss.showdown and final_boss and G.GAME.round_resets.ante >= 2 then
+                eligible_bosses[k] = true
+            end
+        end
+        for k, v in pairs(G.GAME.banned_keys) do
+            if eligible_bosses[k] then eligible_bosses[k] = nil end
+        end
+        eligible_bosses[BLINDS.chat_blind] = nil
+
+        if not exclude_twitch_blinds then
+            for _, k in ipairs((final_boss and BLINDS.final) or BLINDS.regular) do
+                eligible_bosses[k] = true
+            end
+        end
+
+        local result = {}
+        for k, v in pairs(eligible_bosses) do
+            table.insert(result, k)
+        end
+
+        return result
+    end
+
     --- Generate new list of twitch blinds and save it
+    --- @param pool_type integer Generate new list and save if not present
     --- @param final_boss boolean?
     --- @return string[]|nil
-    function BLINDS.setup_new_twitch_blinds(final_boss)
-        local new_list = BLINDS.get_list_of_random_boss_blinds(
-            (final_boss and BLINDS.final) or BLINDS.regular,
-            BLINDS.blinds_to_vote
-        )
+    function BLINDS.setup_new_twitch_blinds(pool_type, final_boss)
+        local pool = (final_boss and BLINDS.final) or BLINDS.regular
+        if pool_type == 1 then
+            -- Twitch Blinds
+            pool = (final_boss and BLINDS.get_all_blinds(final_boss or false, true)) or BLINDS.regular
+            -- TODO: final blinds
+            -- pool = (final_boss and BLINDS.final) or BLINDS.regular
+        elseif pool_type == 2 then
+            -- All other
+            pool = BLINDS.get_all_blinds(final_boss or false, true)
+        elseif pool_type == 3 then
+            -- All
+            pool = BLINDS.get_all_blinds(final_boss or false, false)
+        end
+
+        local new_list = BLINDS.get_list_of_random_boss_blinds(pool, BLINDS.blinds_to_vote)
         local success = BLINDS.set_twitch_blinds_to_game(new_list)
         if success then return new_list end
         return nil

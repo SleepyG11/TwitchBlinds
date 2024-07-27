@@ -561,7 +561,7 @@ function twitch_blinds_init_ui()
                     },
                     nodes = {
                         create_option_cycle({
-                            w = 3,
+                            w = 4,
                             label = "Twitch Blind frequency",
                             scale = 0.8,
                             options = { 'None', 'One after one', 'Every one' },
@@ -570,7 +570,36 @@ function twitch_blinds_init_ui()
                         }),
                     }
                 },
-
+                {
+                    n = G.UIT.R,
+                    config = {
+                        align = "cm",
+                        padding = 0.05,
+                        colour = box_colour,
+                        r = 0.3,
+                        minh = 0.2
+                    },
+                    nodes = {},
+                },
+                {
+                    n = G.UIT.R,
+                    config = {
+                        align = "cm",
+                        padding = 0.05,
+                        colour = box_colour,
+                        r = 0.3,
+                    },
+                    nodes = {
+                        create_option_cycle({
+                            w = 4,
+                            label = "Blinds pool to vote",
+                            scale = 0.8,
+                            options = { 'Twitch Blinds', 'All other', 'All' },
+                            opt_callback = 'twbl_settings_change_pool_type',
+                            current_option = TW_BL.SETTINGS.temp.pool_type
+                        }),
+                    }
+                },
                 -- UI.PARTS.create_option_toggle({
                 --     name = "Chat can highlights cards",
                 --     toggle_ref = TW_BL.SETTINGS.temp,
@@ -756,7 +785,7 @@ function twitch_blinds_init_ui()
     function UI.update_voting_process(with_bosses)
         if not UI.voting_process then return end
 
-        local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(false)
+        local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
         if blinds_to_vote then
             local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
             for i = 1, TW_BL.BLINDS.blinds_to_vote do
@@ -804,6 +833,10 @@ function twitch_blinds_init_ui()
 
     function G.FUNCS.twbl_settings_change_blind_frequency(args)
         TW_BL.SETTINGS.temp.blind_frequency = args.to_key
+    end
+
+    function G.FUNCS.twbl_settings_change_pool_type(args)
+        TW_BL.SETTINGS.temp.pool_type = args.to_key
     end
 
     function G.FUNCS.twbl_settings_change_forced_blind(args)

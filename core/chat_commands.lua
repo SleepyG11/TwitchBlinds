@@ -17,24 +17,22 @@ function twitch_blinds_init_chat_commands()
     end
 
     function CHAT_COMMANDS.get_can_collect_from_game(default_values)
-        local game = G.GAME
         for _, command in ipairs(CHAT_COMMANDS.available_commands) do
             local set_value = nil
             if default_values then set_value = default_values[command] end
-            if game and game.pool_flags and game.pool_flags['twitch_can_collect_' .. command] ~= nil then
-                set_value = game.pool_flags['twitch_can_collect_' .. command]
+            if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags['twitch_can_collect_' .. command] ~= nil then
+                set_value = G.GAME.pool_flags['twitch_can_collect_' .. command]
             end
             CHAT_COMMANDS.collector.can_collect[command] = set_value or false
         end
     end
 
     function CHAT_COMMANDS.get_single_use_from_game(default_values)
-        local game = G.GAME
         for _, command in ipairs(CHAT_COMMANDS.available_commands) do
             local set_value = nil
             if (default_values) then set_value = default_values[command] end
-            if game and game.pool_flags and game.pool_flags['twitch_single_use_' .. command] ~= nil then
-                set_value = game.pool_flags['twitch_single_use_' .. command]
+            if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags['twitch_single_use_' .. command] ~= nil then
+                set_value = G.GAME.pool_flags['twitch_single_use_' .. command]
             end
             CHAT_COMMANDS.collector.single_use[command] = set_value or false
         end

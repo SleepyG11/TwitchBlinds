@@ -59,7 +59,7 @@ function TwitchCollector:process_message(username, message)
     if vote_match then
         if not self.can_collect.vote then return end
         if self.single_use.vote and self.users.vote[username] and self.users.vote[username] > 0 then return end
-        if not table_check(self.vote_variants, vote_match) then return end
+        if not table_contains(self.vote_variants, vote_match) then return end
         self.users.vote[username] = (self.users.vote[username] or 0) + 1
         self.vote_score[vote_match] = (self.vote_score[vote_match] or 0) + 1
         self:onvote(username, vote_match)

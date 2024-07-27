@@ -88,7 +88,6 @@ function TwitchBlinds:init()
         TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, false)
         TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, false)
         TW_BL.CHAT_COMMANDS.collector:reset()
-        TW_BL.CHAT_COMMANDS.collector:disconnect(true)
     end
 
     local love_update_ref = love.update;

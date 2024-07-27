@@ -67,7 +67,7 @@ function TwitchBlinds:init()
             toggle = false,
         })
         TW_BL.CHAT_COMMANDS.get_single_use_from_game({
-            vote = false,
+            vote = true,
             toggle = false,
         })
 

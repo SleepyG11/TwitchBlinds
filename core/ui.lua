@@ -570,42 +570,45 @@ function twitch_blinds_init_ui()
                         }),
                     }
                 },
-                -- {
-                --     n = G.UIT.R,
-                --     config = {
-                --         align = "cm",
-                --         padding = 0.05,
-                --         colour = box_colour,
-                --         r = 0.3,
-                --         minh = 0.2
-                --     },
-                --     nodes = {},
-                -- },
-                -- {
-                --     n = G.UIT.R,
-                --     config = {
-                --         align = "cm",
-                --         padding = 0.05,
-                --         colour = box_colour,
-                --         r = 0.3,
-                --     },
-                --     nodes = {
-                --         create_option_cycle({
-                --             w = 3,
-                --             label = "[DEV] Forced blind",
-                --             scale = 0.8,
-                --             options = forcing_labels,
-                --             opt_callback = 'twbl_settings_change_forced_blind',
-                --             current_option = (TW_BL.SETTINGS.temp.forced_blind or 0) + 1
-                --         }),
-                --     }
-                -- },
+
                 -- UI.PARTS.create_option_toggle({
                 --     name = "Chat can highlights cards",
                 --     toggle_ref = TW_BL.SETTINGS.temp,
                 --     toggle_value = "allow_chat_to_highlight_cards"
                 -- }),
             }
+            if TW_BL.__DEV_MODE then
+                table.insert(result.nodes, {
+                    n = G.UIT.R,
+                    config = {
+                        align = "cm",
+                        padding = 0.05,
+                        colour = box_colour,
+                        r = 0.3,
+                        minh = 0.2
+                    },
+                    nodes = {},
+                })
+                table.insert(result.nodes, {
+                    n = G.UIT.R,
+                    config = {
+                        align = "cm",
+                        padding = 0.05,
+                        colour = box_colour,
+                        r = 0.3,
+                    },
+                    nodes = {
+                        create_option_cycle({
+                            w = 6,
+                            label = "[DEV] Forced blind",
+                            scale = 0.8,
+                            options = forcing_labels,
+                            opt_callback = 'twbl_settings_change_forced_blind',
+                            current_option = (TW_BL.SETTINGS.temp.forced_blind or 0) + 1
+                        }),
+                    }
+                })
+            end
         end
 
         return result

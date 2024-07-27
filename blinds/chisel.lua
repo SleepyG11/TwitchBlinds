@@ -41,7 +41,8 @@ function tw_blind:collection_loc_vars()
     return { vars = { localize('ph_most_played') } }
 end
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     -- Find true most played hand and save it
     local _handname, _played, _order = 'High Card', -1, 100
     for k, v in pairs(G.GAME.hands) do

@@ -17,7 +17,8 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('be35b0'),
 }
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     G.GAME.blind:wiggle()
     play_sound('card1')
     if not G.GAME.used_vouchers['v_magic_trick'] then

@@ -17,13 +17,25 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('d9c200'),
 }
 
-function tw_blind:set_blind()
-    G.GAME.blind:wiggle()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     for k, v in ipairs(G.jokers.cards) do
-        v:juice_up()
-        -- TODO: delay
-        -- card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.labels.rental .. '!' })
-        v:set_rental(true)
-        delay(0.23)
+        G.GAME.blind:wiggle()
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                v:juice_up(0.3, 0.4)
+                v:set_rental(true)
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.3,
+                    blockable = false,
+                    func = function()
+                        return true;
+                    end
+                }))
+                return true
+            end
+        }))
+        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.labels.rental .. '!' })
     end
 end

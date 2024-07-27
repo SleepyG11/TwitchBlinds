@@ -17,7 +17,8 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('8e15ad'),
 }
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     G.GAME.blind:wiggle()
     for k, v in pairs(G.GAME.probabilities) do
         G.GAME.probabilities[k] = v * 3

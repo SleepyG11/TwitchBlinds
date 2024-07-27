@@ -43,7 +43,8 @@ function blind_clock_request_increment_mult(dt)
     end
 end
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     self.mult = 2
     timeout = TIME_DELAY * 2 -- reset + preparation time + animations time
 end

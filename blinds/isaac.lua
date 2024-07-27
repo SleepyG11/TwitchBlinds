@@ -17,7 +17,8 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('d82727'),
 }
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+    if reset then return end
     G.GAME.blind:wiggle()
     local card = create_card('Joker', G.jokers, false, nil, nil, nil, 'j_ceremonial', nil)
     card:set_eternal(true)

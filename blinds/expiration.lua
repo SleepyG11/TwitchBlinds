@@ -32,7 +32,6 @@ local tw_blind = SMODS.Blind {
 function tw_blind:set_blind(reset, silent)
     if reset then return end
     local cards_to_remove = {}
-    local _first_dissolve = false
     for _, v in ipairs(G.jokers.cards) do
         if FOOL_JOKERS[v.ability.name] then
             table.insert(cards_to_remove, v)
@@ -40,9 +39,28 @@ function tw_blind:set_blind(reset, silent)
     end
     for _, v in ipairs(cards_to_remove) do
         G.GAME.blind:wiggle()
-        v:start_dissolve(nil, _first_dissolve)
-        -- TODO: delay
-        -- card_eval_status_text(v, 'extra', nil, nil, nil,
-        --     { message = G.localization.misc.dictionary.k_extinct_ex })
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                play_sound('tarot1')
+                v.T.r = -0.2
+                v:juice_up(0.3, 0.4)
+                v.states.drag.is = true
+                v.children.center.pinch.x = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.3,
+                    blockable = false,
+                    func = function()
+                        G.jokers:remove_card(v)
+                        v:remove()
+                        v = nil
+                        return true;
+                    end
+                }))
+                return true
+            end
+        }))
+        -- TODO: localization
+        card_eval_status_text(v, 'extra', nil, nil, nil, { message = "Tumors!" })
     end
 end

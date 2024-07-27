@@ -17,7 +17,7 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('c0c0c0'),
 }
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', true, true)
 end

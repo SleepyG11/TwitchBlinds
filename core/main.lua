@@ -10,6 +10,7 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
 
 
 function TwitchBlinds:init()
+    self.__DEV_MODE = false
     self.SETTINGS = twitch_blinds_init_settings()
     self.SETTINGS.current_mod_path = SMODS.current_mod.path
     self.SETTINGS:read_from_file()

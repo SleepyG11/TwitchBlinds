@@ -18,13 +18,8 @@ Frequency and blinds to vote can be configured. Boss blinds from other mods work
 ![Balatro_n6xHriLIwR](https://github.com/user-attachments/assets/6006146e-bc06-4291-a1da-8e019e37ad11)
 
 
-
 ## Installation and How to use
 1. Install [Steamodded](https://github.com/Steamopollys/Steamodded) v1.0.0 (alpha)
 2. Place mod in Mods folder
 3. Start game, then in game options open Twitch Blinds settings, insert Twitch channel name OR paste url to Twitch channel (like `https://twitch.tv/your_channel_name`)
 4. Run stream, start a new run and enjoy!
-
-## Twitch commands
-- `vote <variant>` - Vote for next boss blind, once per boss blind
-- `toggle <index>` - Trigger specific boss effect (like select a card), amount of uses depends on effect

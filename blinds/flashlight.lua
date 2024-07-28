@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Flashlight',
-            text = { "All cards face down, chat can flip them", "Single-Use: toggle <card position>" }
+            text = { "All cards face down", "Chat can flip them", "Single-Use: toggle <card position>" }
         }
     },
     dollars = 5,

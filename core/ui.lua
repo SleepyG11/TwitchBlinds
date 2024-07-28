@@ -805,8 +805,21 @@ function twitch_blinds_init_ui()
         end
 
         -- TODO: animate this
-        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.can_collect.vote and -6.1 or -8.1
+        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.can_collect.vote and -6.1 or -16.1
         UI.voting_process:recalculate()
+    end
+
+    function UI.create_vote_notification(username)
+        if not UI.voting_process then return end
+        attention_text({
+            text = username,
+            scale = 0.3,
+            hold = 0.5,
+            backdrop_colour = G.C.MONEY,
+            align = "rc",
+            major = UI.voting_process,
+            offset = { x = 0.15, y = 0 }
+        })
     end
 
     function UI.update_voting_status(status)

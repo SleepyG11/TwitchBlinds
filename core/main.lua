@@ -49,10 +49,13 @@ function TwitchBlinds:init()
     function self.CHAT_COMMANDS.oncommand(command, username, arg1)
         if command == 'vote' then
             TW_BL.UI.update_voting_process(false)
+            TW_BL.UI.create_vote_notification(username)
         elseif command == 'toggle' then
             TW_BL:on_toggle_trigger_blinds(username, arg1)
         elseif command == 'flip' then
             TW_BL:on_flip_trigger_blinds(username)
+        elseif command == 'roll' then
+            TW_BL:on_roll_trigger_blinds(username)
         end
     end
 
@@ -67,10 +70,14 @@ function TwitchBlinds:init()
         TW_BL.CHAT_COMMANDS.get_can_collect_from_game({
             vote = false,
             toggle = false,
+            flip = false,
+            roll = false,
         })
         TW_BL.CHAT_COMMANDS.get_single_use_from_game({
             vote = not TW_BL.__DEV_MODE,
             toggle = false,
+            flip = false,
+            roll = false,
         })
 
         TW_BL.CHAT_COMMANDS.reset()
@@ -232,4 +239,8 @@ end
 
 --- @param username string
 function TwitchBlinds:on_flip_trigger_blinds(username)
+end
+
+function TwitchBlinds:on_roll_trigger_blinds(username)
+    blind_dice_roll(username)
 end

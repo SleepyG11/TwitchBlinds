@@ -20,6 +20,7 @@ local blinds_to_load = {
     'chisel',
     'expiration',
     'isaac',
+    'dice',
 }
 
 function twitch_blinds_init_blinds()

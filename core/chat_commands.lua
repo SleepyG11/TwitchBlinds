@@ -1,7 +1,7 @@
 function twitch_blinds_init_chat_commands()
     local collector = TwitchCollector:new()
     local CHAT_COMMANDS = {
-        available_commands = { 'vote', 'toggle', 'flip' },
+        available_commands = { 'vote', 'toggle', 'flip', 'roll' },
         collector = collector,
         socket = collector.socket,
 
@@ -21,6 +21,13 @@ function twitch_blinds_init_chat_commands()
             if not CHAT_COMMANDS.can_use_command('flip', username) then return end
             CHAT_COMMANDS.increment_command_use('flip', username)
             CHAT_COMMANDS.oncommand('flip', username)
+            return
+        end
+        local roll_match = message == 'roll'
+        if roll_match then
+            if not CHAT_COMMANDS.can_use_command('roll', username) then return end
+            CHAT_COMMANDS.increment_command_use('roll', username)
+            CHAT_COMMANDS.oncommand('roll', username)
             return
         end
         local vote_match = message:match('vote (.+)')

@@ -18,7 +18,7 @@ local tw_blind = SMODS.Blind {
     vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), LOSE_ODDS },
     pos = { x = 0, y = 18 },
     atlas = 'twbl_blind_chips',
-    boss_colour = HEX('00d52c'),
+    boss_colour = HEX('00d400'),
 }
 
 function tw_blind:set_blind()

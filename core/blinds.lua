@@ -21,6 +21,7 @@ local blinds_to_load = {
     'expiration',
     'isaac',
     'dice',
+    'pin',
 }
 
 function twitch_blinds_init_blinds()

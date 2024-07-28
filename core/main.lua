@@ -46,12 +46,14 @@ function TwitchBlinds:init()
         reconnect_timeout = 2;
     end
 
-    function self.CHAT_COMMANDS.collector:onvote(username, variant)
-        TW_BL.UI.update_voting_process(false)
-    end
-
-    function self.CHAT_COMMANDS.collector:ontoggle(username, index)
-        TW_BL:on_toggle_trigger_blinds(username, index)
+    function self.CHAT_COMMANDS.oncommand(command, username, arg1)
+        if command == 'vote' then
+            TW_BL.UI.update_voting_process(false)
+        elseif command == 'toggle' then
+            TW_BL:on_toggle_trigger_blinds(username, arg1)
+        elseif command == 'flip' then
+            TW_BL:on_flip_trigger_blinds(username)
+        end
     end
 
     TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
@@ -67,17 +69,17 @@ function TwitchBlinds:init()
             toggle = false,
         })
         TW_BL.CHAT_COMMANDS.get_single_use_from_game({
-            vote = true,
+            vote = not TW_BL.__DEV_MODE,
             toggle = false,
         })
 
-        TW_BL.CHAT_COMMANDS.collector:reset()
+        TW_BL.CHAT_COMMANDS.reset()
 
         local variants = {}
         for i = 1, TW_BL.BLINDS.blinds_to_vote do
             table.insert(variants, tostring(i))
         end
-        TW_BL.CHAT_COMMANDS.collector.vote_variants = variants
+        TW_BL.CHAT_COMMANDS.vote_variants = variants
 
         TW_BL.UI.draw_voting_process()
         TW_BL.UI.update_voting_process(true)
@@ -89,7 +91,7 @@ function TwitchBlinds:init()
 
         TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, false)
         TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, false)
-        TW_BL.CHAT_COMMANDS.collector:reset()
+        TW_BL.CHAT_COMMANDS.reset()
     end
 
     local love_update_ref = love.update;
@@ -205,13 +207,15 @@ end
 --- @param final_boss boolean
 --- @param force boolean?
 function TwitchBlinds:start_new_twitch_blinds_voting(final_boss, force)
-    if not force and TW_BL.CHAT_COMMANDS.collector.can_collect.vote then return end
+    if not force and TW_BL.CHAT_COMMANDS.can_collect.vote then return end
     final_boss = false -- TODO: final blinds
-    self.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, final_boss)
-    self.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
-    self.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
-    self.CHAT_COMMANDS.collector:reset()
+    TW_BL.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, final_boss)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
+    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
+    TW_BL.CHAT_COMMANDS.reset()
 end
+
+--
 
 --- @param dt number
 function TwitchBlinds:on_update_trigger_blinds(dt)
@@ -224,4 +228,8 @@ function TwitchBlinds:on_toggle_trigger_blinds(username, index)
     blind_chaos_toggle_card(username, index)
     blind_flashlight_toggle_card_flip(username, index)
     blind_lock_toggle_eternal_joker(username, index)
+end
+
+--- @param username string
+function TwitchBlinds:on_flip_trigger_blinds(username)
 end

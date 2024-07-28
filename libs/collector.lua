@@ -14,34 +14,17 @@ TwitchCollector.__index = TwitchCollector
 ---@return TwitchCollector
 function TwitchCollector.new()
     local collector = {
-        --- Collected score
-        --- @type { [string]: number }
-        vote_score = {},
-
-        --- All variant users can vote
-        --- @type string[]
-        vote_variants = {},
-
         --- List of usernames who use commands
         --- @type { [string]: { [string]: number } }
-        users = {
-            vote = {},
-            toggle = {},
-        },
+        users = {},
 
         --- Can user use commands more than one time
         --- @type { [string]: boolean }
-        single_use = {
-            vote = true,
-            toggle = true,
-        },
+        single_use = {},
 
         --- Can collector process commands
         --- @type { [string]: boolean }
-        can_collect = {
-            vote = false,
-            toggle = false,
-        },
+        can_collect = {},
 
         --- Twitch channel name connected to
         --- @type string?
@@ -67,39 +50,10 @@ function TwitchCollector.new()
     return collector;
 end
 
-function TwitchCollector:process_message(username, message)
-    local vote_match = message:match('vote (.+)')
-    if vote_match then
-        if not self.can_collect.vote then return end
-        if self.single_use.vote and self.users.vote[username] and self.users.vote[username] > 0 then return end
-        if not table_contains(self.vote_variants, vote_match) then return end
-        self.users.vote[username] = (self.users.vote[username] or 0) + 1
-        self.vote_score[vote_match] = (self.vote_score[vote_match] or 0) + 1
-        self:onvote(username, vote_match)
-        return
-    end
-    local toggle_match = message:match('toggle (.+)')
-    if toggle_match then
-        if not self.can_collect.toggle then return end
-        if self.single_use.toggle and self.users.toggle[username] and self.users.toggle[username] > 0 then return end
-        local value = tonumber(toggle_match)
-        if not value then return end
-        self.users.toggle[username] = (self.users.toggle[username] or 0) + 1
-        self:ontoggle(username, value)
-        return
-    end
-end
-
---- Called every time when vote for boss blind is collected
+--- Called every time when message is collected
 --- @param username string Twitch username
---- @param variant string Variant selected by user
-function TwitchCollector:onvote(username, variant)
-end
-
---- Called every time when toggle index is collected
---- @param username string Twitch username
---- @param index number Variant selected by user
-function TwitchCollector:ontoggle(username, index)
+--- @param message string Message content
+function TwitchCollector:onmessage(username, message)
 end
 
 --- Called when socket is closed
@@ -151,7 +105,7 @@ function TwitchCollector:connect(channel_name, silent)
         local display_name = message:match("display%-name=([^;]+)")
         local privmsg_content = message:match("PRIVMSG #" .. channel_name .. " :(.+)")
         if display_name and privmsg_content then
-            selfRef:process_message(display_name, privmsg_content:sub(1, -3))
+            selfRef:onmessage(display_name, privmsg_content:sub(1, -3))
         end
     end
 
@@ -189,14 +143,6 @@ end
 --- Reconnect
 function TwitchCollector:reconnect()
     self:connect(self.channel_name, true)
-end
-
---- Clear score and list of voters
-function TwitchCollector:reset()
-    self.vote_score = {}
-    for k, v in pairs(self.users) do
-        self.users[k] = {}
-    end
 end
 
 --- Update socket status. Should be called inside `love.update()`

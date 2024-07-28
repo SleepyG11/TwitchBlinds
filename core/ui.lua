@@ -805,7 +805,7 @@ function twitch_blinds_init_ui()
         end
 
         -- TODO: animate this
-        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.collector.can_collect.vote and -6.1 or -8.1
+        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.can_collect.vote and -6.1 or -8.1
         UI.voting_process:recalculate()
     end
 

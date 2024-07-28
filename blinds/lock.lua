@@ -36,7 +36,6 @@ function blind_lock_toggle_eternal_joker(username, index)
         card:set_eternal(not card.ability.eternal)
         card:juice_up()
     else
-        TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
-            1
+        TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end
 end

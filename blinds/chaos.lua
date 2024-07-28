@@ -44,7 +44,6 @@ function blind_chaos_toggle_card(username, index)
         card:highlight(true)
         G.hand:parse_highlighted()
     else
-        TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
-            1
+        TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end
 end

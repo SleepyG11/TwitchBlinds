@@ -35,8 +35,7 @@ function blind_flashlight_toggle_card_flip(username, index)
         card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
         card:flip()
     else
-        TW_BL.CHAT_COMMANDS.collector.users.toggle[username] = (TW_BL.CHAT_COMMANDS.collector.users.toggle[username] or 1) -
-            1
+        TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end
 end
 

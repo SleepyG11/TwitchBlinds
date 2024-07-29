@@ -13,7 +13,7 @@ local tw_blind = SMODS.Blind {
         max = 999
     },
     pos = { x = 0, y = 0 },
-    config = { extra = { twitch_blind = true, twitch_blind_ignore = true } },
+    config = { tw_bl = { ignore = true } },
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('8e15ad'),
     discovered = true,

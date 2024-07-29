@@ -83,6 +83,7 @@ function twitch_blinds_init_blinds()
             end
         end
         local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('twbl_boss_pick'))
+        assert(boss, 'Not found boss for voting process!')
         G.GAME.bosses_used[boss] = (G.GAME.bosses_used[boss] or 0) + 1
         return boss
     end
@@ -234,8 +235,8 @@ function twitch_blinds_init_blinds()
         end
 
         for k, v in pairs(G.P_BLINDS) do
-            local extra = (v.config and v.config.extra) or {}
-            local is_twitch_blind = extra.twitch_blind or false
+            local extra = (v.config and v.config.tw_bl) or {}
+            local is_twitch_blind = extra.in_pool or false
             if not v.boss then
                 -- Skip no boss blinds
             elseif extra.twitch_blind_ignore then
@@ -249,8 +250,8 @@ function twitch_blinds_init_blinds()
                 local can_appear = false
                 if is_twitch_blind and is_correct_boss_type then
                     -- Add twitch blind if met range requirements
-                    can_appear = ((extra.twitch_blind_min or 0) <= target_ante) and
-                    ((extra.twitch_blind_max or 999) >= target_ante)
+                    can_appear = ((extra.min or 0) <= target_ante) and
+                        ((extra.max or 999) >= target_ante)
                 elseif v.in_pool and (v.ignore_showdown_check or is_correct_boss_type) then
                     -- Evaluate Steamodded behaviour
                     -- I have no choice :(

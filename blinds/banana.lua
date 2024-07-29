@@ -14,7 +14,7 @@ local tw_blind = SMODS.Blind {
         min = 999,
         max = 999
     },
-    config = { extra = { twitch_blind = true, twitch_blind_min = 2, odds = REPLACE_ODDS } },
+    config = { extra = { odds = REPLACE_ODDS }, tw_bl = { in_pool = true, min = 2 } },
     vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), REPLACE_ODDS },
     pos = { x = 0, y = 4 },
     atlas = 'twbl_blind_chips',

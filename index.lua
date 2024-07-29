@@ -6,7 +6,7 @@
 
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
---- VERSION: 1.0.1-pre
+--- VERSION: 1.0.3-pre
 ----------------------------------------------
 ------------MOD CODE -------------------------
 

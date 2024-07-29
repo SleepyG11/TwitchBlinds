@@ -140,25 +140,27 @@ function TwitchBlinds:init()
     local get_new_boss_ref = get_new_boss;
     function get_new_boss(arg1, arg2)
         local is_first_boss = not G.GAME.round_resets.blind_choices.Boss
-        local is_final_boss = G.GAME.round_resets.ante % 8 == 0
         local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
         local result = nil
         local start_voting_process = false
         local force_voting_process = false
+        local voting_ante_offset = 0
 
-        if is_final_boss then
-            -- TODO: final blinds
-            -- Final boss works as usual, for now
-            result = get_new_boss_ref(arg1, arg2)
-        elseif TW_BL.SETTINGS.current.channel_name == '' then
+        if not G.GAME.pool_flags.twitch_chat_blind_antes then
+            -- If no data in save, then assume that we don't see chat at most 1 ante
+            G.GAME.pool_flags.twitch_chat_blind_antes = is_first_boss and 0 or 1
+        end
+
+        if TW_BL.SETTINGS.current.channel_name == '' then
             -- No channel name - no point to start voting
             TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
             result = get_new_boss_ref(arg1, arg2)
         elseif TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind then
             -- Dev mode: set boss
             start_voting_process = true
+            force_voting_process = true
             result = TW_BL.BLINDS.chat_blind
         elseif caused_by_boss_defeate or is_first_boss then
             if TW_BL.SETTINGS.current.blind_frequency == 1 then
@@ -167,8 +169,9 @@ function TwitchBlinds:init()
                 result = get_new_boss_ref(arg1, arg2)
             elseif TW_BL.SETTINGS.current.blind_frequency == 2 then
                 start_voting_process = true
-                if is_first_boss or G.GAME.pool_flags.twitch_last_was_chat then
-                    -- If in this ante previous blind was chat, return vanilla one
+                if is_first_boss or G.GAME.pool_flags.twitch_chat_blind_antes < 1 then
+                    -- If in this ante blind was chat, return vanilla one
+                    voting_ante_offset = 1
                     force_voting_process = is_first_boss
                     result = get_new_boss_ref(arg1, arg2)
                 else
@@ -188,7 +191,7 @@ function TwitchBlinds:init()
             if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
                 -- Can't reroll chat
                 result = TW_BL.BLINDS.chat_blind
-            elseif G.GAME.pool_flags.twitch_last_was_chat then
+            elseif G.GAME.pool_flags.twitch_chat_blind_antes == 0 then
                 -- Can't reroll blind selected by chat
                 -- Subject to change?
                 result = G.GAME.round_resets.blind_choices.Boss
@@ -198,12 +201,14 @@ function TwitchBlinds:init()
             end
         end
 
-        if caused_by_boss_defeate then
-            G.GAME.pool_flags.twitch_last_was_chat = result == TW_BL.BLINDS.chat_blind
+        if is_first_boss or caused_by_boss_defeate then
+            -- Count how many antes ago was chat blind
+            G.GAME.pool_flags.twitch_chat_blind_antes = (result == TW_BL.BLINDS.chat_blind and 0) or
+                (G.GAME.pool_flags.twitch_chat_blind_antes + 1)
         end
 
         if start_voting_process then
-            TW_BL:start_new_twitch_blinds_voting(is_final_boss, force_voting_process)
+            TW_BL:start_new_twitch_blinds_voting(voting_ante_offset, force_voting_process)
         end
         self.UI.update_voting_process(true)
 
@@ -211,12 +216,11 @@ function TwitchBlinds:init()
     end
 end
 
---- @param final_boss boolean
+--- @param ante_offset integer
 --- @param force boolean?
-function TwitchBlinds:start_new_twitch_blinds_voting(final_boss, force)
+function TwitchBlinds:start_new_twitch_blinds_voting(ante_offset, force)
     if not force and TW_BL.CHAT_COMMANDS.can_collect.vote then return end
-    final_boss = false -- TODO: final blinds
-    TW_BL.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, final_boss)
+    TW_BL.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, ante_offset)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
     TW_BL.CHAT_COMMANDS.reset()

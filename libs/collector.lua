@@ -98,6 +98,15 @@ function TwitchCollector:connect(channel_name, silent)
     local socket = WebSocket.new("irc-ws.chat.twitch.tv", 80, '/')
 
     function socket:onmessage(message)
+        if string_starts(message, 'PING') then
+            socket:send('PONG')
+            socket:send("PING")
+            return
+        end
+        if string_starts(message, 'PONG') then
+            selfRef:set_connection_status(selfRef.STATUS.CONNECTED)
+            return
+        end
         if string_starts(message, ":justinfan13847!justinfan13847@justinfan13847.tmi.twitch.tv JOIN #") then
             selfRef:set_connection_status(selfRef.STATUS.CONNECTED)
             return

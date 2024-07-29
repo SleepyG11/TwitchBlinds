@@ -11,10 +11,10 @@ local tw_blind = SMODS.Blind {
     dollars = 5,
     mult = 2,
     boss = {
-        min = 40,
-        max = 40
+        min = 999,
+        max = 999
     },
-    config = { extra = { odds = LOSE_ODDS } },
+    config = { extra = { twitch_blind = true, twitch_blind_min = 2, odds = LOSE_ODDS } },
     vars = { '' .. (G.GAME and G.GAME.probabilities.normal or 1), LOSE_ODDS },
     pos = { x = 0, y = 18 },
     atlas = 'twbl_blind_chips',

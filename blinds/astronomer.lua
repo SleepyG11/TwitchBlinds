@@ -9,9 +9,10 @@ local tw_blind = SMODS.Blind {
     dollars = 5,
     mult = 2,
     boss = {
-        min = 40,
-        max = 40
+        min = 999,
+        max = 999
     },
+    config = { extra = { twitch_blind = true } },
     pos = { x = 0, y = 7 },
     atlas = 'twbl_blind_chips',
     boss_colour = HEX('00d4d4'),

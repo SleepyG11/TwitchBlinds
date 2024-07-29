@@ -122,7 +122,7 @@ function TwitchBlinds:init()
     local get_new_boss_ref = get_new_boss;
     function get_new_boss(arg1, arg2)
         local is_first_boss = not G.GAME.round_resets.blind_choices.Boss
-        local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
+        local caused_by_boss_defeate = (G.GAME.round_resets.blind_states.Small == 'Upcoming' or G.GAME.round_resets.blind_states.Small == 'Hide') and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
 
         local is_overriding = false

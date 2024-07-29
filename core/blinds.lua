@@ -115,17 +115,19 @@ function twitch_blinds_init_blinds()
         return result
     end
 
-    --- Set current boss blind
+    --- Set blind
+    --- @param blind_type 'Small' | 'Big' | 'Boss'
     --- @param blind_name string
-    function BLINDS.set_boss_blind(blind_name)
+    function BLINDS.replace_blind(blind_type, blind_name)
+        local blind_type_lower = string.lower(blind_type)
         stop_use()
         G.CONTROLLER.locks.boss_reroll = true
         G.E_MANAGER:add_event(Event({
             trigger = 'immediate',
             func = function()
                 play_sound('other1')
-                G.blind_select_opts.boss:set_role({ xy_bond = 'Weak' })
-                G.blind_select_opts.boss.alignment.offset.y = 20
+                G.blind_select_opts[blind_type_lower]:set_role({ xy_bond = 'Weak' })
+                G.blind_select_opts[blind_type_lower].alignment.offset.y = 20
                 return true
             end
         }))
@@ -133,14 +135,14 @@ function twitch_blinds_init_blinds()
             trigger = 'after',
             delay = 0.3,
             func = (function()
-                local par = G.blind_select_opts.boss.parent
-                G.GAME.round_resets.blind_choices.Boss = blind_name
-                G.blind_select_opts.boss:remove()
-                G.blind_select_opts.boss = UIBox {
+                local par = G.blind_select_opts[blind_type_lower].parent
+                G.GAME.round_resets.blind_choices[blind_type] = blind_name
+                G.blind_select_opts[blind_type_lower]:remove()
+                G.blind_select_opts[blind_type_lower] = UIBox {
                     T = { par.T.x, 0, 0, 0, },
                     definition =
                     { n = G.UIT.ROOT, config = { align = "cm", colour = G.C.CLEAR }, nodes = {
-                        UIBox_dyn_container({ create_UIBox_blind_choice('Boss') }, false, get_blind_main_colour('Boss'), mix_colours(G.C.BLACK, get_blind_main_colour('Boss'), 0.8))
+                        UIBox_dyn_container({ create_UIBox_blind_choice(blind_type) }, false, get_blind_main_colour(blind_type), mix_colours(G.C.BLACK, get_blind_main_colour(blind_type), 0.8))
                     } },
                     config = { align = "bmi",
                         offset = { x = 0, y = G.ROOM.T.y + 9 },
@@ -148,10 +150,10 @@ function twitch_blinds_init_blinds()
                         xy_bond = 'Weak'
                     }
                 }
-                par.config.object = G.blind_select_opts.boss
+                par.config.object = G.blind_select_opts[blind_type_lower]
                 par.config.object:recalculate()
-                G.blind_select_opts.boss.parent = par
-                G.blind_select_opts.boss.alignment.offset.y = 0
+                G.blind_select_opts[blind_type_lower].parent = par
+                G.blind_select_opts[blind_type_lower].alignment.offset.y = 0
 
                 G.E_MANAGER:add_event(Event({
                     blocking = false,

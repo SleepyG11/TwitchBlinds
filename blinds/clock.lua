@@ -7,7 +7,7 @@ local tw_blind = SMODS.Blind {
     key = register_twitch_blind('clock', false),
     loc_txt = {
         ['en-us'] = {
-            name = 'The Clock',
+            name = 'The Hourglass',
             text = { "Hurry up!" }
         }
     },
@@ -37,11 +37,15 @@ function blind_clock_request_increment_mult(dt)
     if timeout <= 0 then
         timeout = timeout + TIME_DELAY
         if G.GAME and G.GAME.blind and G.GAME.blind.name == get_twitch_blind_key('clock') and G.GAME.round_resets.blind_states.Boss == 'Current' then
-            -- TODO: need to fix a problem with no chips saving
-            G.GAME.blind.chips = blind_clock_increment_chips(G.GAME.blind.chips,
-                get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling)
-            G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-            G.GAME.blind:set_text()
+            if type(G.GAME.blind.chips) == "table" then
+                -- TODO: Talisman support
+            else
+                -- TODO: need to fix a problem with no chips saving
+                G.GAME.blind.chips = blind_clock_increment_chips(G.GAME.blind.chips,
+                    get_blind_amount(G.GAME.round_resets.ante) * G.GAME.starting_params.ante_scaling)
+                G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                G.GAME.blind:set_text()
+            end
         end
     end
 end

@@ -119,29 +119,13 @@ function TwitchBlinds:init()
         TW_BL:on_update_trigger_blinds(dt)
     end
 
-    local select_blind_ref = G.FUNCS.select_blind
-    function G.FUNCS.select_blind(arg1, arg2)
-        -- Replace with blind selected by chat (or use first if no votes)
-        if G.GAME.blind_on_deck == 'Boss' and G.GAME.round_resets.blind_choices.Boss and G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
-            local blinds_to_choose = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
-            if not blinds_to_choose then return select_blind_ref(arg1, arg2) end
-            local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
-            local picked_blind = (TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind and
-                    TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]) or
-                blinds_to_choose[tonumber(win_variant or '1')]
-            TW_BL.BLINDS.set_boss_blind(picked_blind)
-            TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
-            TW_BL.UI.update_voting_process(false)
-        else
-            return select_blind_ref(arg1, arg2)
-        end
-    end
-
     local get_new_boss_ref = get_new_boss;
     function get_new_boss(arg1, arg2)
         local is_first_boss = not G.GAME.round_resets.blind_choices.Boss
         local caused_by_boss_defeate = G.GAME.round_resets.blind_states.Small == 'Upcoming' and
             G.GAME.round_resets.blind_states.Big == 'Upcoming' and G.GAME.round_resets.blind_states.Boss == 'Upcoming'
+
+        local is_overriding = false
 
         local result = nil
         local start_voting_process = false
@@ -151,6 +135,15 @@ function TwitchBlinds:init()
         if not G.GAME.pool_flags.twitch_chat_blind_antes then
             -- If no data in save, then assume that we don't see chat at most 1 ante
             G.GAME.pool_flags.twitch_chat_blind_antes = is_first_boss and 0 or 1
+        end
+
+        if G.GAME.round_resets.blind_choices.Small == TW_BL.BLINDS.chat_blind then
+            is_overriding = true
+            G.GAME.round_resets.blind_choices.Small = get_new_boss_ref(arg1, arg2)
+        end
+        if G.GAME.round_resets.blind_choices.Big == TW_BL.BLINDS.chat_blind then
+            is_overriding = true
+            G.GAME.round_resets.blind_choices.Big = get_new_boss_ref(arg1, arg2)
         end
 
         if TW_BL.SETTINGS.current.channel_name == '' then
@@ -207,12 +200,35 @@ function TwitchBlinds:init()
                 (G.GAME.pool_flags.twitch_chat_blind_antes + 1)
         end
 
-        if start_voting_process then
+        if start_voting_process and not is_overriding then
             TW_BL:start_new_twitch_blinds_voting(voting_ante_offset, force_voting_process)
         end
         self.UI.update_voting_process(true)
 
         return result
+    end
+
+    local select_blind_ref = G.FUNCS.select_blind
+    function G.FUNCS.select_blind(arg1, arg2)
+        -- Replace with blind selected by chat (or use first if no votes)
+        if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] == TW_BL.BLINDS.chat_blind then
+            if G.GAME.blind_on_deck ~= 'Boss' then
+                -- If somehow chat is in not boss position, then insert random boss here
+                TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
+                return
+            end
+            local blinds_to_choose = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
+            if not blinds_to_choose then return select_blind_ref(arg1, arg2) end
+            local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
+            local picked_blind = (TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind and
+                    TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]) or
+                blinds_to_choose[tonumber(win_variant or '1')]
+            TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
+            TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
+            TW_BL.UI.update_voting_process(false)
+        else
+            return select_blind_ref(arg1, arg2)
+        end
     end
 end
 

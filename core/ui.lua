@@ -718,6 +718,16 @@ function twitch_blinds_init_ui()
         }
     end
 
+    function UI.PARTS.get_menu_settings_button()
+        return UIBox_button({
+            button = 'twbl_settings_open',
+            label = { 'Twitch Blinds' },
+            colour = HEX("982fb5"),
+            minw = 5,
+            focus_args = { snap_to = true }
+        })
+    end
+
     --
 
     function UI.open_settings()
@@ -746,16 +756,6 @@ function twitch_blinds_init_ui()
         })
         G.FUNCS.overlay_menu({
             definition = t,
-        })
-    end
-
-    function UI.get_menu_settings_button()
-        return UIBox_button({
-            button = 'twbl_settings_open',
-            label = { 'Twitch Blinds' },
-            colour = HEX("982fb5"),
-            minw = 5,
-            focus_args = { snap_to = true }
         })
     end
 
@@ -897,6 +897,10 @@ function twitch_blinds_init_ui()
 
         G.FUNCS.text_input_key({ key = 'return' })
     end
+
+    TW_BL.EVENTS.add_listener('new_connection_status', 'ui_update_status', function(status, channel_name)
+        UI.update_voting_status(status)
+    end)
 
     return UI
 end

@@ -31,7 +31,8 @@ function tw_blind:defeat()
     TW_BL.CHAT_COMMANDS.toggle_single_use('roll', false, true)
 end
 
-function blind_dice_roll(username)
+TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('dice'), function(command, username)
+    if command ~= 'roll' then return end
     if G.GAME.blind.name ~= get_twitch_blind_key('dice') then return end
     local color = G.C.MONEY
     if pseudorandom(pseudoseed('twbl_dice')) < G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds then
@@ -53,4 +54,4 @@ function blind_dice_roll(username)
             offset = { x = 0, y = -0.15 }
         })
     end
-end
+end)

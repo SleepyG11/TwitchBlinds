@@ -3,61 +3,23 @@ local nativefs = require("nativefs")
 TwitchBlinds = Object:extend()
 TW_BL = TwitchBlinds
 
+assert(load(nativefs.read(SMODS.current_mod.path .. "core/events.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/settings.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/blinds.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/chat_commands.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
 
-
 function TwitchBlinds:init()
-    self.__DEV_MODE = false
-    self.SETTINGS = twitch_blinds_init_settings()
-    self.SETTINGS.current_mod_path = SMODS.current_mod.path
+    self.EVENTS = twitch_blinds_init_events()
+
+    self.SETTINGS = twitch_blinds_init_settings(SMODS.current_mod.path)
     self.SETTINGS:read_from_file()
 
-    self.ATLASES = {
-        blind_chips = SMODS.Atlas {
-            key = 'twbl_blind_chips',
-            px = 34,
-            py = 34,
-            path = 'BlindChips.png',
-            atlas_table = 'ANIMATION_ATLAS',
-            frames = 21,
-        }
-    }
+    self.__DEV_MODE = self.SETTINGS.current.dev_mode
+
+    self.UI = twitch_blinds_init_ui()
     self.BLINDS = twitch_blinds_init_blinds()
     self.CHAT_COMMANDS = twitch_blinds_init_chat_commands()
-    self.UI = twitch_blinds_init_ui()
-
-    -- Timeouts
-
-    local needs_reconnect = false
-    local reconnect_timeout = 0
-
-    -- Attach socket events
-
-    function self.CHAT_COMMANDS.collector:onnewconnectionstatus(status)
-        TW_BL.UI.update_voting_status(status)
-    end
-
-    function self.CHAT_COMMANDS.collector:ondisconnect()
-        -- Request reconnect
-        needs_reconnect = true
-        reconnect_timeout = 2;
-    end
-
-    function self.CHAT_COMMANDS.oncommand(command, username, arg1)
-        if command == 'vote' then
-            TW_BL.UI.update_voting_process(false)
-            TW_BL.UI.create_vote_notification(username)
-        elseif command == 'toggle' then
-            TW_BL:on_toggle_trigger_blinds(username, arg1)
-        elseif command == 'flip' then
-            TW_BL:on_flip_trigger_blinds(username)
-        elseif command == 'roll' then
-            TW_BL:on_roll_trigger_blinds(username)
-        end
-    end
 
     TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
 
@@ -104,19 +66,7 @@ function TwitchBlinds:init()
     local love_update_ref = love.update;
     function love.update(dt)
         love_update_ref(dt)
-
-        if reconnect_timeout >= 0 then
-            reconnect_timeout = reconnect_timeout - dt
-        else
-            if needs_reconnect then
-                needs_reconnect = false
-                self.CHAT_COMMANDS.collector:reconnect()
-            end
-        end
-
-        self.CHAT_COMMANDS.collector:update()
-
-        TW_BL:on_update_trigger_blinds(dt)
+        self.EVENTS.emit('game_update', dt)
     end
 
     local get_new_boss_ref = get_new_boss;
@@ -201,8 +151,14 @@ function TwitchBlinds:init()
         end
 
         if start_voting_process and not is_overriding then
-            TW_BL:start_new_twitch_blinds_voting(voting_ante_offset, force_voting_process)
+            if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
+                TW_BL.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, voting_ante_offset)
+                TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
+                TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
+                TW_BL.CHAT_COMMANDS.reset()
+            end
         end
+
         self.UI.update_voting_process(true)
 
         return result
@@ -230,37 +186,4 @@ function TwitchBlinds:init()
             return select_blind_ref(arg1, arg2)
         end
     end
-end
-
---- @param ante_offset integer
---- @param force boolean?
-function TwitchBlinds:start_new_twitch_blinds_voting(ante_offset, force)
-    if not force and TW_BL.CHAT_COMMANDS.can_collect.vote then return end
-    TW_BL.BLINDS.setup_new_twitch_blinds(self.SETTINGS.current.pool_type, ante_offset)
-    TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
-    TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
-    TW_BL.CHAT_COMMANDS.reset()
-end
-
---
-
---- @param dt number
-function TwitchBlinds:on_update_trigger_blinds(dt)
-    blind_clock_request_increment_mult(dt)
-end
-
---- @param username string
---- @param index number
-function TwitchBlinds:on_toggle_trigger_blinds(username, index)
-    blind_chaos_toggle_card(username, index)
-    blind_flashlight_toggle_card_flip(username, index)
-    blind_lock_toggle_eternal_joker(username, index)
-end
-
---- @param username string
-function TwitchBlinds:on_flip_trigger_blinds(username)
-end
-
-function TwitchBlinds:on_roll_trigger_blinds(username)
-    blind_dice_roll(username)
 end

@@ -1,6 +1,6 @@
 local nativefs = require("nativefs")
 
-function twitch_blinds_init_settings()
+function twitch_blinds_init_settings(current_mod_path)
     local SETTINGS = {
         default = {
             blind_frequency = 2,
@@ -11,7 +11,7 @@ function twitch_blinds_init_settings()
         temp = nil,
         current = {},
 
-        current_mod_path = nil
+        current_mod_path = current_mod_path
     }
 
     function SETTINGS.write_to_file()

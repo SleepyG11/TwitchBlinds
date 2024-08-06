@@ -28,7 +28,8 @@ function tw_blind:defeat()
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
 end
 
-function blind_lock_toggle_eternal_joker(username, index)
+TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('lock'), function(command, username, index)
+    if command ~= 'toggle' then return end
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key('lock') then return end
     if G.jokers and G.jokers.cards and G.jokers.cards[index] then
         G.GAME.blind:wiggle()
@@ -39,4 +40,4 @@ function blind_lock_toggle_eternal_joker(username, index)
     else
         TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end
-end
+end)

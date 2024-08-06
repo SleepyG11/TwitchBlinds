@@ -3,7 +3,7 @@ local tw_blind = SMODS.Blind {
     loc_txt = {
         ['en-us'] = {
             name = 'The Flashlight',
-            text = { "All cards face down", "Chat can flip them", "Single-Use: toggle <card position>" }
+            text = { "All cards are face down", "Chat can flip them", "Single-Use: toggle <card position>" }
         }
     },
     dollars = 5,
@@ -28,7 +28,8 @@ function tw_blind:defeat()
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
 end
 
-function blind_flashlight_toggle_card_flip(username, index)
+TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('flashlight'), function(command, username, index)
+    if command ~= 'toggle' then return end
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key('flashlight') then return end
     if G.hand and G.hand.cards and G.hand.cards[index] then
         G.GAME.blind:wiggle()
@@ -38,7 +39,7 @@ function blind_flashlight_toggle_card_flip(username, index)
     else
         TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end
-end
+end)
 
 function tw_blind:stay_flipped()
     return true

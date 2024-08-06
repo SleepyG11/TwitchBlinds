@@ -13,6 +13,9 @@ function twitch_blinds_init_chat_commands()
         vote_score = {},
     }
 
+    local needs_reconnect = false
+    local reconnect_timeout = 0
+
     --
 
     function CHAT_COMMANDS.process_message(username, message)
@@ -20,15 +23,13 @@ function twitch_blinds_init_chat_commands()
         if flip_match then
             if not CHAT_COMMANDS.can_use_command('flip', username) then return end
             CHAT_COMMANDS.increment_command_use('flip', username)
-            CHAT_COMMANDS.oncommand('flip', username)
-            return
+            return TW_BL.EVENTS.emit('twitch_command', 'flip', username)
         end
         local roll_match = message == 'roll'
         if roll_match then
             if not CHAT_COMMANDS.can_use_command('roll', username) then return end
             CHAT_COMMANDS.increment_command_use('roll', username)
-            CHAT_COMMANDS.oncommand('roll', username)
-            return
+            return TW_BL.EVENTS.emit('twitch_command', 'roll', username)
         end
         local vote_match = message:match('vote (.+)')
         if vote_match then
@@ -36,8 +37,7 @@ function twitch_blinds_init_chat_commands()
             if not table_contains(CHAT_COMMANDS.vote_variants, vote_match) then return end
             CHAT_COMMANDS.increment_command_use('vote', username)
             CHAT_COMMANDS.vote_score[vote_match] = (CHAT_COMMANDS.vote_score[vote_match] or 0) + 1
-            CHAT_COMMANDS.oncommand('vote', username, vote_match)
-            return
+            return TW_BL.EVENTS.emit('twitch_command', 'vote', username, vote_match)
         end
         local toggle_match = message:match('toggle (.+)')
         if toggle_match then
@@ -45,8 +45,7 @@ function twitch_blinds_init_chat_commands()
             local value = tonumber(toggle_match)
             if not value then return end
             CHAT_COMMANDS.increment_command_use('toggle', username)
-            CHAT_COMMANDS.oncommand('toggle', username, value)
-            return
+            return TW_BL.EVENTS.emit('twitch_command', 'toggle', username, value)
         end
     end
 
@@ -77,22 +76,12 @@ function twitch_blinds_init_chat_commands()
         CHAT_COMMANDS.users[command][username] = math.max((CHAT_COMMANDS.users[command][username] or 1) - 1, 0)
     end
 
-    --- Called every time when command is collected
-    --- @param command string Command
-    --- @param username string Twitch username
-    --- @param ... any Arguments (specific for each command)
-    function CHAT_COMMANDS.oncommand(command, username, ...) end
-
     --- Reset vote score and command uses
     function CHAT_COMMANDS.reset()
         CHAT_COMMANDS.vote_score = {}
         for k, v in pairs(CHAT_COMMANDS.users) do
             CHAT_COMMANDS.users[k] = {}
         end
-    end
-
-    function collector:onmessage(username, message)
-        CHAT_COMMANDS.process_message(username, message)
     end
 
     --
@@ -189,6 +178,40 @@ function twitch_blinds_init_chat_commands()
 
         return result
     end
+
+    --
+
+    function collector:onmessage(username, message)
+        CHAT_COMMANDS.process_message(username, message)
+    end
+
+    function collector:onnewconnectionstatus(status)
+        TW_BL.EVENTS.emit('new_connection_status', status, collector.channel_name)
+    end
+
+    function collector:ondisconnect()
+        -- Request reconnect
+        needs_reconnect = true
+        reconnect_timeout = 2;
+    end
+
+    TW_BL.EVENTS.add_listener('game_update', 'chat_commands_init', function(dt)
+        if reconnect_timeout >= 0 then
+            reconnect_timeout = reconnect_timeout - dt
+        else
+            if needs_reconnect then
+                needs_reconnect = false
+                self.CHAT_COMMANDS.collector:reconnect()
+            end
+        end
+        CHAT_COMMANDS.collector:update()
+    end)
+
+    TW_BL.EVENTS.add_listener('twitch_command', 'chat_commands_init', function(command, username, variant)
+        if command ~= 'vote' then return end
+        TW_BL.UI.update_voting_process(false)
+        TW_BL.UI.create_vote_notification(username)
+    end)
 
     return CHAT_COMMANDS;
 end

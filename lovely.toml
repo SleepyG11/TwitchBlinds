@@ -38,5 +38,5 @@ times = 1
 target = "functions/UI_definitions.lua"
 pattern = "local t = create_UIBox_generic_options({ contents = {"
 position = "after"
-payload = "TW_BL.UI.get_menu_settings_button(),"
+payload = "TW_BL.UI.PARTS.get_menu_settings_button(),"
 match_indent = true

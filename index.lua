@@ -4,9 +4,12 @@
 --- MOD_AUTHOR: [SleepyG11, Djynasty]
 --- MOD_DESCRIPTION: Let your Twitch chat decide which new boss will end your run ;)
 
+--- PRIORITY: -1
+--- BADGE_COLOR: 8E15AD
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
---- VERSION: 1.0.4-pre
+--- VERSION: 1.0.5-pre
+--- LOADER_VERSION_GEQ: 1.0.0
 ----------------------------------------------
 ------------MOD CODE -------------------------
 

@@ -37,6 +37,15 @@ function twitch_blinds_init_blinds()
         chat_blind = nil,
         --- @type number
         blinds_to_vote = 3,
+
+        ATLAS = SMODS.Atlas {
+            key = 'twbl_blind_chips',
+            px = 34,
+            py = 34,
+            path = 'BlindChips.png',
+            atlas_table = 'ANIMATION_ATLAS',
+            frames = 21,
+        }
     }
 
     function register_twitch_blind(blind_name, final_boss)

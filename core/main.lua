@@ -52,6 +52,7 @@ function TwitchBlinds:init()
 
         TW_BL.UI.draw_voting_process()
         TW_BL.UI.update_voting_process(true)
+        TW_BL.UI.update_voting_visibility()
     end
 
     local main_menu_ref = Game.main_menu
@@ -160,6 +161,7 @@ function TwitchBlinds:init()
         end
 
         self.UI.update_voting_process(true)
+        TW_BL.UI.update_voting_visibility()
 
         return result
     end
@@ -182,6 +184,7 @@ function TwitchBlinds:init()
             TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
             TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
             TW_BL.UI.update_voting_process(false)
+            TW_BL.UI.update_voting_visibility()
         else
             return select_blind_ref(arg1, arg2)
         end

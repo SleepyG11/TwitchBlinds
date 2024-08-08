@@ -803,10 +803,20 @@ function twitch_blinds_init_ui()
                 end
             end
         end
-
-        -- TODO: animate this
-        UI.voting_process.config.offset.y = TW_BL.CHAT_COMMANDS.can_collect.vote and -6.1 or -16.1
         UI.voting_process:recalculate()
+    end
+
+    function UI.update_voting_visibility()
+        if not UI.voting_process then return end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'ease',
+            blockable = false,
+            ref_table = UI.voting_process.config.offset,
+            ref_value = "y",
+            ease_to = TW_BL.CHAT_COMMANDS.can_collect.vote and -6.1 or -12.2,
+            delay = 1,
+            func = (function(t) return t end)
+        }))
     end
 
     function UI.create_vote_notification(username)
@@ -847,7 +857,7 @@ function twitch_blinds_init_ui()
     function UI.draw_voting_process()
         UI.voting_process = UIBox({
             definition = UI.PARTS.create_UIBox_voting_process(),
-            config = { align = "cmri", offset = { x = -0.2857, y = -6.1 }, major = G.ROOM_ATTACH, id = "twbl_voting_process" },
+            config = { align = "cmri", offset = { x = -0.2857, y = -12.2 }, major = G.ROOM_ATTACH, id = "twbl_voting_process" },
         })
         UI.update_voting_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
     end

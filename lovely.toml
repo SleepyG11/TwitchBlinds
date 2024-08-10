@@ -40,3 +40,18 @@ pattern = "local t = create_UIBox_generic_options({ contents = {"
 position = "after"
 payload = "TW_BL.UI.PARTS.get_menu_settings_button(),"
 match_indent = true
+
+# The Greed - No shop
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = 'function Game:update_shop(dt)'
+position = "after"
+payload = """
+if G.GAME.pool_flags.twitch_no_shop then
+  G.GAME.pool_flags.twitch_no_shop = nil
+  return Game:update_blind_select(dt)
+end
+"""
+match_indent = true
+overwrite = false

@@ -1,8 +1,8 @@
 local tw_blind = SMODS.Blind {
-    key = register_twitch_blind('astronomer', false),
+    key = register_twitch_blind('moon', false),
     loc_txt = {
         ['en-us'] = {
-            name = 'The Astronomer',
+            name = 'The Moon',
             text = { "Redeems Planet Merchant", "and Planet Tycoon" }
         }
     },

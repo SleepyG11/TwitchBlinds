@@ -6,8 +6,8 @@ local blinds_to_load = {
     'vaporation',
     'trash_can',
     'banana',
-    'astronomer',
-    'magician',
+    'moon',
+    'sparkle',
     -- '777',
     -- 'end',
     'jimbo',
@@ -22,6 +22,7 @@ local blinds_to_load = {
     'isaac',
     'dice',
     'pin',
+    'greed',
 }
 
 function twitch_blinds_init_blinds()

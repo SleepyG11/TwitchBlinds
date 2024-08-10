@@ -32,11 +32,16 @@ TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('lock'), functi
     if command ~= 'toggle' then return end
     if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key('lock') then return end
     if G.jokers and G.jokers.cards and G.jokers.cards[index] then
-        G.GAME.blind:wiggle()
         local card = G.jokers.cards[index]
-        card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
-        card:set_eternal(not card.ability.eternal)
-        card:juice_up()
+        local initial_value = card.ability.eternal;
+        card:set_eternal(not initial_value)
+        if card.ability.eternal ~= initial_value then
+            G.GAME.blind:wiggle()
+            card_eval_status_text(card, 'extra', nil, nil, nil, { message = username })
+            card:juice_up()
+        else
+            TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
+        end
     else
         TW_BL.CHAT_COMMANDS.decrement_command_use('toggle', username)
     end

@@ -1,10 +1,10 @@
 local REPLACE_ODDS = 1000
 
 local tw_blind = SMODS.Blind {
-    key = register_twitch_blind('afk', false),
+    key = register_twitch_blind('blank', false),
     loc_txt = {
         ['en-us'] = {
-            name = 'The AFK',
+            name = 'The Blank',
             text = { "Does nothing?" }
         }
     },
@@ -25,7 +25,7 @@ function tw_blind:set_blind(reset, silent)
     if reset then return end
     local cards_to_remove = {}
     for _, v in ipairs(G.jokers.cards) do
-        if pseudorandom(pseudoseed('twbl_afk')) < G.GAME.probabilities.normal / self.config.extra.odds then
+        if pseudorandom(pseudoseed('twbl_blank')) < G.GAME.probabilities.normal / self.config.extra.odds then
             table.insert(cards_to_remove, v)
         end
     end

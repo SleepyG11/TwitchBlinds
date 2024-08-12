@@ -6,7 +6,7 @@ local tw_blind = SMODS.Blind {
             text = { "No shop", "after this blind" }
         }
     },
-    dollars = 7,
+    dollars = 8,
     mult = 2,
     boss = {
         min = 999,

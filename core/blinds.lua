@@ -1,7 +1,7 @@
 local nativefs = require("nativefs")
 
 local blinds_to_load = {
-    'afk',
+    'blank',
     'taxes',
     'vaporation',
     'trash_can',
@@ -20,7 +20,7 @@ local blinds_to_load = {
     'chisel',
     'expiration',
     'isaac',
-    'dice',
+    -- 'dice',
     'pin',
     'greed',
 }
@@ -93,7 +93,8 @@ function twitch_blinds_init_blinds()
             end
         end
         local _, boss = pseudorandom_element(eligible_bosses, pseudoseed('twbl_boss_pick'))
-        assert(boss, 'Not found boss for voting process!')
+        -- If not bosses in pool, return blank
+        if not boss then return get_twitch_blind_key('blank') end
         G.GAME.bosses_used[boss] = (G.GAME.bosses_used[boss] or 0) + 1
         return boss
     end

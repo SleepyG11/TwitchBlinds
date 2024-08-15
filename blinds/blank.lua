@@ -2,12 +2,6 @@ local REPLACE_ODDS = 1000
 
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('blank', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Blank',
-            text = { "Does nothing?" }
-        }
-    },
     dollars = 0,
     mult = 0,
     boss = {
@@ -55,6 +49,6 @@ function tw_blind:set_blind(reset, silent)
                 return true
             end
         }))
-        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_upgrade_ex })
+        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_banana_qu })
     end
 end

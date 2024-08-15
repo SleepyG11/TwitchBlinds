@@ -8,8 +8,6 @@ local blinds_to_load = {
     'banana',
     'moon',
     'sparkle',
-    -- '777',
-    -- 'end',
     'jimbo',
     'precision',
     'clock',
@@ -20,7 +18,6 @@ local blinds_to_load = {
     'chisel',
     'expiration',
     'isaac',
-    -- 'dice',
     'pin',
     'greed',
 }

@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('chaos', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Chaos',
-            text = { "Chat can (de)select cards", "Multi-Use: toggle <card position>" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -21,11 +15,20 @@ local tw_blind = SMODS.Blind {
 function tw_blind:set_blind()
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
+    TW_BL.UI.set_panel('blind_action_toggle', true, true, {
+        "dictionary",
+        "k_twbl_interact_ex",
+        "twbl_position_singular",
+        "Card",
+        "dictionary",
+        "k_twbl_panel_toggle_chaos"
+    })
 end
 
 function tw_blind:defeat()
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
+    TW_BL.UI.remove_panel('blind_action_toggle', true)
 end
 
 TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('chaos'), function(command, username, index)

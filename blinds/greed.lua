@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('greed', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Greed',
-            text = { "No shop", "after this blind" }
-        }
-    },
     dollars = 8,
     mult = 2,
     boss = {

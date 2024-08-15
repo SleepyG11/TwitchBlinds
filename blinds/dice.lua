@@ -2,12 +2,6 @@ local LOSE_ODDS = 6
 
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('dice', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Dice',
-            text = { "Chat can roll to gain 1$", "#1# in #2# chance to lose 6$", "Single-Use: roll" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('chisel', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Chisel',
-            text = { "First #1#", "does not score" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

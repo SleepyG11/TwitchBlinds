@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('lock', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Lock',
-            text = { "Chat can toggle eternal Jokers", "Single-Use: toggle <joker position>" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -21,6 +15,14 @@ local tw_blind = SMODS.Blind {
 function tw_blind:set_blind(reset, silent)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', true, true)
+    TW_BL.UI.set_panel('blind_action_toggle', true, true, {
+        "dictionary",
+        "k_twbl_lock_ex",
+        "twbl_position_singular",
+        "Joker",
+        "dictionary",
+        "k_twbl_panel_toggle_lock"
+    })
 end
 
 function tw_blind:defeat()

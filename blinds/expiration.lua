@@ -12,12 +12,6 @@ local FOOL_JOKERS = {
 
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('expiration', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Expiration Date',
-            text = { "All food Jokers are", "out of expiration date" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -62,6 +56,6 @@ function tw_blind:set_blind(reset, silent)
             end
         }))
         -- TODO: localization
-        card_eval_status_text(v, 'extra', nil, nil, nil, { message = "Tumors!" })
+        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_tumors_ex })
     end
 end

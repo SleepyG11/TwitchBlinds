@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('precision', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Precision',
-            text = { "Must discard 5 cards" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

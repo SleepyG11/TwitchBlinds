@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('vaporation', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Vaporation',
-            text = { "Current Jokers", "became Perishable" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

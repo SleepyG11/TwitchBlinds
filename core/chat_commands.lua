@@ -209,8 +209,8 @@ function twitch_blinds_init_chat_commands()
 
     TW_BL.EVENTS.add_listener('twitch_command', 'chat_commands_init', function(command, username, variant)
         if command ~= 'vote' then return end
-        TW_BL.UI.update_voting_process(false)
-        TW_BL.UI.create_vote_notification(username)
+        TW_BL.UI.update_panel('voting_process', false)
+        TW_BL.UI.create_panel_notify('voting_process', username)
     end)
 
     return CHAT_COMMANDS;

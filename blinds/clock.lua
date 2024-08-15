@@ -5,12 +5,6 @@ local MULT_INCREMENT = 0.06
 
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('clock', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Hourglass',
-            text = { "Hurry up!" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

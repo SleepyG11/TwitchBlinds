@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('sparkle', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Sparkle',
-            text = { "Redeems Magic Trick", "and Illusion" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

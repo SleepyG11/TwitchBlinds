@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = 'twitch_chat',
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Chat',
-            text = { "Select to end voting and", "begin a challenge from chat" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

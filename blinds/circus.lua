@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('circus', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Circus',
-            text = { "The show is", "about to begin!" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {

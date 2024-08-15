@@ -1,9 +1,4 @@
 ---@class TwitchCollector
----@field vote_score { [string]: number }
----@field vote_variants string[]
----@field users { [string]: { [string]: number } }
----@field single_use { [string]: boolean }
----@field can_collect { [string]: boolean }
 ---@field channel_name string?
 ---@field socket wsclient?
 ---@field connection_status integer
@@ -14,18 +9,6 @@ TwitchCollector.__index = TwitchCollector
 ---@return TwitchCollector
 function TwitchCollector.new()
     local collector = {
-        --- List of usernames who use commands
-        --- @type { [string]: { [string]: number } }
-        users = {},
-
-        --- Can user use commands more than one time
-        --- @type { [string]: boolean }
-        single_use = {},
-
-        --- Can collector process commands
-        --- @type { [string]: boolean }
-        can_collect = {},
-
         --- Twitch channel name connected to
         --- @type string?
         channel_name = nil,

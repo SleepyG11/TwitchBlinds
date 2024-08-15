@@ -2,12 +2,6 @@ local REPLACE_ODDS = 6
 
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('banana', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Banana',
-            text = { "#1# in #2# chance to replace", "Joker with Gros Michel" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -28,7 +22,7 @@ function tw_blind:set_blind(reset, silent)
         table.insert(jokers_list, v)
     end
     for _, v in ipairs(jokers_list) do
-        if pseudorandom(pseudoseed('twbl_afk')) < G.GAME.probabilities.normal / self.config.extra.odds then
+        if pseudorandom(pseudoseed('twbl_banana')) < G.GAME.probabilities.normal / self.config.extra.odds then
             G.E_MANAGER:add_event(Event({
                 func = function()
                     play_sound('tarot1')
@@ -53,7 +47,7 @@ function tw_blind:set_blind(reset, silent)
                     return true
                 end
             }))
-            card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_upgrade_ex })
+            card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_banana_ex })
         else
             G.E_MANAGER:add_event(Event({
                 func = function()

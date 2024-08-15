@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('pin', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Pin',
-            text = { "Chat can (un)pin Jokers", "Single-Use: toggle <joker position>" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -21,11 +15,20 @@ local tw_blind = SMODS.Blind {
 function tw_blind:set_blind(reset, silent)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', true, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', true, true)
+    TW_BL.UI.set_panel('blind_action_toggle', true, true, {
+        "dictionary",
+        "k_twbl_pin_ex",
+        "twbl_position_singular",
+        "Joker",
+        "dictionary",
+        "k_twbl_panel_toggle_pin"
+    })
 end
 
 function tw_blind:defeat()
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
     TW_BL.CHAT_COMMANDS.toggle_single_use('toggle', false, true)
+    TW_BL.UI.remove_panel('blind_action_toggle', true)
 end
 
 function blind_lock_toggle_eternal_joker(username, index)

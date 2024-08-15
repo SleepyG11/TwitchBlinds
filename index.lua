@@ -8,8 +8,7 @@
 --- BADGE_COLOR: 8E15AD
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
---- VERSION: 1.0.5-pre
---- LOADER_VERSION_GEQ: 1.0.0
+--- VERSION: 1.1.0-pre
 ----------------------------------------------
 ------------MOD CODE -------------------------
 

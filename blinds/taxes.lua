@@ -1,11 +1,5 @@
 local tw_blind = SMODS.Blind {
     key = register_twitch_blind('taxes', false),
-    loc_txt = {
-        ['en-us'] = {
-            name = 'The Taxes',
-            text = { "Current Jokers", "became Rental" }
-        }
-    },
     dollars = 5,
     mult = 2,
     boss = {
@@ -37,6 +31,6 @@ function tw_blind:set_blind(reset, silent)
                 return true
             end
         }))
-        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.labels.rental .. '!' })
+        card_eval_status_text(v, 'extra', nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_taxes_ex })
     end
 end

@@ -7,16 +7,15 @@
 
 While streamer is playing, chat can vote for next boss blind he encounters.
 
-![Balatro_9yMOBS5sQs](https://github.com/user-attachments/assets/984c2ea7-8810-4c75-b920-59d08cc27c84)
+![Balatro_hnk2f1pNJh](https://github.com/user-attachments/assets/17ecb907-f723-4cfb-9337-81bbc4fbc462)
 
 New bosses are added, and some of them has mechanics that also relies on chat actions.
 
-![Balatro_cz3bHDchpE](https://github.com/user-attachments/assets/164a7145-d59a-4c84-addf-96ae4286d701)
+![Balatro_tyltBeM7s8](https://github.com/user-attachments/assets/5765d2cd-bc99-4e05-9b72-819b4a75cd9f)
 
 Frequency and blinds to vote can be configured. Boss blinds from other mods works as well!
 
-![Balatro_n6xHriLIwR](https://github.com/user-attachments/assets/6006146e-bc06-4291-a1da-8e019e37ad11)
-
+![Balatro_Q3LI0PLk6U](https://github.com/user-attachments/assets/aa4a4b0b-7f88-406b-a886-ea8e637380d4)
 
 ## Installation and How to use
 1. Install [Steamodded](https://github.com/Steamopollys/Steamodded) v1.0.0 (alpha)

@@ -22,7 +22,7 @@ function tw_blind:set_blind(reset, silent)
         table.insert(jokers_list, v)
     end
     for _, v in ipairs(jokers_list) do
-        if pseudorandom(pseudoseed('twbl_banana')) < G.GAME.probabilities.normal / self.config.extra.odds then
+        if pseudorandom(pseudoseed('twbl_banana')) < G.GAME.probabilities.normal / G.GAME.blind.config.extra.odds then
             G.E_MANAGER:add_event(Event({
                 func = function()
                     play_sound('tarot1')

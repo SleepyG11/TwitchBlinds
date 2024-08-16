@@ -12,4 +12,4 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('90c8c2'),
 }
 
--- Mechanic injection implemented via lovely
+-- Implementation in lovely.toml

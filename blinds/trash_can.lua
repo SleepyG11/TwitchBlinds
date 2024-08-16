@@ -12,7 +12,8 @@ local tw_blind = SMODS.Blind {
     boss_colour = HEX('dc6a10'),
 }
 
--- Mechanic injection implemented via lovely
+-- Implementation in lovely.toml
+
 function blind_trash_can_remove_scored_cards(scoring_hand)
     G.GAME.blind:wiggle()
     G.E_MANAGER:add_event(Event({

@@ -12,6 +12,8 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
+if not to_big then function to_big(x) return x end end
+
 local nativefs = require("nativefs")
 assert(load(nativefs.read(SMODS.current_mod.path .. "libs/utilities.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "libs/websocket.lua")))()

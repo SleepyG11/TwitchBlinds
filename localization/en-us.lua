@@ -1,7 +1,7 @@
 return {
     descriptions = {
         Blind = {
-            bl_twitch_chat = {
+            bl_twbl_twitch_chat = {
                 name = 'The Chat',
                 text = { "Select to end voting and", "begin a challenge from chat" }
             },

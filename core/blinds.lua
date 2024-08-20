@@ -59,11 +59,11 @@ function twitch_blinds_init_blinds()
         return 'bl_twbl_' .. blind_name
     end
 
-    assert(load(nativefs.read(SMODS.current_mod.path .. "blinds/chat.lua")))()
+    assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
     for _, blind_name in ipairs(blinds_to_load) do
-        assert(load(nativefs.read(SMODS.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
+        assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
     end
-    BLINDS.chat_blind = 'bl_twitch_chat'
+    BLINDS.chat_blind = 'bl_twbl_twitch_chat'
 
     --- Get one random boss blind from list
     --- @param pool { [string]: boolean } List to choose from

@@ -10,10 +10,10 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "core/chat_commands.lua")))(
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
 
 function TwitchBlinds:init()
-    self.EVENTS = twitch_blinds_init_events()
+    self.current_mod = SMODS.current_mod
 
-    self.SETTINGS = twitch_blinds_init_settings(SMODS.current_mod.path)
-    self.SETTINGS:read_from_file()
+    self.EVENTS = twitch_blinds_init_events()
+    self.SETTINGS = twitch_blinds_init_settings()
 
     self.__DEV_MODE = self.SETTINGS.current.dev_mode
 

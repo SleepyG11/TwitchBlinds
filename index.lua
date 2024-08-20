@@ -5,10 +5,11 @@
 --- MOD_DESCRIPTION: Let your Twitch chat decide which new boss will end your run ;)
 
 --- PRIORITY: -1
---- BADGE_COLOR: 8E15AD
+--- BADGE_COLOUR: 8E15AD
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
---- VERSION: 1.1.0-pre
+--- DEPENDENCIES: [Steamodded>=1.0.0~ALPHA-0812d]
+--- VERSION: 1.1.0
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
@@ -21,9 +22,7 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "libs/collector.lua")))()
 
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/main.lua")))()
 
-function SMODS.INIT.TwitchBlinds()
-    TW_BL:init()
-end
+TW_BL:init()
 
 ----------------------------------------------
 ------------MOD CODE END----------------------

@@ -254,7 +254,6 @@ function twitch_blinds_init_ui()
                         padding = 0.05,
                         colour = box_colour,
                         r = 0.3,
-                        minh = 0.1
                     },
                     nodes = {},
                 },
@@ -273,7 +272,7 @@ function twitch_blinds_init_ui()
                             minh = 0.6,
                             button = 'twbl_settings_save_channel_name',
                             colour = G.C.GREEN,
-                            scale = 0.5,
+                            scale = 0.4,
                             col = true
                         }),
                         { n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
@@ -291,7 +290,7 @@ function twitch_blinds_init_ui()
                                     n = G.UIT.O,
                                     config = {
                                         id = "twitch_settings_status",
-                                        object = DynaText({ string = UI.settings.get_status_text(), colours = { G.C.WHITE }, shadow = false, scale = 0.5 }),
+                                        object = DynaText({ string = UI.settings.get_status_text(), colours = { G.C.WHITE }, shadow = false, scale = 0.4 }),
                                     },
                                 },
                             }
@@ -305,7 +304,6 @@ function twitch_blinds_init_ui()
                         padding = 0.05,
                         colour = box_colour,
                         r = 0.3,
-                        minh = 0.2
                     },
                     nodes = {},
                 },
@@ -335,17 +333,6 @@ function twitch_blinds_init_ui()
                         padding = 0.05,
                         colour = box_colour,
                         r = 0.3,
-                        minh = 0.2
-                    },
-                    nodes = {},
-                },
-                {
-                    n = G.UIT.R,
-                    config = {
-                        align = "cm",
-                        padding = 0.05,
-                        colour = box_colour,
-                        r = 0.3,
                     },
                     nodes = {
                         create_option_cycle({
@@ -367,7 +354,7 @@ function twitch_blinds_init_ui()
                         padding = 0.05,
                         colour = box_colour,
                         r = 0.3,
-                        minh = 0.2
+                        minh = 0.1
                     },
                     nodes = {},
                 })

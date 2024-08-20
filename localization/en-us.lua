@@ -113,6 +113,7 @@ return {
             k_twbl_status_connected = "Connected.",
             k_twbl_status_connecting = "Connecting...",
             k_twbl_status_disconnected = 'Disconnected...',
+            k_twbl_status_no_channel_name = "No channel!",
             k_twbl_status_unknown = "...",
 
             k_twbl_vote_ex = "Vote!",

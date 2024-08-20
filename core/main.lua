@@ -70,11 +70,7 @@ function TwitchBlinds:init()
             G.GAME.round_resets.blind_choices.Big = get_new_boss_ref(...)
         end
 
-        if TW_BL.SETTINGS.current.channel_name == '' then
-            -- No channel name - no point to start voting
-            TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
-            result = get_new_boss_ref(...)
-        elseif TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind then
+        if TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind then
             -- Dev mode: set boss
             start_voting_process = true
             force_voting_process = true

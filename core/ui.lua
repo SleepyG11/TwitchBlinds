@@ -412,7 +412,6 @@ function twitch_blinds_init_ui()
     end
 
     TW_BL.current_mod.config_tab = function()
-        TW_BL.SETTINGS.create_temp()
         return UI.settings.get_settings_tab("Settings")
     end
 
@@ -726,18 +725,6 @@ function twitch_blinds_init_ui()
 
     -- Callbacks
     ------------------------------
-
-    function G.FUNCS.twbl_settings_apply()
-        TW_BL.SETTINGS.save()
-        if TW_BL.CHAT_COMMANDS.collector.socket then
-            TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
-        end
-    end
-
-    function G.FUNCS.twbl_settings_open()
-        TW_BL.SETTINGS.create_temp()
-        return UI.settings.open()
-    end
 
     function G.FUNCS.twbl_settings_change_blind_frequency(args)
         TW_BL.SETTINGS.temp.blind_frequency = args.to_key

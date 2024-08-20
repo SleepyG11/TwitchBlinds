@@ -17,10 +17,13 @@ function twitch_blinds_init_settings()
     end
 
     function SETTINGS.save()
-        SETTINGS.current = table_merge(SETTINGS.current, SETTINGS.temp)
+        SETTINGS.current = SETTINGS.temp
         TW_BL.current_mod.config = SETTINGS.current
+        SETTINGS.create_temp()
         SMODS.save_mod_config(TW_BL.current_mod)
     end
+
+    SETTINGS.create_temp()
 
     return SETTINGS
 end

@@ -45,6 +45,17 @@ function table_merge(target, ...)
     return target
 end
 
+function table_defaults(target, default)
+    assert(type(target) == "table", "Target is not a table")
+    if type(default) ~= 'table' then return target end
+
+    for k, v in pairs(default) do
+        if target[k] == nil then target[k] = v end
+    end
+
+    return target
+end
+
 --- Create a deep copy of table
 --- @param orig table The table to copy
 --- @return table

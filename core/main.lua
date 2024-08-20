@@ -10,10 +10,10 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "core/chat_commands.lua")))(
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
 
 function TwitchBlinds:init()
-    self.EVENTS = twitch_blinds_init_events()
+    self.current_mod = SMODS.current_mod
 
-    self.SETTINGS = twitch_blinds_init_settings(SMODS.current_mod.path)
-    self.SETTINGS:read_from_file()
+    self.EVENTS = twitch_blinds_init_events()
+    self.SETTINGS = twitch_blinds_init_settings()
 
     self.__DEV_MODE = self.SETTINGS.current.dev_mode
 
@@ -70,11 +70,7 @@ function TwitchBlinds:init()
             G.GAME.round_resets.blind_choices.Big = get_new_boss_ref(...)
         end
 
-        if TW_BL.SETTINGS.current.channel_name == '' then
-            -- No channel name - no point to start voting
-            TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
-            result = get_new_boss_ref(...)
-        elseif TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind then
+        if TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind then
             -- Dev mode: set boss
             start_voting_process = true
             force_voting_process = true

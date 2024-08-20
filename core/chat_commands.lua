@@ -96,6 +96,12 @@ function twitch_blinds_init_chat_commands()
         if write and G.GAME and G.GAME.pool_flags then G.GAME.pool_flags['twitch_single_use_' .. command] = b end
     end
 
+    function CHAT_COMMANDS.set_vote_variants(variants, write)
+        CHAT_COMMANDS.vote_variants = variants
+        if write and G.GAME and G.GAME.pool_flags then G.GAME.pool_flags.twitch_vote_variants = variants end
+    end
+
+    
     function CHAT_COMMANDS.get_can_collect_from_game(default_values)
         for _, command in ipairs(CHAT_COMMANDS.available_commands) do
             local set_value = nil
@@ -116,6 +122,20 @@ function twitch_blinds_init_chat_commands()
             end
             CHAT_COMMANDS.single_use[command] = set_value or false
         end
+    end
+
+    function CHAT_COMMANDS.get_vote_variants_from_game(default_value)
+        if G.GAME and G.GAME.pool_flags then
+            CHAT_COMMANDS.vote_variants = G.GAME.pool_flags.twitch_vote_variants or default_value
+        end
+    end
+
+    function CHAT_COMMANDS.get_vote_variants_for_blinds()
+        local variants = {}
+        for i = 1, TW_BL.BLINDS.blinds_to_vote do
+            table.insert(variants, tostring(i))
+        end
+        return variants
     end
 
     --

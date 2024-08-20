@@ -126,7 +126,9 @@ function TwitchBlinds:init()
 
         if start_voting_process and not is_overriding then
             if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
+                TW_BL.CHAT_COMMANDS.set_vote_variants(TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(), true)
                 TW_BL.BLINDS.setup_new_twitch_blinds(TW_BL.SETTINGS.current.pool_type, voting_ante_offset)
+
                 TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', true, true)
                 TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, true)
                 TW_BL.CHAT_COMMANDS.reset()
@@ -151,13 +153,16 @@ function TwitchBlinds:init()
                 TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
                 return
             end
+
             local blinds_to_choose = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
             if not blinds_to_choose then return select_blind_ref(...) end
             local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
             local picked_blind = (TW_BL.__DEV_MODE and TW_BL.SETTINGS.current.forced_blind and
                     TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]) or
                 blinds_to_choose[tonumber(win_variant or '1')]
+
             TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
+            TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
             TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, true)
             TW_BL.UI.remove_panel('voting_process', true)
         else
@@ -167,6 +172,7 @@ function TwitchBlinds:init()
 end
 
 function TwitchBlinds:start_run()
+    TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
     TW_BL.CHAT_COMMANDS.get_can_collect_from_game({
         vote = false,
         toggle = false,
@@ -179,18 +185,13 @@ function TwitchBlinds:start_run()
         flip = false,
         roll = false,
     })
-
     TW_BL.CHAT_COMMANDS.reset()
 
-    local variants = {}
-    for i = 1, TW_BL.BLINDS.blinds_to_vote do
-        table.insert(variants, tostring(i))
-    end
-    TW_BL.CHAT_COMMANDS.vote_variants = variants
     TW_BL.UI.set_panel_from_save()
 end
 
 function TwitchBlinds:main_menu()
+    TW_BL.CHAT_COMMANDS.set_vote_variants({}, false)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('vote', false, false)
     TW_BL.CHAT_COMMANDS.toggle_can_collect('toggle', false, false)
     TW_BL.CHAT_COMMANDS.reset()

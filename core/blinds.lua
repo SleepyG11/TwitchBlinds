@@ -249,8 +249,8 @@ function twitch_blinds_init_blinds()
             local is_twitch_blind = extra.in_pool or false
             if not v.boss then
                 -- Skip no boss blinds
-            elseif extra.twitch_blind_ignore then
-                -- Can't be set to vote (i.e. very specific boss like The Chat)
+            elseif extra.ignore then
+                -- Can't be set to vote (i.e. very specific boss like The Clock from Cryptid)
             elseif is_twitch_blind and not include_twitch_blinds then
                 -- Skip twitch blind if we don't need it
             elseif not is_twitch_blind and not include_not_twitch_blinds then

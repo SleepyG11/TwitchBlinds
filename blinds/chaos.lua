@@ -42,6 +42,7 @@ TW_BL.EVENTS.add_listener('twitch_command', get_twitch_blind_key('chaos'), funct
             if G.hand.highlighted[i] == card then
                 table.remove(G.hand.highlighted, i)
                 card:highlight(false)
+                G.hand:parse_highlighted()
                 return
             end
         end

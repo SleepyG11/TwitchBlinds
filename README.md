@@ -33,11 +33,15 @@ SMODS.Blind {
 
     -- All default blind params
 
+    -- If you want remove boss from vanilla pool
     boss = {
-        -- If you want to disable appearing this blind in vanilla game
-        -- min = 999,
-        -- max = 999,
+        min = -1,
+        max = -1,
     },
+
+    in_pool = function(self)
+        return false
+    end,
 
     config = {
         tw_bl = {
@@ -45,17 +49,28 @@ SMODS.Blind {
             -- Is this blind treated as "Twitch Blind"
             -- This means it can appear if `Blinds pool to vote` setting set to `Twitch Blinds` or `All`
             -- Adds this blind to pool where it can be picked for voting process separately from vanilla game
-            in_pool = true, 
+            twitch_blind = true,
 
             -- [optional]
             -- Minimal ante for picking this boss for voting process
-            -- Works only if `is_pool = true`
+            -- Works only if `twitch_blind = true`
             min = 2,
 
             -- [optional]
             -- Maximal ante for picking this boss for voting process
-            -- Works only if `is_pool = true`
+            -- Works only if `twitch_blind = true`
             max = 8,
+
+            -- [optional]
+            -- Similar to `blind.ignore_showdown_check`
+            ignore_showdown_check = false,
+
+            -- [optional]
+            -- Similar to `blind:in_pool()`, determine can this boss be picked for voting process
+            -- Ignores `min` and `max` intervals
+            in_pool = function(self)
+                return true
+            end,
 
             -- [optional]
             -- Prevent this blind to be picked for voting process

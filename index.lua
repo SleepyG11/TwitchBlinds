@@ -9,7 +9,7 @@
 --- DISPLAY_NAME: Twitch Blinds
 --- PREFIX: twbl
 --- DEPENDENCIES: [Steamodded>=1.0.0~ALPHA-0812d]
---- VERSION: 1.1.0
+--- VERSION: 1.1.1
 ----------------------------------------------
 ------------MOD CODE -------------------------
 

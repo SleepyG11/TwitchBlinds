@@ -136,9 +136,9 @@ function TwitchBlinds:init()
 		end
 
 		if TW_BL.CHAT_COMMANDS.can_collect.vote then
-			TW_BL.UI.set_panel("voting_process", true, true)
+			TW_BL.UI.set_panel("blind_voting_process", true, true)
 		else
-			TW_BL.UI.remove_panel("voting_process", true)
+			TW_BL.UI.remove_panel("blind_voting_process", true)
 		end
 
 		return result
@@ -172,7 +172,7 @@ function TwitchBlinds:init()
 			TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
 			TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
 			TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-			TW_BL.UI.remove_panel("voting_process", true)
+			TW_BL.UI.remove_panel("blind_voting_process", true)
 		else
 			return select_blind_ref(...)
 		end

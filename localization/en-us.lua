@@ -88,23 +88,19 @@ return {
 		},
 	},
 	misc = {
-		twbl_position_singular = {
-			DEFAULT = "item position",
-			Card = "card position",
-			Joker = "joker position",
-			Comsumeable = "consumeable position",
-			Booster = "booster pack position",
-		},
-
-		twbl_position_plural = {
-			DEFAULT = "items positions",
-			Card = "cards positions",
-			Joker = "jokers positions",
-			Comsumeable = "consumeables positions",
-			Booster = "booster packs positions",
-		},
-
 		dictionary = {
+			twbl_position_DEFAULT_singular = "item position",
+			twbl_position_Card_singular = "card position",
+			twbl_position_Joker_singular = "joker position",
+			twbl_position_Comsumeable_singular = "consumeable position",
+			twbl_position_Booster_singular = "booster pack position",
+
+			twbl_position_DEFAULT_plural = "items position",
+			twbl_position_Card_plural = "cards position",
+			twbl_position_Joker_plural = "jokers position",
+			twbl_position_Comsumeable_plural = "consumeables position",
+			twbl_position_Booster_plural = "booster packs position",
+
 			k_twbl_tumors_ex = "Tumors!",
 			k_twbl_banana_ex = "Banana!",
 			k_twbl_banana_qu = "Banana?",
@@ -122,6 +118,7 @@ return {
 			k_twbl_flip_ex = "Flip!",
 			k_twbl_lock_ex = "Lock!",
 			k_twbl_pin_ex = "Pin!",
+			k_twbl_select_ex = "Select!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",

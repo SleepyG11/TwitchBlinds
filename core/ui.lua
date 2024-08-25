@@ -191,7 +191,6 @@ function twitch_blinds_init_ui()
 
 	-- Settings
 	------------------------------
-
 	-- TODO: localize settings
 	function UI.settings.get_settings_tab(_tab)
 		local forcing_labels = { "None" }
@@ -439,7 +438,7 @@ function twitch_blinds_init_ui()
 	-- Panels definitions
 	------------------------------
 
-	UI.panels.voting_process = {
+	UI.panels.blind_voting_process = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
 				return G.localization.misc.dictionary.k_twbl_vote_ex
@@ -638,12 +637,11 @@ function twitch_blinds_init_ui()
 		end,
 	}
 
-	UI.panels.blind_action_toggle = {
+	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twitch_panel_toggle_args or { "dictionaly", "k_twbl_toggle_ex" }
-				return G.localization.misc[args_array[1]] and G.localization.misc[args_array[1]][args_array[2]]
-					or G.localization.misc.dictionary.k_twbl_toggle_ex
+				local args_array = G.GAME.pool_flags.twitch_panel_toggle_args or { status = "k_twbl_toggle_ex" }
+				return localize(args_array.status)
 			end
 		end,
 		UIBox_definition = function(panel)
@@ -729,12 +727,10 @@ function twitch_blinds_init_ui()
 			if not args_array then
 				do_update = true
 				args_array = {
-					"dictionary",
-					"k_twbl_toggle_ex",
-					"twbl_position_singular",
-					"DEFAULT",
-					"dictionary",
-					"k_twbl_panel_toggle_default",
+					command = "toggle",
+					status = "k_twbl_toggle_ex",
+					position = "twbl_position_singular",
+					text = "k_twbl_panel_toggle_default",
 				}
 			end
 			if do_update then
@@ -745,15 +741,11 @@ function twitch_blinds_init_ui()
 			-- TODO: make it less bad?
 			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
 			if command_element then
-				command_element.config.text = "toggle <"
-					.. (G.localization.misc[args_array[3]] and G.localization.misc[args_array[3]][args_array[4]] or G.localization.misc.twbl_position_singular.DEFAULT)
-					.. ">"
+				command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
 			end
 			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
 			if text_element then
-				text_element.config.text = G.localization.misc[args_array[5]]
-						and G.localization.misc[args_array[5]][args_array[6]]
-					or G.localization.misc.dictionary.k_twbl_panel_toggle_default
+				text_element.config.text = localize(args_array.text)
 			end
 			element:recalculate()
 		end,

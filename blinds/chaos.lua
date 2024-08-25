@@ -19,30 +19,29 @@ end
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", false, true)
-	TW_BL.UI.set_panel("blind_action_toggle", true, true, {
-		"dictionary",
-		"k_twbl_interact_ex",
-		"twbl_position_singular",
-		"Card",
-		"dictionary",
-		"k_twbl_panel_toggle_chaos",
+	TW_BL.UI.set_panel("command_info_1", true, true, {
+		command = "toggle",
+		status = "k_twbl_interact_ex",
+		position = "twbl_position_Card_singular",
+		text = "k_twbl_panel_toggle_chaos",
 	})
 end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", false, true)
-	TW_BL.UI.remove_panel("blind_action_toggle", true)
+	TW_BL.UI.remove_panel("command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("chaos"), function(command, username, index)
+TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("chaos"), function(command, username, raw_index)
 	if command ~= "toggle" then
 		return
 	end
 	if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key("chaos") then
 		return
 	end
-	if G.hand and G.hand.cards and G.hand.cards[index] then
+	local index = tonumber(raw_index)
+	if index and G.hand and G.hand.cards and G.hand.cards[index] then
 		G.GAME.blind:wiggle()
 		local card = G.hand.cards[index]
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username })

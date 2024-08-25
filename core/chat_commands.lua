@@ -1,7 +1,14 @@
 function twitch_blinds_init_chat_commands()
 	local collector = TwitchCollector:new()
 	local CHAT_COMMANDS = {
-		available_commands = { "vote", "toggle", "flip", "roll" },
+		available_commands = {
+			["vote"] = true,
+			["toggle"] = true,
+			["flip"] = true,
+			["roll"] = true,
+			["select"] = true,
+			["pick"] = true,
+		},
 		collector = collector,
 		socket = collector.socket,
 		enabled = false,
@@ -25,45 +32,21 @@ function twitch_blinds_init_chat_commands()
 	end
 
 	function CHAT_COMMANDS.process_message(username, message)
-		local flip_match = message == "flip"
-		if flip_match then
-			if not CHAT_COMMANDS.can_use_command("flip", username) then
-				return
-			end
-			CHAT_COMMANDS.increment_command_use("flip", username)
-			return TW_BL.EVENTS.emit("twitch_command", "flip", username)
+		local iterator = string.gmatch(message, "%S+")
+
+		local command = iterator()
+		if not CHAT_COMMANDS.available_commands[command] then
+			return
 		end
-		local roll_match = message == "roll"
-		if roll_match then
-			if not CHAT_COMMANDS.can_use_command("roll", username) then
-				return
-			end
-			CHAT_COMMANDS.increment_command_use("roll", username)
-			return TW_BL.EVENTS.emit("twitch_command", "roll", username)
+
+		local words = {}
+		for word in iterator do
+			table.insert(words, word)
 		end
-		local vote_match = message:match("vote (.+)")
-		if vote_match then
-			if not CHAT_COMMANDS.can_use_command("vote", username) then
-				return
-			end
-			if not table_contains(CHAT_COMMANDS.vote_variants, vote_match) then
-				return
-			end
-			CHAT_COMMANDS.increment_command_use("vote", username)
-			CHAT_COMMANDS.vote_score[vote_match] = (CHAT_COMMANDS.vote_score[vote_match] or 0) + 1
-			return TW_BL.EVENTS.emit("twitch_command", "vote", username, vote_match)
-		end
-		local toggle_match = message:match("toggle (.+)")
-		if toggle_match then
-			if not CHAT_COMMANDS.can_use_command("toggle", username) then
-				return
-			end
-			local value = tonumber(toggle_match)
-			if not value then
-				return
-			end
-			CHAT_COMMANDS.increment_command_use("toggle", username)
-			return TW_BL.EVENTS.emit("twitch_command", "toggle", username, value)
+
+		if CHAT_COMMANDS.can_use_command(command, username) then
+			CHAT_COMMANDS.increment_command_use(command, username)
+			TW_BL.EVENTS.emit("twitch_command", command, username, unpack(words))
 		end
 	end
 
@@ -108,6 +91,18 @@ function twitch_blinds_init_chat_commands()
 		CHAT_COMMANDS.users[command][username] = math.max((CHAT_COMMANDS.users[command][username] or 1) - 1, 0)
 	end
 
+	function CHAT_COMMANDS.can_vote_for_variant(variant)
+		return table_contains(CHAT_COMMANDS.vote_variants, variant)
+	end
+
+	function CHAT_COMMANDS.increment_vote_score(variant)
+		CHAT_COMMANDS.vote_score[variant] = (CHAT_COMMANDS.vote_score[variant] or 0) + 1
+	end
+
+	function CHAT_COMMANDS.decrement_vote_score(variant)
+		CHAT_COMMANDS.vote_score[variant] = math.max(0, (CHAT_COMMANDS.vote_score[variant] or 0) - 1)
+	end
+
 	--- Reset vote score and command uses
 	function CHAT_COMMANDS.reset()
 		CHAT_COMMANDS.vote_score = {}
@@ -140,7 +135,7 @@ function twitch_blinds_init_chat_commands()
 	end
 
 	function CHAT_COMMANDS.get_can_collect_from_game(default_values)
-		for _, command in ipairs(CHAT_COMMANDS.available_commands) do
+		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
 			if default_values then
 				set_value = default_values[command]
@@ -153,7 +148,7 @@ function twitch_blinds_init_chat_commands()
 	end
 
 	function CHAT_COMMANDS.get_single_use_from_game(default_values)
-		for _, command in ipairs(CHAT_COMMANDS.available_commands) do
+		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
 			if default_values then
 				set_value = default_values[command]
@@ -273,11 +268,15 @@ function twitch_blinds_init_chat_commands()
 	end)
 
 	TW_BL.EVENTS.add_listener("twitch_command", "chat_commands_init", function(command, username, variant)
-		if command ~= "vote" then
-			return
+		if command == "vote" then
+			if CHAT_COMMANDS.can_vote_for_variant(variant) then
+				CHAT_COMMANDS.increment_vote_score(variant)
+				TW_BL.UI.update_panel("blind_voting_process", false)
+				TW_BL.UI.create_panel_notify("blind_voting_process", username)
+			else
+				CHAT_COMMANDS.decrement_command_use(command, username)
+			end
 		end
-		TW_BL.UI.update_panel("voting_process", false)
-		TW_BL.UI.create_panel_notify("voting_process", username)
 	end)
 
 	return CHAT_COMMANDS

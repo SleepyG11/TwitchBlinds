@@ -13,8 +13,3 @@ local tw_blind = SMODS.Blind({
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("be35b0"),
 })
-
-function tw_blind:set_blind(reset, silent)
-	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
-end

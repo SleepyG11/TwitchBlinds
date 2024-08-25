@@ -1,3 +1,5 @@
+-- Too boring
+
 local LOSE_ODDS = 6
 
 local tw_blind = SMODS.Blind({

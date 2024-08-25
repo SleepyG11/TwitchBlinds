@@ -1,3 +1,5 @@
+-- Test
+
 local tw_blind = SMODS.Blind({
 	key = register_twitch_blind("test", false),
 	dollars = 5,

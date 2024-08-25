@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("eraser", false),
+	key = register_twitch_blind("sketch", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -13,7 +13,7 @@ local tw_blind = SMODS.Blind({
 		},
 	},
 	atlas = "twbl_blind_chips",
-	boss_colour = HEX("ee8a84"),
+	boss_colour = HEX("E2DAD1"),
 })
 
 function tw_blind:in_pool()
@@ -28,7 +28,7 @@ function tw_blind:set_blind()
 		command = "target",
 		status = "k_twbl_vote_ex",
 		position = "twbl_position_Joker_singular",
-		text = "k_twbl_panel_toggle_eraser",
+		text = "k_twbl_panel_toggle_sketch",
 	})
 end
 
@@ -39,7 +39,7 @@ function tw_blind:defeat()
 
 	if G.jokers and G.jokers.cards and #G.jokers.cards > 0 then
 		local max_score = 0
-		local result_target = pseudorandom_element(G.jokers.cards, pseudoseed("twbl_eraser"))
+		local result_target = pseudorandom_element(G.jokers.cards, pseudoseed("twbl_sketch"))
 		for _, card in ipairs(G.jokers.cards) do
 			if card.ability.twitch_target and card.ability.twitch_target > max_score then
 				result_target = card
@@ -52,32 +52,18 @@ function tw_blind:defeat()
 
 		G.E_MANAGER:add_event(Event({
 			func = function()
-				play_sound("tarot1")
-				v.T.r = -0.2
-				v:juice_up(0.3, 0.4)
-				v.states.drag.is = true
-				v.children.center.pinch.x = true
-				G.E_MANAGER:add_event(Event({
-					trigger = "after",
-					delay = 0.3,
-					blockable = false,
-					func = function()
-						G.jokers:remove_card(v)
-						v:remove()
-						v = nil
-						return true
-					end,
-				}))
+				card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_sketch_ex") })
+				local card = copy_card(v, nil, nil, nil, v.edition and v.edition.negative)
+				card:add_to_deck()
+				G.jokers:emplace(card)
 				return true
 			end,
 		}))
-
-		card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_erased_ex"), colour = G.C.XMULT })
 	end
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("eraser"), function(command, username, raw_index)
-	if command ~= "target" or G.GAME.blind.name ~= get_twitch_blind_key("eraser") then
+TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("sketch"), function(command, username, raw_index)
+	if command ~= "target" or G.GAME.blind.name ~= get_twitch_blind_key("sketch") then
 		return
 	end
 	local index = tonumber(raw_index)
@@ -85,7 +71,7 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("eraser"), func
 		G.GAME.blind:wiggle()
 		local card = G.jokers.cards[index]
 		card.ability.twitch_target = (card.ability.twitch_target or 0) + 1
-		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.XMULT })
+		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.CHIPS })
 	else
 		TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
 	end

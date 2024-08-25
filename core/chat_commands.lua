@@ -9,7 +9,12 @@ function twitch_blinds_init_chat_commands()
 			["select"] = true,
 			["pick"] = true,
 			["target"] = true,
+			["nope"] = true,
 		},
+		commands_aliases = {
+			["nope!"] = "nope",
+		},
+
 		collector = collector,
 		socket = collector.socket,
 		enabled = false,
@@ -35,7 +40,8 @@ function twitch_blinds_init_chat_commands()
 	function CHAT_COMMANDS.process_message(username, message)
 		local iterator = string.gmatch(message, "%S+")
 
-		local command = iterator()
+		local command = string.lower(iterator())
+		command = CHAT_COMMANDS.commands_aliases[command] or command
 		if not CHAT_COMMANDS.available_commands[command] then
 			return
 		end

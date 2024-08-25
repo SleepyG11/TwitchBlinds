@@ -21,6 +21,7 @@ local blinds_to_load = {
 	"pin",
 	"greed",
 	"eraser",
+	"sketch",
 }
 
 function twitch_blinds_init_blinds()

@@ -89,6 +89,10 @@ return {
 				name = "The Eraser",
 				text = { "Chat can select which", "Joker will be erased", "after boss defeate" },
 			},
+			bl_twbl_sketch = {
+				name = "The Sketch",
+				text = { "Chat can select which", "Joker will be copied", "after boss defeate" },
+			},
 		},
 	},
 	misc = {
@@ -125,6 +129,7 @@ return {
 			k_twbl_pin_ex = "Pin!",
 			k_twbl_select_ex = "Select!",
 			k_twbl_erase_ex = "Erase!",
+			k_twbl_sketch_ex = "Sketch!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",
@@ -132,6 +137,7 @@ return {
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per user)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
 			k_twbl_panel_toggle_eraser = "Select Joker for erasing (once per user)",
+			k_twbl_panel_toggle_sketch = "Select Joker to copy (once per user)",
 		},
 	},
 }

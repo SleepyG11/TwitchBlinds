@@ -181,17 +181,9 @@ end
 
 function TwitchBlinds:start_run()
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
-	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({
-		vote = false,
-		toggle = false,
-		flip = false,
-		roll = false,
-	})
+	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
 	TW_BL.CHAT_COMMANDS.get_single_use_from_game({
 		vote = not TW_BL.__DEV_MODE,
-		toggle = false,
-		flip = false,
-		roll = false,
 	})
 	TW_BL.CHAT_COMMANDS.set_enabled(true)
 	TW_BL.CHAT_COMMANDS.reset()

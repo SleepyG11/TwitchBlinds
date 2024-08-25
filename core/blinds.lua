@@ -20,6 +20,7 @@ local blinds_to_load = {
 	"isaac",
 	"pin",
 	"greed",
+	"eraser",
 }
 
 function twitch_blinds_init_blinds()

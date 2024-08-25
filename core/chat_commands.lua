@@ -8,6 +8,7 @@ function twitch_blinds_init_chat_commands()
 			["roll"] = true,
 			["select"] = true,
 			["pick"] = true,
+			["target"] = true,
 		},
 		collector = collector,
 		socket = collector.socket,

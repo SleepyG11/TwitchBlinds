@@ -85,6 +85,10 @@ return {
 				name = "The Vaporation",
 				text = { "Current Jokers", "became Perishable" },
 			},
+			bl_twbl_eraser = {
+				name = "The Eraser",
+				text = { "Chat can select which", "Joker will be erased", "after boss defeate" },
+			},
 		},
 	},
 	misc = {
@@ -105,6 +109,7 @@ return {
 			k_twbl_banana_ex = "Banana!",
 			k_twbl_banana_qu = "Banana?",
 			k_twbl_taxes_ex = "Taxes!",
+			k_twbl_erased_ex = "Erased!",
 
 			k_twbl_status_connected = "Connected.",
 			k_twbl_status_connecting = "Connecting...",
@@ -119,12 +124,14 @@ return {
 			k_twbl_lock_ex = "Lock!",
 			k_twbl_pin_ex = "Pin!",
 			k_twbl_select_ex = "Select!",
+			k_twbl_erase_ex = "Erase!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per user)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per user)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
+			k_twbl_panel_toggle_eraser = "Select Joker for erasing (once per user)",
 		},
 	},
 }

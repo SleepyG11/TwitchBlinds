@@ -87,11 +87,15 @@ return {
 			},
 			bl_twbl_eraser = {
 				name = "The Eraser",
-				text = { "Chat can select which", "Joker will be erased", "after boss defeate" },
+				text = { "Chat can select which", "Joker will be destroyed", "after boss defeate" },
 			},
 			bl_twbl_sketch = {
 				name = "The Sketch",
 				text = { "Chat can select which", "Joker will be copied", "after boss defeate" },
+			},
+			bl_twbl_nope = {
+				name = "Nope!",
+				text = { "Nope!" },
 			},
 		},
 	},
@@ -114,6 +118,7 @@ return {
 			k_twbl_banana_qu = "Banana?",
 			k_twbl_taxes_ex = "Taxes!",
 			k_twbl_erased_ex = "Erased!",
+			k_twbl_nope_ex = "Nope!",
 
 			k_twbl_status_connected = "Connected.",
 			k_twbl_status_connecting = "Connecting...",
@@ -136,8 +141,9 @@ return {
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per user)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per user)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
-			k_twbl_panel_toggle_eraser = "Select Joker for erasing (once per user)",
-			k_twbl_panel_toggle_sketch = "Select Joker to copy (once per user)",
+			k_twbl_panel_toggle_eraser = "Select a Joker for deletion (once per user)",
+			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
+			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 		},
 	},
 }

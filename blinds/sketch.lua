@@ -23,7 +23,7 @@ end
 
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
 	TW_BL.UI.set_panel("command_info_1", true, true, {
 		command = "target",
 		status = "k_twbl_vote_ex",

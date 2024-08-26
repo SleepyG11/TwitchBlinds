@@ -738,10 +738,13 @@ function twitch_blinds_init_ui()
 			end
 
 			local element = panel.element
-			-- TODO: make it less bad?
 			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
 			if command_element then
-				command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
+				if args_array.position then
+					command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
+				else
+					command_element.config.text = args_array.command
+				end
 			end
 			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
 			if text_element then

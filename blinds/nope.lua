@@ -1,3 +1,6 @@
+local MIN_MULT = 2
+local MAX_MULT = 8
+
 local tw_blind = SMODS.Blind({
 	key = register_twitch_blind("nope", false),
 	dollars = 5,
@@ -63,6 +66,13 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("nope"), functi
 	end
 
 	G.GAME.blind:wiggle()
+
+	G.GAME.blind.mult = math.random(MIN_MULT * 100, MAX_MULT * 100) / 100
+	G.GAME.blind.chips = to_big(get_blind_amount(G.GAME.round_resets.ante))
+		* to_big(G.GAME.starting_params.ante_scaling)
+		* to_big(G.GAME.blind.mult)
+	G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+	G.GAME.blind:set_text()
 
 	attention_text({
 		text = localize("k_twbl_nope_ex"),

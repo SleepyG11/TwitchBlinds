@@ -1,4 +1,4 @@
-local COUNT_MULTIPLIER = 0.25
+local COUNT_MULTIPLIER = 0.5
 
 local tw_blind = SMODS.Blind({
 	key = register_twitch_blind("incrementer", false),

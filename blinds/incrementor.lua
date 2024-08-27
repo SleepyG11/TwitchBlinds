@@ -1,16 +1,16 @@
 local COUNT_MULTIPLIER = 0.5
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("incrementer", false),
+	key = register_twitch_blind("incrementor", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
-	pos = { x = 0, y = 16 },
+	pos = { x = 0, y = 26 },
 	config = {
 		tw_bl = { twitch_blind = true },
 	},
 	atlas = "twbl_blind_chips",
-	boss_colour = HEX("636c81"),
+	boss_colour = HEX("423541"),
 })
 
 function tw_blind:in_pool()
@@ -25,7 +25,7 @@ function tw_blind:set_blind()
 		command = "count",
 		status = "k_twbl_count_ex",
 		position = "twbl_argument_type_Number",
-		text = "k_twbl_panel_toggle_incrementer",
+		text = "k_twbl_panel_toggle_incrementor",
 	})
 end
 
@@ -35,8 +35,8 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementer"), function(command, username, raw_number)
-	if command ~= "count" or G.GAME.blind.name ~= get_twitch_blind_key("incrementer") then
+TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementor"), function(command, username, raw_number)
+	if command ~= "count" or G.GAME.blind.name ~= get_twitch_blind_key("incrementor") then
 		return
 	end
 	local number = tonumber(raw_number)
@@ -45,9 +45,9 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementer"),
 
 		G.GAME.blind:wiggle()
 
-		local current_number = G.GAME.blind.twitch_incrementer_count or 0
+		local current_number = G.GAME.blind.twitch_incrementor_count or 0
 		if number == current_number + 1 then
-			G.GAME.blind.twitch_incrementer_count = number
+			G.GAME.blind.twitch_incrementor_count = number
 			G.GAME.blind.mult = G.GAME.blind.config.blind.mult + COUNT_MULTIPLIER * number
 
 			attention_text({
@@ -63,7 +63,7 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementer"),
 				},
 			})
 		else
-			G.GAME.blind.twitch_incrementer_count = 0
+			G.GAME.blind.twitch_incrementor_count = 0
 			G.GAME.blind.mult = G.GAME.blind.config.blind.mult
 
 			attention_text({

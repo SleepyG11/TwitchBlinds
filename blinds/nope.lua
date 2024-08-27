@@ -6,7 +6,7 @@ local tw_blind = SMODS.Blind({
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
-	pos = { x = 0, y = 16 },
+	pos = { x = 0, y = 24 },
 	config = {
 		tw_bl = { twitch_blind = true },
 	},

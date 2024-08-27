@@ -101,8 +101,8 @@ return {
 				name = "The Misstock",
 				text = { "Chat can select which", "single card type will", "appear in next shop" },
 			},
-			bl_twbl_incrementer = {
-				name = "The Incrementer",
+			bl_twbl_incrementor = {
+				name = "The Incrementor",
 				text = { "Chat can start counting", "to increase blind size" },
 			},
 		},
@@ -155,7 +155,7 @@ return {
 			k_twbl_panel_toggle_eraser = "Select a Joker for deletion (once per user)",
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
-			k_twbl_panel_toggle_incrementer = "Keep counting! (multiple use)",
+			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
 		},
 	},
 }

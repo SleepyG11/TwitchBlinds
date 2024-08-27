@@ -23,6 +23,7 @@ local blinds_to_load = {
 	"eraser",
 	"sketch",
 	"nope",
+	"misstock",
 }
 
 function twitch_blinds_init_blinds()

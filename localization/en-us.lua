@@ -97,6 +97,10 @@ return {
 				name = "Nope!",
 				text = { "Nope!" },
 			},
+			bl_twbl_misstock = {
+				name = "The Misstock",
+				text = { "Chat can select which", "single card type will", "appear in next shop" },
+			},
 		},
 	},
 	misc = {

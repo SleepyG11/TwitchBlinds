@@ -3,7 +3,7 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# The Trash Can: Remove scored cards
+# The Trash Can - Remove scored cards
 [[patches]]
 [patches.pattern]
 target = "functions/state_events.lua"
@@ -14,9 +14,8 @@ elseif G.GAME.blind.name == get_twitch_blind_key("trash_can") then
     blind_trash_can_remove_scored_cards(scoring_hand)
 '''
 match_indent = true
-times = 1
 
-# The Precision: Discard only 5 cards
+# The Precision - Discard only 5 cards
 [[patches]]
 [patches.pattern]
 target = "functions/button_callbacks.lua"
@@ -30,7 +29,6 @@ if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == get_twitch_b
 end
 '''
 match_indent = true
-times = 1
 
 # The Greed - No shop
 [[patches]]
@@ -45,4 +43,34 @@ if G.GAME.pool_flags.twitch_no_shop then
 end
 """
 match_indent = true
-overwrite = false
+
+# The Misstock - specific item stock
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = 'if polled_rate > check_rate and polled_rate <= check_rate + v.val then'
+position = "after"
+payload = """
+v = twitch_misstock_set_type(v)
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then'''
+position = "at"
+payload = """
+if (v.type == 'Base' or v.type == 'Enhanced') and ((G.GAME.pool_flags.twitch_misstock_pool == "Enhanced" or G.GAME.used_vouchers["v_illusion"]) and pseudorandom(pseudoseed('illusion')) > 0.8) then
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = 'G.FUNCS.toggle_shop = function(e)'
+position = "after"
+payload = """
+G.GAME.pool_flags.twitch_misstock_pool = nil
+"""
+match_indent = true

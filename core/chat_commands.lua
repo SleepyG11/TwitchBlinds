@@ -278,8 +278,8 @@ function twitch_blinds_init_chat_commands()
 		if command == "vote" then
 			if CHAT_COMMANDS.can_vote_for_variant(variant) then
 				CHAT_COMMANDS.increment_vote_score(variant)
-				TW_BL.UI.update_panel("blind_voting_process", false)
-				TW_BL.UI.create_panel_notify("blind_voting_process", username)
+				TW_BL.UI.update_panel(nil, false)
+				TW_BL.UI.create_panel_notify(nil, username)
 			else
 				CHAT_COMMANDS.decrement_command_use(command, username)
 			end

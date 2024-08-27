@@ -637,6 +637,228 @@ function twitch_blinds_init_ui()
 		end,
 	}
 
+	UI.panels.voting_process_3 = {
+		localize_status = function(panel, status)
+			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
+				local args_array = G.GAME.pool_flags.twitch_panel_voting_process_args or { status = "k_twbl_toggle_ex" }
+				return localize(args_array.status)
+			end
+		end,
+		UIBox_definition = function(panel)
+			return {
+				n = G.UIT.ROOT,
+				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							padding = 0.04,
+						},
+						nodes = {
+							{
+								n = G.UIT.C,
+								config = { minw = 1.915, align = "c" },
+								nodes = {
+									{
+										n = G.UIT.O,
+										config = {
+											id = "twbl_voting_status",
+											object = DynaText({
+												string = { "" },
+												colours = { G.C.UI.TEXT_LIGHT },
+												shadow = false,
+												rotate = false,
+												float = true,
+												bump = true,
+												scale = 0.35,
+												spacing = 1,
+												pop_in = 1,
+											}),
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 1",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_1_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_1_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_1_percent",
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 2",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_2_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_2_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_2_percent",
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 3",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_3_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_3_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_3_percent",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		end,
+		update = function(panel, full_update, args)
+			local args_array = G.GAME.pool_flags.twitch_panel_voting_process_args
+			local do_update = false
+			if args then
+				do_update = true
+				args_array = args
+			end
+			if not args_array then
+				do_update = true
+				args_array = {
+					command = "vote",
+					status = "k_twbl_vote_ex",
+					variants = { "", "", "" },
+				}
+			end
+			if do_update then
+				G.GAME.pool_flags.twitch_panel_voting_process_args = args_array
+			end
+
+			local element = panel.element
+			local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
+			for i = 1, 3 do
+				if full_update then
+					local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
+					if text_element then
+						text_element.config.text = localize(args_array.variants[i])
+					end
+
+					local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")
+					if command_element then
+						command_element.config.text = args_array.command .. " " .. tostring(i)
+					end
+				end
+				local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
+				if percent_element then
+					local variant_status = vote_status[tostring(i)]
+					percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
+				end
+			end
+
+			element:recalculate()
+		end,
+	}
+
 	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then

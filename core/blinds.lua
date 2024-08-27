@@ -24,6 +24,7 @@ local blinds_to_load = {
 	"sketch",
 	"nope",
 	"misstock",
+	"incrementer",
 }
 
 function twitch_blinds_init_blinds()

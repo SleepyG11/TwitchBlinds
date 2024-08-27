@@ -101,10 +101,16 @@ return {
 				name = "The Misstock",
 				text = { "Chat can select which", "single card type will", "appear in next shop" },
 			},
+			bl_twbl_incrementer = {
+				name = "The Incrementer",
+				text = { "Chat can start counting", "to increase blind size" },
+			},
 		},
 	},
 	misc = {
 		dictionary = {
+			twbl_argument_type_Number = "number",
+
 			twbl_position_DEFAULT_singular = "item position",
 			twbl_position_Card_singular = "card position",
 			twbl_position_Joker_singular = "joker position",
@@ -139,6 +145,7 @@ return {
 			k_twbl_select_ex = "Select!",
 			k_twbl_erase_ex = "Erase!",
 			k_twbl_sketch_ex = "Sketch!",
+			k_twbl_count_ex = "Count!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",
@@ -148,6 +155,7 @@ return {
 			k_twbl_panel_toggle_eraser = "Select a Joker for deletion (once per user)",
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
+			k_twbl_panel_toggle_incrementer = "Keep counting! (multiple use)",
 		},
 	},
 }

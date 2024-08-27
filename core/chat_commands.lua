@@ -10,6 +10,7 @@ function twitch_blinds_init_chat_commands()
 			["pick"] = true,
 			["target"] = true,
 			["nope"] = true,
+			["count"] = true,
 		},
 		commands_aliases = {
 			["nope!"] = "nope",

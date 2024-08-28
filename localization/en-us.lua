@@ -129,6 +129,7 @@ return {
 			k_twbl_taxes_ex = "Taxes!",
 			k_twbl_erased_ex = "Erased!",
 			k_twbl_nope_ex = "Nope!",
+			k_twbl_replaced_ex = "Replaced!",
 
 			k_twbl_status_connected = "Connected.",
 			k_twbl_status_connecting = "Connecting...",

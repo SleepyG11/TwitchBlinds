@@ -297,7 +297,7 @@ function twitch_blinds_init_blinds()
 					-- Add if mets range criteria
 					can_appear = is_correct_boss_type
 						and (not range_to_check.min or range_to_check.min <= target_ante)
-						and (not range_to_check.max or range_to_check.max >= target_ante)
+						and (not is_twitch_blind or (not range_to_check.max or range_to_check.max >= target_ante))
 				end
 
 				if can_appear then

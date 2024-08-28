@@ -223,7 +223,7 @@ function twitch_blinds_init_blinds()
 			end
 
 			if generate_if_missing then
-				return BLINDS.setup_new_twitch_blinds(pool_type, ante_offset)
+				return BLINDS.setup_new_twitch_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, true)
 			end
 		else
 			return nil
@@ -327,15 +327,20 @@ function twitch_blinds_init_blinds()
 	--- @param pool_type integer Generate new list and save if not present
 	--- @param ante_offset integer
 	--- @return string[]|nil
-	function BLINDS.setup_new_twitch_blinds(pool_type, ante_offset)
+	function BLINDS.setup_new_twitch_blinds(pool_type, ante_offset, amount, write)
 		local pool = BLINDS.get_blinds_pool(pool_type, ante_offset)
-		local new_list = BLINDS.get_list_of_random_boss_blinds(pool, BLINDS.blinds_to_vote)
+		local new_list = BLINDS.get_list_of_random_boss_blinds(pool, amount)
+		if not write then
+			return new_list
+		end
 		local success = BLINDS.set_twitch_blinds_to_game(new_list)
 		if success then
 			return new_list
 		end
 		return nil
 	end
+
+	--
 
 	return BLINDS
 end

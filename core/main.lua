@@ -6,8 +6,10 @@ TW_BL = TwitchBlinds
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/events.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/settings.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/blinds.lua")))()
+assert(load(nativefs.read(SMODS.current_mod.path .. "core/stickers.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/chat_commands.lua")))()
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/ui.lua")))()
+assert(load(nativefs.read(SMODS.current_mod.path .. "core/utilities.lua")))()
 
 function TwitchBlinds:init()
 	self.current_mod = SMODS.current_mod
@@ -19,9 +21,12 @@ function TwitchBlinds:init()
 
 	self.UI = twitch_blinds_init_ui()
 	self.BLINDS = twitch_blinds_init_blinds()
+	self.STICKERS = twitch_blinds_init_stickers()
 	self.CHAT_COMMANDS = twitch_blinds_init_chat_commands()
 
 	TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+
+	self.UTILITIES = twitch_blinds_init_utilities()
 
 	-- Overriding
 
@@ -126,7 +131,12 @@ function TwitchBlinds:init()
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
 				TW_BL.CHAT_COMMANDS.set_vote_variants(TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(), true)
-				TW_BL.BLINDS.setup_new_twitch_blinds(TW_BL.SETTINGS.current.pool_type, voting_ante_offset)
+				TW_BL.BLINDS.setup_new_twitch_blinds(
+					TW_BL.SETTINGS.current.pool_type,
+					voting_ante_offset,
+					TW_BL.BLINDS.blinds_to_vote,
+					true
+				)
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
 				TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)

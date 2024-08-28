@@ -77,5 +77,9 @@ function twitch_blinds_init_utilities()
 		return true
 	end
 
+	function UTILITIES.is_chat_blind_present()
+		return G.GAME and G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind
+	end
+
 	return UTILITIES
 end

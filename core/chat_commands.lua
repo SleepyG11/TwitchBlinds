@@ -1,4 +1,4 @@
-function twitch_blinds_init_chat_commands()
+function twbl_init_chat_commands()
 	local collector = TwitchCollector:new()
 	local CHAT_COMMANDS = {
 		available_commands = {
@@ -124,21 +124,21 @@ function twitch_blinds_init_chat_commands()
 	function CHAT_COMMANDS.toggle_can_collect(command, b, write)
 		CHAT_COMMANDS.can_collect[command] = b
 		if write and G.GAME and G.GAME.pool_flags then
-			G.GAME.pool_flags["twitch_can_collect_" .. command] = b
+			G.GAME.pool_flags["twbl_commands_can_collect_" .. command] = b
 		end
 	end
 
 	function CHAT_COMMANDS.toggle_single_use(command, b, write)
 		CHAT_COMMANDS.single_use[command] = b
 		if write and G.GAME and G.GAME.pool_flags then
-			G.GAME.pool_flags["twitch_single_use_" .. command] = b
+			G.GAME.pool_flags["twbl_commands_single_use_" .. command] = b
 		end
 	end
 
 	function CHAT_COMMANDS.set_vote_variants(variants, write)
 		CHAT_COMMANDS.vote_variants = variants
 		if write and G.GAME and G.GAME.pool_flags then
-			G.GAME.pool_flags.twitch_vote_variants = variants
+			G.GAME.pool_flags.twbl_vote_variants = variants
 		end
 	end
 
@@ -148,8 +148,8 @@ function twitch_blinds_init_chat_commands()
 			if default_values then
 				set_value = default_values[command]
 			end
-			if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags["twitch_can_collect_" .. command] ~= nil then
-				set_value = G.GAME.pool_flags["twitch_can_collect_" .. command]
+			if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags["twbl_commands_can_collect_" .. command] ~= nil then
+				set_value = G.GAME.pool_flags["twbl_commands_can_collect_" .. command]
 			end
 			CHAT_COMMANDS.can_collect[command] = set_value or false
 		end
@@ -161,8 +161,8 @@ function twitch_blinds_init_chat_commands()
 			if default_values then
 				set_value = default_values[command]
 			end
-			if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags["twitch_single_use_" .. command] ~= nil then
-				set_value = G.GAME.pool_flags["twitch_single_use_" .. command]
+			if G.GAME and G.GAME.pool_flags and G.GAME.pool_flags["twbl_commands_single_use_" .. command] ~= nil then
+				set_value = G.GAME.pool_flags["twbl_commands_single_use_" .. command]
 			end
 			CHAT_COMMANDS.single_use[command] = set_value or false
 		end
@@ -170,7 +170,7 @@ function twitch_blinds_init_chat_commands()
 
 	function CHAT_COMMANDS.get_vote_variants_from_game(default_value)
 		if G.GAME and G.GAME.pool_flags then
-			CHAT_COMMANDS.vote_variants = G.GAME.pool_flags.twitch_vote_variants or default_value
+			CHAT_COMMANDS.vote_variants = G.GAME.pool_flags.twbl_vote_variants or default_value
 		end
 	end
 

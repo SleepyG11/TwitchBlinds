@@ -2,7 +2,7 @@ local MIN_MULT = 2
 local MAX_MULT = 8
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("nope", false),
+	key = TW_BL.BLINDS.register("nope", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -36,8 +36,8 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("nope"), function(command, username)
-	if command ~= "nope" or G.GAME.blind.name ~= get_twitch_blind_key("nope") then
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), function(command, username)
+	if command ~= "nope" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("nope") then
 		return
 	end
 

@@ -1,7 +1,7 @@
-function twitch_blinds_init_utilities()
+function twbl_init_utilities()
 	local UTILITIES = {}
 
-	function UTILITIES.get_twitch_blind_variant(target)
+	function UTILITIES.get_vote_variant(target)
 		if not TW_BL.CHAT_COMMANDS.vote_variants then
 			return nil
 		end
@@ -29,7 +29,7 @@ function twitch_blinds_init_utilities()
 	end
 
 	function UTILITIES.get_new_bosses(ante_offset, amount)
-		return TW_BL.BLINDS.setup_new_twitch_blinds(
+		return TW_BL.BLINDS.generate_new_voting_blinds(
 			TW_BL.SETTINGS.current.pool_type,
 			ante_offset or 0,
 			amount or 3,
@@ -37,17 +37,17 @@ function twitch_blinds_init_utilities()
 		)
 	end
 
-	function UTILITIES.replace_blind_in_voting_process(blind, target, notify, reset)
-		local variant = TW_BL.UTILITIES.get_twitch_blind_variant(target)
+	function UTILITIES.replace_voting_blind(blind, target, notify, reset)
+		local variant = TW_BL.UTILITIES.get_vote_variant(target)
 		if variant then
 			variant = tonumber(variant)
 		end
-		local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
+		local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
 		if not variant or not blinds_to_vote or not blinds_to_vote[variant] then
 			return false
 		end
 		blinds_to_vote[variant] = blind
-		if not TW_BL.BLINDS.set_twitch_blinds_to_game(blinds) then
+		if not TW_BL.BLINDS.set_voting_blinds_to_game(blinds) then
 			return false
 		end
 		if reset then

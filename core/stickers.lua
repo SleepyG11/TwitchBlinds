@@ -4,7 +4,7 @@ local stickers_to_load = {
 	"chat_booster",
 }
 
-function twitch_blinds_init_stickers()
+function twbl_init_stickers()
 	local STICKERS = {
 		ATLAS = SMODS.Atlas({
 			key = "twbl_stickers",

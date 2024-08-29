@@ -25,9 +25,9 @@ local function select_cards_in_pack(amount)
 		table.insert(copy, v)
 	end
 	table.sort(copy, function(a, b)
-		local target_diff = (a.ability.twitch_booster_target or 0) - (b.ability.twitch_booster_target or 0)
+		local target_diff = (a.ability.twbl_state_target_score or 0) - (b.ability.twbl_state_target_score or 0)
 		if target_diff == 0 then
-			return (a.ability.twitch_chat_booster_pseudo or 0) > (b.ability.twitch_chat_booster_pseudo or 0)
+			return (a.ability.twbl_sticker_chat_booster_pseudo or 0) > (b.ability.twbl_sticker_chat_booster_pseudo or 0)
 		end
 		return target_diff > 0
 	end)
@@ -37,13 +37,13 @@ local function select_cards_in_pack(amount)
 end
 
 TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(command, username, raw_index)
-	if command ~= "target" or not G.GAME.pool_flags.twitch_chat_booster or not G.booster_pack then
+	if command ~= "target" or not G.GAME.pool_flags.twbl_state_chat_booster or not G.booster_pack then
 		return
 	end
 	local index = tonumber(raw_index)
 	if index and G.hand and G.hand.cards and G.hand.cards[index] then
 		local card = G.hand.cards[index]
-		card.ability.twitch_booster_target = (card.ability.twitch_booster_target or 0) + 1
+		card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.CHIPS })
 		select_cards_in_pack(#G.hand.highlighted)
 	else
@@ -51,8 +51,8 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(comman
 	end
 end)
 
-function twitch_chat_booster_select_targets(card, set_highlighted)
-	if not G.GAME.pool_flags.twitch_chat_booster then
+function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
+	if not G.GAME.pool_flags.twbl_state_chat_booster then
 		return
 	end
 	if not card.ability or not card.ability.consumeable then
@@ -85,34 +85,34 @@ function twitch_chat_booster_select_targets(card, set_highlighted)
 	end
 end
 
-function twitch_chat_booster_open(card)
+function twbl_sticker_chat_booster_open(card)
 	local kind = card.config.center.kind
 	if kind == "Spectral" or kind == "Arcana" then
-		G.GAME.pool_flags.twitch_chat_booster = true
+		G.GAME.pool_flags.twbl_state_chat_booster = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
 		TW_BL.CHAT_COMMANDS.reset()
 	else
 		card.ability.twbl_chat_booster = nil
-		G.GAME.pool_flags.twitch_chat_booster = nil
+		G.GAME.pool_flags.twbl_state_chat_booster = nil
 	end
 end
 
-function twitch_chat_booster_exit()
-	if G.GAME.pool_flags.twitch_chat_booster then
-		G.GAME.pool_flags.twitch_chat_booster = nil
+function twbl_sticker_chat_booster_exit()
+	if G.GAME.pool_flags.twbl_state_chat_booster then
+		G.GAME.pool_flags.twbl_state_chat_booster = nil
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
 
 		for _, v in ipairs(G.hand.cards) do
-			v.ability.twitch_booster_target = nil
-			v.ability.twitch_prevent_action = nil
+			v.ability.twbl_state_target_score = nil
+			v.ability.twbl_state_prevent_action = nil
 		end
 		for _, v in ipairs(G.deck.cards) do
-			v.ability.twitch_booster_target = nil
-			v.ability.twitch_prevent_action = nil
+			v.ability.twbl_state_target_score = nil
+			v.ability.twbl_state_prevent_action = nil
 		end
 	end
 end

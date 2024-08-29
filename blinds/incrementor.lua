@@ -1,7 +1,7 @@
 local COUNT_MULTIPLIER = 0.5
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("incrementor", false),
+	key = TW_BL.BLINDS.register("incrementor", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -35,8 +35,8 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementor"), function(command, username, raw_number)
-	if command ~= "count" or G.GAME.blind.name ~= get_twitch_blind_key("incrementor") then
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("incrementor"), function(command, username, raw_number)
+	if command ~= "count" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("incrementor") then
 		return
 	end
 	local number = tonumber(raw_number)
@@ -45,9 +45,9 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementor"),
 
 		G.GAME.blind:wiggle()
 
-		local current_number = G.GAME.blind.twitch_incrementor_count or 0
+		local current_number = G.GAME.blind.twbl_blind_incrementor_count or 0
 		if number == current_number + 1 then
-			G.GAME.blind.twitch_incrementor_count = number
+			G.GAME.blind.twbl_blind_incrementor_count = number
 			G.GAME.blind.mult = G.GAME.blind.config.blind.mult + COUNT_MULTIPLIER * number
 
 			attention_text({
@@ -63,7 +63,7 @@ TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("incrementor"),
 				},
 			})
 		else
-			G.GAME.blind.twitch_incrementor_count = 0
+			G.GAME.blind.twbl_blind_incrementor_count = 0
 			G.GAME.blind.mult = G.GAME.blind.config.blind.mult
 
 			attention_text({

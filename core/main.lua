@@ -14,19 +14,19 @@ assert(load(nativefs.read(SMODS.current_mod.path .. "core/utilities.lua")))()
 function TwitchBlinds:init()
 	self.current_mod = SMODS.current_mod
 
-	self.EVENTS = twitch_blinds_init_events()
-	self.SETTINGS = twitch_blinds_init_settings()
+	self.EVENTS = twbl_init_events()
+	self.SETTINGS = twbl_init_settings()
 
 	self.__DEV_MODE = self.SETTINGS.current.dev_mode
 
-	self.UI = twitch_blinds_init_ui()
-	self.BLINDS = twitch_blinds_init_blinds()
-	self.STICKERS = twitch_blinds_init_stickers()
-	self.CHAT_COMMANDS = twitch_blinds_init_chat_commands()
+	self.UI = twbl_init_ui()
+	self.BLINDS = twbl_init_blinds()
+	self.STICKERS = twbl_init_stickers()
+	self.CHAT_COMMANDS = twbl_init_chat_commands()
 
 	TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
 
-	self.UTILITIES = twitch_blinds_init_utilities()
+	self.UTILITIES = twbl_init_utilities()
 
 	-- Overriding
 
@@ -64,9 +64,9 @@ function TwitchBlinds:init()
 		local force_voting_process = false
 		local voting_ante_offset = 0
 
-		if not G.GAME.pool_flags.twitch_chat_blind_antes then
+		if not G.GAME.pool_flags.twbl_blind_chat_antes then
 			-- If no data in save, then assume that we don't see chat at most 1 ante
-			G.GAME.pool_flags.twitch_chat_blind_antes = is_first_boss and 0 or 1
+			G.GAME.pool_flags.twbl_blind_chat_antes = is_first_boss and 0 or 1
 		end
 
 		if G.GAME.round_resets.blind_choices.Small == TW_BL.BLINDS.chat_blind then
@@ -90,7 +90,7 @@ function TwitchBlinds:init()
 				result = get_new_boss_ref(...)
 			elseif TW_BL.SETTINGS.current.blind_frequency == 2 then
 				start_voting_process = true
-				if is_first_boss or G.GAME.pool_flags.twitch_chat_blind_antes < 1 then
+				if is_first_boss or G.GAME.pool_flags.twbl_blind_chat_antes < 1 then
 					-- If in this ante blind was chat, return vanilla one
 					voting_ante_offset = 1
 					force_voting_process = is_first_boss
@@ -112,7 +112,7 @@ function TwitchBlinds:init()
 			if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
 				-- Can't reroll chat
 				result = TW_BL.BLINDS.chat_blind
-			elseif G.GAME.pool_flags.twitch_chat_blind_antes == 0 then
+			elseif G.GAME.pool_flags.twbl_blind_chat_antes == 0 then
 				-- Can't reroll blind selected by chat
 				-- Subject to change?
 				result = G.GAME.round_resets.blind_choices.Boss
@@ -124,14 +124,14 @@ function TwitchBlinds:init()
 
 		if is_first_boss or caused_by_boss_defeate then
 			-- Count how many antes ago was chat blind
-			G.GAME.pool_flags.twitch_chat_blind_antes = (result == TW_BL.BLINDS.chat_blind and 0)
-				or (G.GAME.pool_flags.twitch_chat_blind_antes + 1)
+			G.GAME.pool_flags.twbl_blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0)
+				or (G.GAME.pool_flags.twbl_blind_chat_antes + 1)
 		end
 
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
 				TW_BL.CHAT_COMMANDS.set_vote_variants(TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(), true)
-				TW_BL.BLINDS.setup_new_twitch_blinds(
+				TW_BL.BLINDS.generate_new_voting_blinds(
 					TW_BL.SETTINGS.current.pool_type,
 					voting_ante_offset,
 					TW_BL.BLINDS.blinds_to_vote,
@@ -168,7 +168,7 @@ function TwitchBlinds:init()
 				return
 			end
 
-			local blinds_to_choose = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
+			local blinds_to_choose = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
 			if not blinds_to_choose then
 				return select_blind_ref(...)
 			end

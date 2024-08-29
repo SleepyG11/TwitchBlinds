@@ -67,7 +67,7 @@ local function check_is_food_jokers()
 end
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("expiration", false),
+	key = TW_BL.BLINDS.register("expiration", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = 1, max = 10 },

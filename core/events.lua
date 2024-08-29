@@ -1,4 +1,4 @@
-function twitch_blinds_init_events()
+function twbl_init_events()
 	local EVENTS = {
 		--- @type { [string]: { [string]: function } }
 		_emitters = {},

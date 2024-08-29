@@ -4,7 +4,7 @@ local PANEL_VISIBLE_Y = -6.1
 local PANEL_HIDDEN_Y = -9.1
 local PANEL_ANIMATION_DELAY = 0.75
 
-function twitch_blinds_init_ui()
+function twbl_init_ui()
 	local UI = {
 		PARTS = {},
 
@@ -304,7 +304,7 @@ function twitch_blinds_init_ui()
 								{
 									n = G.UIT.O,
 									config = {
-										id = "twitch_settings_status",
+										id = "twbl_settings_status",
 										object = DynaText({
 											string = UI.settings.get_status_text(),
 											colours = { G.C.WHITE },
@@ -423,7 +423,7 @@ function twitch_blinds_init_ui()
 	function UI.settings.update_status(status)
 		if G.OVERLAY_MENU then
 			local text = UI.settings.get_status_text()
-			local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twitch_settings_status")
+			local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twbl_settings_status")
 			if status_element then
 				status_element.config.object.config.string = { text }
 				status_element.config.object:update_text(true)
@@ -614,7 +614,7 @@ function twitch_blinds_init_ui()
 		end,
 		update = function(panel, full_update)
 			local element = panel.element
-			local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
+			local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
 			if blinds_to_vote then
 				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
 				for i = 1, TW_BL.BLINDS.blinds_to_vote do
@@ -640,7 +640,7 @@ function twitch_blinds_init_ui()
 	UI.panels.voting_process_3 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twitch_panel_voting_process_args or { status = "k_twbl_toggle_ex" }
+				local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
 		end,
@@ -816,7 +816,7 @@ function twitch_blinds_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.pool_flags.twitch_panel_voting_process_args
+			local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args
 			local do_update = false
 			if args then
 				do_update = true
@@ -831,7 +831,7 @@ function twitch_blinds_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.pool_flags.twitch_panel_voting_process_args = args_array
+				G.GAME.pool_flags.twbl_ui_voting_process_args = args_array
 			end
 
 			local element = panel.element
@@ -862,7 +862,7 @@ function twitch_blinds_init_ui()
 	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twitch_panel_toggle_args or { status = "k_twbl_toggle_ex" }
+				local args_array = G.GAME.pool_flags.twbl_ui_command_info_args or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
 		end,
@@ -940,7 +940,7 @@ function twitch_blinds_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.pool_flags.twitch_panel_toggle_args
+			local args_array = G.GAME.pool_flags.twbl_ui_command_info_args
 			local do_update = false
 			if args then
 				do_update = true
@@ -956,7 +956,7 @@ function twitch_blinds_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.pool_flags.twitch_panel_toggle_args = args_array
+				G.GAME.pool_flags.twbl_ui_command_info_args = args_array
 			end
 
 			local element = panel.element
@@ -1170,7 +1170,7 @@ function twitch_blinds_init_ui()
 	function UI.set_panel(panel_name, write, ...)
 		local result = UI.current_panel.set(panel_name, ...)
 		if write then
-			G.GAME.pool_flags.twitch_current_panel = result
+			G.GAME.pool_flags.twbl_ui_current_panel = result
 		end
 		return result
 	end
@@ -1178,7 +1178,7 @@ function twitch_blinds_init_ui()
 	function UI.remove_panel(panel_name, write)
 		local result = UI.current_panel.remove(panel_name)
 		if write then
-			G.GAME.pool_flags.twitch_current_panel = result
+			G.GAME.pool_flags.twbl_ui_current_panel = result
 		end
 		return result
 	end
@@ -1204,7 +1204,7 @@ function twitch_blinds_init_ui()
 
 	function UI.set_panel_from_save()
 		UI.reset_panels()
-		UI.set_panel(G.GAME.pool_flags.twitch_current_panel or nil, false, true)
+		UI.set_panel(G.GAME.pool_flags.twbl_ui_current_panel or nil, false, true)
 	end
 
 	-- Events

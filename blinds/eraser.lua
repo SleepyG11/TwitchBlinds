@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("eraser", false),
+	key = TW_BL.BLINDS.register("eraser", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -41,11 +41,11 @@ function tw_blind:defeat()
 		local max_score = 0
 		local result_target = pseudorandom_element(G.jokers.cards, pseudoseed("twbl_eraser"))
 		for _, card in ipairs(G.jokers.cards) do
-			if card.ability.twitch_target and card.ability.twitch_target > max_score then
+			if card.ability.twbl_state_target_score and card.ability.twbl_state_target_score > max_score then
 				result_target = card
-				max_score = card.ability.twitch_target
+				max_score = card.ability.twbl_state_target_score
 			end
-			card.ability.twitch_target = nil
+			card.ability.twbl_state_target_score = nil
 		end
 
 		local v = result_target
@@ -76,15 +76,15 @@ function tw_blind:defeat()
 	end
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("eraser"), function(command, username, raw_index)
-	if command ~= "target" or G.GAME.blind.name ~= get_twitch_blind_key("eraser") then
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("eraser"), function(command, username, raw_index)
+	if command ~= "target" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("eraser") then
 		return
 	end
 	local index = tonumber(raw_index)
 	if index and G.jokers and G.jokers.cards and G.jokers.cards[index] then
 		G.GAME.blind:wiggle()
 		local card = G.jokers.cards[index]
-		card.ability.twitch_target = (card.ability.twitch_target or 0) + 1
+		card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.XMULT })
 	else
 		TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)

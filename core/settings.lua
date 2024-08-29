@@ -5,7 +5,7 @@ local DEFAULT_SETTINGS = {
 	forced_blind = nil,
 }
 
-function twitch_blinds_init_settings()
+function twbl_init_settings()
 	local SETTINGS = {
 		default = DEFAULT_SETTINGS,
 		temp = nil,

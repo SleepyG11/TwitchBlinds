@@ -27,7 +27,7 @@ local blinds_to_load = {
 	"incrementor",
 }
 
-function twitch_blinds_init_blinds()
+function twbl_init_blinds()
 	local BLINDS = {
 		--- @type string[]
 		loaded = {},
@@ -51,7 +51,7 @@ function twitch_blinds_init_blinds()
 		}),
 	}
 
-	function register_twitch_blind(blind_name, final_boss)
+	function BLINDS.register(blind_name, final_boss)
 		local full_key = "bl_twbl_" .. blind_name
 		table.insert(BLINDS.loaded, full_key)
 		table.insert((final_boss and BLINDS.final) or BLINDS.regular, full_key)
@@ -60,7 +60,7 @@ function twitch_blinds_init_blinds()
 
 	--- @param blind_name string
 	--- @return string
-	function get_twitch_blind_key(blind_name)
+	function BLINDS.get_key(blind_name)
 		return "bl_twbl_" .. blind_name
 	end
 
@@ -97,7 +97,7 @@ function twitch_blinds_init_blinds()
 		local _, boss = pseudorandom_element(eligible_bosses, pseudoseed("twbl_boss_pick"))
 		-- If not bosses in pool, return blank
 		if not boss then
-			return get_twitch_blind_key("blank")
+			return TW_BL.BLINDS.get_key("blank")
 		end
 		G.GAME.bosses_used[boss] = (G.GAME.bosses_used[boss] or 0) + 1
 		return boss
@@ -198,9 +198,9 @@ function twitch_blinds_init_blinds()
 	--- Save twitch blinds in game
 	--- @param blinds string[] Generate new list and save in game if not present
 	--- @return boolean `true` if set successfully, `false` if `G.GAME` is not ready
-	function BLINDS.set_twitch_blinds_to_game(blinds)
+	function BLINDS.set_voting_blinds_to_game(blinds)
 		if G.GAME and G.GAME.pool_flags then
-			G.GAME.pool_flags.twitch_blinds = blinds
+			G.GAME.pool_flags.twbl_voting_blinds = blinds
 			return true
 		else
 			return false
@@ -211,10 +211,10 @@ function twitch_blinds_init_blinds()
 	--- @param pool_type integer Generate new list and save if not present
 	--- @param generate_if_missing boolean Generate new list and save if not present
 	--- @return string[]|nil
-	function BLINDS.get_twitch_blinds_from_game(pool_type, generate_if_missing)
+	function BLINDS.get_voting_blinds_from_game(pool_type, generate_if_missing)
 		if G.GAME and G.GAME.pool_flags then
-			if G.GAME.pool_flags.twitch_blinds then
-				return G.GAME.pool_flags.twitch_blinds
+			if G.GAME.pool_flags.twbl_voting_blinds then
+				return G.GAME.pool_flags.twbl_voting_blinds
 			end
 
 			local ante_offset = 0
@@ -223,7 +223,7 @@ function twitch_blinds_init_blinds()
 			end
 
 			if generate_if_missing then
-				return BLINDS.setup_new_twitch_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, true)
+				return BLINDS.generate_new_voting_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, true)
 			end
 		else
 			return nil
@@ -327,13 +327,13 @@ function twitch_blinds_init_blinds()
 	--- @param pool_type integer Generate new list and save if not present
 	--- @param ante_offset integer
 	--- @return string[]|nil
-	function BLINDS.setup_new_twitch_blinds(pool_type, ante_offset, amount, write)
+	function BLINDS.generate_new_voting_blinds(pool_type, ante_offset, amount, set)
 		local pool = BLINDS.get_blinds_pool(pool_type, ante_offset)
 		local new_list = BLINDS.get_list_of_random_boss_blinds(pool, amount)
-		if not write then
+		if not set then
 			return new_list
 		end
-		local success = BLINDS.set_twitch_blinds_to_game(new_list)
+		local success = BLINDS.set_voting_blinds_to_game(new_list)
 		if success then
 			return new_list
 		end

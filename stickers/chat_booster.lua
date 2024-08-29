@@ -73,6 +73,13 @@ function twitch_chat_booster_select_targets(card, set_highlighted)
 				card.ability.consumeable.max_highlighted or card.ability.consumeable.min_highlighted
 			)
 		)
+		-- Prevent selecting 2 cards at once
+		if card.area == G.consumeables then
+			G.pack_cards:unhighlight_all()
+		end
+		if card.area == G.pack_cards then
+			G.consumeables:unhighlight_all()
+		end
 	else
 		G.hand:unhighlight_all()
 	end

@@ -1,6 +1,8 @@
 function twbl_init_utilities()
 	local UTILITIES = {}
 
+    TW_BL.UTILITIES = UTILITIES
+
 	function UTILITIES.get_vote_variant(target)
 		if not TW_BL.CHAT_COMMANDS.vote_variants then
 			return nil

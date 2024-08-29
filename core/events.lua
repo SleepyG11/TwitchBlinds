@@ -4,6 +4,8 @@ function twbl_init_events()
 		_emitters = {},
 	}
 
+    TW_BL.EVENTS = EVENTS
+
 	function EVENTS.add_listener(event, key, callback)
 		if not EVENTS._emitters[event] then
 			EVENTS._emitters[event] = {}

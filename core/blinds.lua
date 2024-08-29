@@ -51,6 +51,8 @@ function twbl_init_blinds()
 		}),
 	}
 
+    TW_BL.BLINDS = BLINDS
+
 	function BLINDS.register(blind_name, final_boss)
 		local full_key = "bl_twbl_" .. blind_name
 		table.insert(BLINDS.loaded, full_key)

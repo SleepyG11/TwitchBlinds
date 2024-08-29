@@ -28,6 +28,8 @@ function twbl_init_chat_commands()
 		vote_score = {},
 	}
 
+    TW_BL.CHAT_COMMANDS = CHAT_COMMANDS
+
 	local needs_reconnect = false
 	local reconnect_timeout = 0
 

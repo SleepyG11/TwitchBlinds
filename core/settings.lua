@@ -12,6 +12,8 @@ function twbl_init_settings()
 		current = table_defaults(TW_BL.current_mod.config, DEFAULT_SETTINGS),
 	}
 
+    TW_BL.SETTINGS = SETTINGS
+
 	function SETTINGS.create_temp()
 		SETTINGS.temp = table_copy(SETTINGS.current)
 	end

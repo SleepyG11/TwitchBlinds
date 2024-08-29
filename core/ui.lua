@@ -20,6 +20,8 @@ function twbl_init_ui()
 		},
 	}
 
+    TW_BL.UI = UI
+
 	-- Parts
 	------------------------------
 

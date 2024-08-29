@@ -1,7 +1,7 @@
 local MAX_SIZE = to_big(8)
-local MULT_INCREMENT = to_big(0.06)
+local MULT_INCREMENT = to_big(0.12)
 local TIME_DELAY = 1 -- In seconds
--- Total time to full grow: 1 / 0.06 * (8 - 2) = 100 seconds
+-- Total time to full grow: 1 / 0.12 * (8 - 2) = 50 seconds
 
 local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("clock", false),

@@ -11,6 +11,8 @@ SMODS.Sticker({
 	},
 })
 
+-- Implementation in lovely/stickers_chat_booster.toml
+
 -- TODO: proper select blocking for cards that was created (like Familiar)
 
 local function select_cards_in_pack(amount)

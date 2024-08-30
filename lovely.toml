@@ -3,78 +3,6 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# The Trash Can - Remove scored cards
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = "for k, v in ipairs(scoring_hand) do v.ability.perma_debuff = true end"
-position = "after"
-payload = '''
-elseif G.GAME.blind.name == TW_BL.BLINDS.get_key("trash_can") then
-    blind_trash_can_remove_scored_cards(scoring_hand)
-'''
-match_indent = true
-
-# The Precision - Discard only 5 cards
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = "G.FUNCS.can_discard = function(e)"
-position = "after"
-payload = '''
-if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == TW_BL.BLINDS.get_key("precision") and #G.hand.highlighted <= 4) then 
-    e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-    e.config.button = nil
-    return
-end
-'''
-match_indent = true
-
-# The Greed - No shop
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = 'function Game:update_shop(dt)'
-position = "after"
-payload = """
-if G.GAME.pool_flags.twbl_no_shop then
-  G.GAME.pool_flags.twbl_no_shop = nil
-  return Game:update_blind_select(dt)
-end
-"""
-match_indent = true
-
-# The Misstock - specific item stock
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = 'if polled_rate > check_rate and polled_rate <= check_rate + v.val then'
-position = "after"
-payload = """
-v = twbl_blind_misstock_set_type(v)
-"""
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/UI_definitions.lua"
-pattern = '''if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then'''
-position = "at"
-payload = """
-if (v.type == 'Base' or v.type == 'Enhanced') and ((G.GAME.pool_flags.twbl_blind_misstock_pool == "Enhanced" or G.GAME.used_vouchers["v_illusion"]) and pseudorandom(pseudoseed('illusion')) > 0.8) then
-"""
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.toggle_shop = function(e)'
-position = "after"
-payload = """
-G.GAME.pool_flags.twbl_blind_misstock_pool = nil
-"""
-match_indent = true
-
 # WIP
 # [[patches]]
 # [patches.pattern]
@@ -87,44 +15,6 @@ match_indent = true
 # """
 # match_indent = true
 
-# Chat Booster sticker
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = 'function Card:open()'
-position = "after"
-payload = """
-if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
-    twbl_sticker_chat_booster_open(self)
-end
-"""
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
-position = "after"
-payload = """
-if G.booster_pack then
-    twbl_sticker_chat_booster_exit()
-end
-"""
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "cardarea.lua"
-pattern = 'self:emplace(card, nil, stay_flipped)'
-position = "before"
-payload = """
-if G.GAME.pool_flags.twbl_state_chat_booster then
-    card.ability.twbl_sticker_chat_booster_pseudo = pseudorandom(pseudoseed("twbl_chat_booster"))
-    card.ability.twbl_state_prevent_action = true
-end
-"""
-match_indent = true
-
 [[patches]]
 [patches.pattern]
 target = "card.lua"
@@ -132,17 +22,6 @@ pattern = '''function Card:click()'''
 position = "after"
 payload = '''
 if self.ability and self.ability.twbl_state_prevent_action then return end
-'''
-match_indent = true
-overwrite = false
-
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = '''function Card:highlight(is_higlighted)'''
-position = "after"
-payload = '''
-if self.area then twbl_sticker_chat_booster_select_targets(self, is_higlighted) end
 '''
 match_indent = true
 overwrite = false

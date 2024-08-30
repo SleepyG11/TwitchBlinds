@@ -1,0 +1,34 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = 'if polled_rate > check_rate and polled_rate <= check_rate + v.val then'
+position = "after"
+payload = """
+v = twbl_blind_misstock_set_type(v)
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/UI_definitions.lua"
+pattern = '''if (v.type == 'Base' or v.type == 'Enhanced') and G.GAME.used_vouchers["v_illusion"] and pseudorandom(pseudoseed('illusion')) > 0.8 then'''
+position = "at"
+payload = """
+if (v.type == 'Base' or v.type == 'Enhanced') and ((G.GAME.pool_flags.twbl_blind_misstock_pool == "Enhanced" or G.GAME.used_vouchers["v_illusion"]) and pseudorandom(pseudoseed('illusion')) > 0.8) then
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = 'G.FUNCS.toggle_shop = function(e)'
+position = "after"
+payload = """
+G.GAME.pool_flags.twbl_blind_misstock_pool = nil
+"""
+match_indent = true

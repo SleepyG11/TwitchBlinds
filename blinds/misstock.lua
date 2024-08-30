@@ -35,6 +35,8 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("cf2f3f"),
 })
 
+-- Implementation in lovely/blinds_misstock.toml
+
 function tw_blind:in_pool()
 	-- Twitch interaction required
 	return false

@@ -1,0 +1,52 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = 'function Card:open()'
+position = "after"
+payload = """
+if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
+    twbl_sticker_chat_booster_open(self)
+end
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
+position = "after"
+payload = """
+if G.booster_pack then
+    twbl_sticker_chat_booster_exit()
+end
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "cardarea.lua"
+pattern = 'self:emplace(card, nil, stay_flipped)'
+position = "before"
+payload = """
+if G.GAME.pool_flags.twbl_state_chat_booster then
+    card.ability.twbl_sticker_chat_booster_pseudo = pseudorandom(pseudoseed("twbl_chat_booster"))
+    card.ability.twbl_state_prevent_action = true
+end
+"""
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''function Card:highlight(is_higlighted)'''
+position = "after"
+payload = '''
+if self.area then twbl_sticker_chat_booster_select_targets(self, is_higlighted) end
+'''
+match_indent = true
+overwrite = false

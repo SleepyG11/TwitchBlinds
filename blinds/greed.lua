@@ -11,7 +11,7 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("bcbcbc"),
 })
 
--- Implementation in lovely.toml
+-- Implementation in lovely/blinds_greed.toml
 
 function tw_blind:set_blind(reset, silent)
 	if reset then

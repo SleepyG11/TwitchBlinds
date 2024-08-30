@@ -8,7 +8,7 @@ local tw_blind = SMODS.Blind({
 		tw_bl = {
 			twitch_blind = true,
 			in_pool = function()
-				return G.jokers and G.jokers.cards and #G.jokers.cards > 1
+				return G.jokers and G.jokers.cards and #G.jokers.cards > 1 and #G.jokers.cards < 20
 			end,
 		},
 	},

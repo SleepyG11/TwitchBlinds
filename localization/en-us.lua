@@ -85,10 +85,32 @@ return {
 				name = "The Vaporation",
 				text = { "Current Jokers", "became Perishable" },
 			},
+			bl_twbl_eraser = {
+				name = "The Eraser",
+				text = { "Chat can select which", "Joker will be destroyed", "after boss defeate" },
+			},
+			bl_twbl_sketch = {
+				name = "The Sketch",
+				text = { "Chat can select which", "Joker will be copied", "after boss defeate" },
+			},
+			bl_twbl_nope = {
+				name = "Nope!",
+				text = { "Nope!" },
+			},
+			bl_twbl_misstock = {
+				name = "The Misstock",
+				text = { "Chat can select which", "single card type will", "appear in next shop" },
+			},
+			bl_twbl_incrementor = {
+				name = "The Incrementor",
+				text = { "Chat can start counting", "to increase blind size" },
+			},
 		},
 	},
 	misc = {
 		dictionary = {
+			twbl_argument_type_Number = "number",
+
 			twbl_position_DEFAULT_singular = "item position",
 			twbl_position_Card_singular = "card position",
 			twbl_position_Joker_singular = "joker position",
@@ -105,6 +127,9 @@ return {
 			k_twbl_banana_ex = "Banana!",
 			k_twbl_banana_qu = "Banana?",
 			k_twbl_taxes_ex = "Taxes!",
+			k_twbl_erased_ex = "Erased!",
+			k_twbl_nope_ex = "Nope!",
+			k_twbl_replaced_ex = "Replaced!",
 
 			k_twbl_status_connected = "Connected.",
 			k_twbl_status_connecting = "Connecting...",
@@ -119,12 +144,19 @@ return {
 			k_twbl_lock_ex = "Lock!",
 			k_twbl_pin_ex = "Pin!",
 			k_twbl_select_ex = "Select!",
+			k_twbl_erase_ex = "Erase!",
+			k_twbl_sketch_ex = "Sketch!",
+			k_twbl_count_ex = "Count!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per user)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per user)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
+			k_twbl_panel_toggle_eraser = "Select a Joker for deletion (once per user)",
+			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
+			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
+			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
 		},
 	},
 }

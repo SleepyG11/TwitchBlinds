@@ -3,46 +3,25 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# The Trash Can: Remove scored cards
+# WIP
+# [[patches]]
+# [patches.pattern]
+# target = "game.lua"
+# pattern = 'G.load_shop_booster = nil'
+# position = "after"
+# payload = """
+# elseif G.GAME.pool_flags.twbl_cursed_boosters then 
+#     twitch_cursed_boosters_setup_shop()
+# """
+# match_indent = true
+
 [[patches]]
 [patches.pattern]
-target = "functions/state_events.lua"
-pattern = "for k, v in ipairs(scoring_hand) do v.ability.perma_debuff = true end"
+target = "card.lua"
+pattern = '''function Card:click()'''
 position = "after"
 payload = '''
-elseif G.GAME.blind.name == get_twitch_blind_key("trash_can") then
-    blind_trash_can_remove_scored_cards(scoring_hand)
+if self.ability and self.ability.twbl_state_prevent_action then return end
 '''
-match_indent = true
-times = 1
-
-# The Precision: Discard only 5 cards
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = "G.FUNCS.can_discard = function(e)"
-position = "after"
-payload = '''
-if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == get_twitch_blind_key("precision") and #G.hand.highlighted <= 4) then 
-    e.config.colour = G.C.UI.BACKGROUND_INACTIVE
-    e.config.button = nil
-    return
-end
-'''
-match_indent = true
-times = 1
-
-# The Greed - No shop
-[[patches]]
-[patches.pattern]
-target = "game.lua"
-pattern = 'function Game:update_shop(dt)'
-position = "after"
-payload = """
-if G.GAME.pool_flags.twitch_no_shop then
-  G.GAME.pool_flags.twitch_no_shop = nil
-  return Game:update_blind_select(dt)
-end
-"""
 match_indent = true
 overwrite = false

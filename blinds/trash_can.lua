@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("trash_can", false),
+	key = TW_BL.BLINDS.register("trash_can", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = 4, max = 10 },
@@ -11,7 +11,7 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("dc6a10"),
 })
 
--- Implementation in lovely.toml
+-- Implementation in lovely/blinds_trash_can.toml
 
 function blind_trash_can_remove_scored_cards(scoring_hand)
 	G.GAME.blind:wiggle()

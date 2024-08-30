@@ -5,12 +5,14 @@ local DEFAULT_SETTINGS = {
 	forced_blind = nil,
 }
 
-function twitch_blinds_init_settings()
+function twbl_init_settings()
 	local SETTINGS = {
 		default = DEFAULT_SETTINGS,
 		temp = nil,
 		current = table_defaults(TW_BL.current_mod.config, DEFAULT_SETTINGS),
 	}
+
+    TW_BL.SETTINGS = SETTINGS
 
 	function SETTINGS.create_temp()
 		SETTINGS.temp = table_copy(SETTINGS.current)

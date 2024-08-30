@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("taxes", false),
+	key = TW_BL.BLINDS.register("taxes", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = 2, max = 10 },

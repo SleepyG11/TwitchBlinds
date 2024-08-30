@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("greed", false),
+	key = TW_BL.BLINDS.register("greed", false),
 	dollars = 8,
 	mult = 2,
 	boss = { min = 1, max = 10 },
@@ -11,11 +11,11 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("bcbcbc"),
 })
 
--- Implementation in lovely.toml
+-- Implementation in lovely/blinds_greed.toml
 
 function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-	G.GAME.pool_flags.twitch_no_shop = true
+	G.GAME.pool_flags.twbl_no_shop = true
 end

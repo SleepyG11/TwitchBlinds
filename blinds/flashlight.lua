@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("flashlight", false),
+	key = TW_BL.BLINDS.register("flashlight", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -33,11 +33,11 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("flashlight"), function(command, username, raw_index)
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("flashlight"), function(command, username, raw_index)
 	if command ~= "toggle" then
 		return
 	end
-	if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= get_twitch_blind_key("flashlight") then
+	if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("flashlight") then
 		return
 	end
 	local index = tonumber(raw_index)

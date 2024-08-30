@@ -1,0 +1,17 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = 'function Game:update_shop(dt)'
+position = "after"
+payload = """
+if G.GAME.pool_flags.twbl_no_shop then
+  G.GAME.pool_flags.twbl_no_shop = nil
+  return Game:update_blind_select(dt)
+end
+"""
+match_indent = true

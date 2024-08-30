@@ -4,7 +4,7 @@ local PANEL_VISIBLE_Y = -6.1
 local PANEL_HIDDEN_Y = -9.1
 local PANEL_ANIMATION_DELAY = 0.75
 
-function twitch_blinds_init_ui()
+function twbl_init_ui()
 	local UI = {
 		PARTS = {},
 
@@ -19,6 +19,8 @@ function twitch_blinds_init_ui()
 			element = nil,
 		},
 	}
+
+    TW_BL.UI = UI
 
 	-- Parts
 	------------------------------
@@ -191,7 +193,7 @@ function twitch_blinds_init_ui()
 
 	-- Settings
 	------------------------------
-	-- TODO: localize settings
+
 	function UI.settings.get_settings_tab(_tab)
 		local forcing_labels = { "None" }
 
@@ -304,7 +306,7 @@ function twitch_blinds_init_ui()
 								{
 									n = G.UIT.O,
 									config = {
-										id = "twitch_settings_status",
+										id = "twbl_settings_status",
 										object = DynaText({
 											string = UI.settings.get_status_text(),
 											colours = { G.C.WHITE },
@@ -423,7 +425,7 @@ function twitch_blinds_init_ui()
 	function UI.settings.update_status(status)
 		if G.OVERLAY_MENU then
 			local text = UI.settings.get_status_text()
-			local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twitch_settings_status")
+			local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twbl_settings_status")
 			if status_element then
 				status_element.config.object.config.string = { text }
 				status_element.config.object:update_text(true)
@@ -614,7 +616,7 @@ function twitch_blinds_init_ui()
 		end,
 		update = function(panel, full_update)
 			local element = panel.element
-			local blinds_to_vote = TW_BL.BLINDS.get_twitch_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
+			local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
 			if blinds_to_vote then
 				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
 				for i = 1, TW_BL.BLINDS.blinds_to_vote do
@@ -637,10 +639,232 @@ function twitch_blinds_init_ui()
 		end,
 	}
 
+	UI.panels.voting_process_3 = {
+		localize_status = function(panel, status)
+			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
+				local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args or { status = "k_twbl_toggle_ex" }
+				return localize(args_array.status)
+			end
+		end,
+		UIBox_definition = function(panel)
+			return {
+				n = G.UIT.ROOT,
+				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							padding = 0.04,
+						},
+						nodes = {
+							{
+								n = G.UIT.C,
+								config = { minw = 1.915, align = "c" },
+								nodes = {
+									{
+										n = G.UIT.O,
+										config = {
+											id = "twbl_voting_status",
+											object = DynaText({
+												string = { "" },
+												colours = { G.C.UI.TEXT_LIGHT },
+												shadow = false,
+												rotate = false,
+												float = true,
+												bump = true,
+												scale = 0.35,
+												spacing = 1,
+												pop_in = 1,
+											}),
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 1",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_1_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_1_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_1_percent",
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 2",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_2_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_2_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_2_percent",
+										},
+									},
+								},
+							},
+							{
+								n = G.UIT.C,
+								config = { minw = 4.25, align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "vote 3",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_vote_3_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_3_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "0%",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_vote_3_percent",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+		end,
+		update = function(panel, full_update, args)
+			local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args
+			local do_update = false
+			if args then
+				do_update = true
+				args_array = args
+			end
+			if not args_array then
+				do_update = true
+				args_array = {
+					command = "vote",
+					status = "k_twbl_vote_ex",
+					variants = { "", "", "" },
+				}
+			end
+			if do_update then
+				G.GAME.pool_flags.twbl_ui_voting_process_args = args_array
+			end
+
+			local element = panel.element
+			local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
+			for i = 1, 3 do
+				if full_update then
+					local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
+					if text_element then
+						text_element.config.text = localize(args_array.variants[i])
+					end
+
+					local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")
+					if command_element then
+						command_element.config.text = args_array.command .. " " .. tostring(i)
+					end
+				end
+				local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
+				if percent_element then
+					local variant_status = vote_status[tostring(i)]
+					percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
+				end
+			end
+
+			element:recalculate()
+		end,
+	}
+
 	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twitch_panel_toggle_args or { status = "k_twbl_toggle_ex" }
+				local args_array = G.GAME.pool_flags.twbl_ui_command_info_args or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
 		end,
@@ -718,7 +942,7 @@ function twitch_blinds_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.pool_flags.twitch_panel_toggle_args
+			local args_array = G.GAME.pool_flags.twbl_ui_command_info_args
 			local do_update = false
 			if args then
 				do_update = true
@@ -734,14 +958,17 @@ function twitch_blinds_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.pool_flags.twitch_panel_toggle_args = args_array
+				G.GAME.pool_flags.twbl_ui_command_info_args = args_array
 			end
 
 			local element = panel.element
-			-- TODO: make it less bad?
 			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
 			if command_element then
-				command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
+				if args_array.position then
+					command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
+				else
+					command_element.config.text = args_array.command
+				end
 			end
 			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
 			if text_element then
@@ -945,7 +1172,7 @@ function twitch_blinds_init_ui()
 	function UI.set_panel(panel_name, write, ...)
 		local result = UI.current_panel.set(panel_name, ...)
 		if write then
-			G.GAME.pool_flags.twitch_current_panel = result
+			G.GAME.pool_flags.twbl_ui_current_panel = result
 		end
 		return result
 	end
@@ -953,7 +1180,7 @@ function twitch_blinds_init_ui()
 	function UI.remove_panel(panel_name, write)
 		local result = UI.current_panel.remove(panel_name)
 		if write then
-			G.GAME.pool_flags.twitch_current_panel = result
+			G.GAME.pool_flags.twbl_ui_current_panel = result
 		end
 		return result
 	end
@@ -979,7 +1206,7 @@ function twitch_blinds_init_ui()
 
 	function UI.set_panel_from_save()
 		UI.reset_panels()
-		UI.set_panel(G.GAME.pool_flags.twitch_current_panel or nil, false, true)
+		UI.set_panel(G.GAME.pool_flags.twbl_ui_current_panel or nil, false, true)
 	end
 
 	-- Events

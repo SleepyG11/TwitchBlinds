@@ -1,7 +1,7 @@
 -- WIP
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("spiral", false),
+	key = TW_BL.BLINDS.register("spiral", false),
 	dollars = 5,
 	mult = 2,
 	boss = {

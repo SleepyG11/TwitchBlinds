@@ -1,9 +1,15 @@
-function twitch_blinds_init_events()
+function twbl_init_events()
 	local EVENTS = {
 		--- @type { [string]: { [string]: function } }
 		_emitters = {},
 	}
 
+    TW_BL.EVENTS = EVENTS
+
+    -- Add listener to event
+    --- @param event string Event name
+    --- @param key string Unique event key
+    --- @param callback function Event handler
 	function EVENTS.add_listener(event, key, callback)
 		if not EVENTS._emitters[event] then
 			EVENTS._emitters[event] = {}
@@ -14,6 +20,9 @@ function twitch_blinds_init_events()
 		return replaced
 	end
 
+    -- Add listener from event
+    --- @param event string Event name
+    --- @param key string Unique event key
 	function EVENTS.remove_listener(event, key)
 		if not EVENTS._emitters[event] then
 			EVENTS._emitters[event] = {}
@@ -23,6 +32,9 @@ function twitch_blinds_init_events()
 		return deleted and true or false
 	end
 
+    -- Emit event
+    --- @param event string Event name
+    --- @param ... any[] Arguments to pass in handlers
 	function EVENTS.emit(event, ...)
 		if not EVENTS._emitters[event] then
 			EVENTS._emitters[event] = {}

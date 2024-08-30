@@ -1,10 +1,10 @@
 local MAX_SIZE = to_big(8)
-local MULT_INCREMENT = to_big(0.06)
+local MULT_INCREMENT = to_big(0.12)
 local TIME_DELAY = 1 -- In seconds
--- Total time to full grow: 1 / 0.06 * (8 - 2) = 100 seconds
+-- Total time to full grow: 1 / 0.12 * (8 - 2) = 50 seconds
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("clock", false),
+	key = TW_BL.BLINDS.register("clock", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = 2, max = 10 },
@@ -26,7 +26,7 @@ local function increment_clock_chips(current_chips, base_chips)
 	return to_big(base_chips) * to_big(math.min(MAX_SIZE, mult + MULT_INCREMENT))
 end
 
-TW_BL.EVENTS.add_listener("game_update", get_twitch_blind_key("clock"), function(dt)
+TW_BL.EVENTS.add_listener("game_update", TW_BL.BLINDS.get_key("clock"), function(dt)
 	if not G.GAME or G.SETTINGS.paused then
 		return
 	end
@@ -36,7 +36,7 @@ TW_BL.EVENTS.add_listener("game_update", get_twitch_blind_key("clock"), function
 		if
 			G.GAME
 			and G.GAME.blind
-			and G.GAME.blind.name == get_twitch_blind_key("clock")
+			and G.GAME.blind.name == TW_BL.BLINDS.get_key("clock")
 			and G.GAME.round_resets.blind_states.Boss == "Current"
 		then
 			-- TODO: need to fix a problem with no chips saving

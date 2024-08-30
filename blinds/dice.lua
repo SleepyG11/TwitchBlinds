@@ -3,7 +3,7 @@
 local LOSE_ODDS = 6
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("dice", false),
+	key = TW_BL.BLINDS.register("dice", false),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -32,11 +32,11 @@ function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_single_use("roll", false, true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", get_twitch_blind_key("dice"), function(command, username)
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("dice"), function(command, username)
 	if command ~= "roll" then
 		return
 	end
-	if G.GAME.blind.name ~= get_twitch_blind_key("dice") then
+	if G.GAME.blind.name ~= TW_BL.BLINDS.get_key("dice") then
 		return
 	end
 	local color = G.C.MONEY

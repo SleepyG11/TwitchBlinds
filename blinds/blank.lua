@@ -1,7 +1,7 @@
 local REPLACE_ODDS = 1000
 
 local tw_blind = SMODS.Blind({
-	key = register_twitch_blind("blank", false),
+	key = TW_BL.BLINDS.register("blank", false),
 	dollars = 0,
 	mult = 0,
 	boss = { min = 1, max = 4 },

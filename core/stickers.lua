@@ -1,7 +1,7 @@
 local nativefs = require("nativefs")
 
 local stickers_to_load = {
-	"chat_booster",
+	-- "chat_booster",
 }
 
 function twbl_init_stickers()

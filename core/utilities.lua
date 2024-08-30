@@ -3,6 +3,9 @@ function twbl_init_utilities()
 
     TW_BL.UTILITIES = UTILITIES
 
+    --- Get index of a voting blind
+    --- @param target "winner" | "loser" | integer | nil
+    --- @return string or nil
 	function UTILITIES.get_vote_variant(target)
 		if not TW_BL.CHAT_COMMANDS.vote_variants then
 			return nil
@@ -30,6 +33,10 @@ function twbl_init_utilities()
 		end
 	end
 
+	--- Generate new list of blinds
+	--- @param ante_offset integer Difference between current ante and target ante
+    --- @param amount integer Amount of blinds to choose
+	--- @return string[]|nil
 	function UTILITIES.get_new_bosses(ante_offset, amount)
 		return TW_BL.BLINDS.generate_new_voting_blinds(
 			TW_BL.SETTINGS.current.pool_type,
@@ -39,9 +46,15 @@ function twbl_init_utilities()
 		)
 	end
 
+    --- Replace one of voting bosses
+    --- @param blind string Blins key
+    --- @param target "winner" | "loser" | integer | nil Specific blind to search or random if `nil`
+    --- @param notify boolean Display attention text on panel if blind is replaced
+    --- @param reset boolean Reset voting score
 	function UTILITIES.replace_voting_blind(blind, target, notify, reset)
 		local variant = TW_BL.UTILITIES.get_vote_variant(target)
 		if variant then
+            ---@diagnostic disable-next-line: cast-local-type
 			variant = tonumber(variant)
 		end
 		local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
@@ -79,6 +92,8 @@ function twbl_init_utilities()
 		return true
 	end
 
+    --- Check is current boss is The Chat
+    --- @return boolean
 	function UTILITIES.is_chat_blind_present()
 		return G.GAME and G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind
 	end

@@ -193,7 +193,7 @@ function twbl_init_ui()
 
 	-- Settings
 	------------------------------
-	-- TODO: localize settings
+
 	function UI.settings.get_settings_tab(_tab)
 		local forcing_labels = { "None" }
 

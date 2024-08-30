@@ -15,13 +15,13 @@ priority = 0
 # """
 # match_indent = true
 
-# [[patches]]
-# [patches.pattern]
-# target = "card.lua"
-# pattern = '''function Card:click()'''
-# position = "after"
-# payload = '''
-# if self.ability and self.ability.twbl_state_prevent_action then return end
-# '''
-# match_indent = true
-# overwrite = false
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''function Card:click()'''
+position = "after"
+payload = '''
+if self.ability and self.ability.twbl_state_prevent_action then return end
+'''
+match_indent = true
+overwrite = false

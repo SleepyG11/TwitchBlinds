@@ -20,7 +20,7 @@ function twbl_init_ui()
 		},
 	}
 
-    TW_BL.UI = UI
+	TW_BL.UI = UI
 
 	-- Parts
 	------------------------------
@@ -367,6 +367,23 @@ function twbl_init_ui()
 						}),
 					},
 				},
+				{
+					n = G.UIT.R,
+					config = {
+						align = "cm",
+						padding = 0.05,
+						colour = box_colour,
+						r = 0.3,
+					},
+					nodes = {},
+				},
+				create_toggle({
+					callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
+					label_scale = 0.4,
+					label = "Natural appearing Chat Booster sticker",
+					ref_table = TW_BL.SETTINGS.temp,
+					ref_value = "natural_chat_booster_sticker",
+				}),
 			}
 			if TW_BL.__DEV_MODE then
 				table.insert(result.nodes, {
@@ -1138,6 +1155,11 @@ function twbl_init_ui()
 
 	function G.FUNCS.twbl_settings_change_forced_blind(args)
 		TW_BL.SETTINGS.temp.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
+		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
 		TW_BL.SETTINGS.save()
 	end
 

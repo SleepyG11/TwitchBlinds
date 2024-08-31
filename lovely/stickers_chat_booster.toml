@@ -1,0 +1,78 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# On booster pack open
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = 'function Card:open()'
+position = "after"
+payload = """
+if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
+    twbl_sticker_chat_booster_open(self)
+end
+"""
+match_indent = true
+
+# On booster pack exit
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
+position = "after"
+payload = """
+if G.booster_pack then
+    twbl_sticker_chat_booster_exit()
+end
+"""
+match_indent = true
+
+# Select cards for consumable
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''function Card:highlight(is_higlighted)'''
+position = "after"
+payload = '''
+if self.area then twbl_sticker_chat_booster_select_targets(self, is_higlighted) end
+'''
+match_indent = true
+overwrite = false
+
+# Prevent action with cards in chat booster
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''function Card:click()'''
+position = "after"
+payload = '''
+if G.GAME.pool_flags.twbl_state_chat_booster and self.area == G.hand then return false end
+'''
+match_indent = true
+overwrite = false
+
+# Apply sticker on booster pack in shop
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''G.shop_booster:emplace(card)'''
+position = "after"
+payload = '''
+twbl_sticker_chat_booster_naturally_apply(card, G.shop_booster)
+'''
+match_indent = true
+overwrite = false
+
+# Apply sticker on booster pack on create_card
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if card.ability.consumeable and not skip_materialize then card:start_materialize() end'''
+position = "after"
+payload = '''
+twbl_sticker_chat_booster_naturally_apply(card, area)
+'''
+match_indent = true
+overwrite = false

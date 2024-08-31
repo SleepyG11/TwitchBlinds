@@ -48,7 +48,7 @@ target = "card.lua"
 pattern = '''function Card:click()'''
 position = "after"
 payload = '''
-if G.GAME.pool_flags.twbl_state_chat_booster and self.area == G.hand then return false end
+if G.GAME.twbl.state_chat_booster and self.area == G.hand then return false end
 '''
 match_indent = true
 overwrite = false

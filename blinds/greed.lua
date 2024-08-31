@@ -17,5 +17,5 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-	G.GAME.pool_flags.twbl_no_shop = true
+	G.GAME.twbl.no_shop = true
 end

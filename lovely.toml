@@ -10,7 +10,7 @@ priority = 0
 # pattern = 'G.load_shop_booster = nil'
 # position = "after"
 # payload = """
-# elseif G.GAME.pool_flags.twbl_cursed_boosters then 
+# elseif G.GAME.twbl.cursed_boosters then 
 #     twitch_cursed_boosters_setup_shop()
 # """
 # match_indent = true

@@ -21,7 +21,7 @@ end
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("count", false, true)
-	TW_BL.UI.set_panel("command_info_1", true, true, {
+	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "count",
 		status = "k_twbl_count_ex",
 		position = "twbl_argument_type_Number",
@@ -32,7 +32,7 @@ end
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("count", false, true)
-	TW_BL.UI.remove_panel("command_info_1", true)
+	TW_BL.UI.remove_panel("game_top", "command_info_1", true)
 end
 
 TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("incrementor"), function(command, username, raw_number)

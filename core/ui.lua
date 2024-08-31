@@ -1,5 +1,3 @@
--- Several part of code taken from https://github.com/OceanRamen/Saturn
-
 local PANEL_VISIBLE_Y = -6.1
 local PANEL_HIDDEN_Y = -9.1
 local PANEL_ANIMATION_DELAY = 0.75
@@ -8,12 +6,9 @@ function twbl_init_ui()
 	local UI = {
 		PARTS = {},
 
-		current_panel = {
-			config = nil,
-			name = nil,
-		},
-
 		panels = {},
+		--- @type table<string, PanelController>
+		controllers = {},
 
 		settings = {
 			element = nil,
@@ -22,173 +17,168 @@ function twbl_init_ui()
 
 	TW_BL.UI = UI
 
-	-- Parts
+	-- PanelController class
 	------------------------------
 
-	function UI.PARTS.create_toggle(args)
-		args = args or {}
-		args.active_colour = args.active_colour or G.C.RED
-		args.inactive_colour = args.inactive_colour or G.C.BLACK
-		args.w = args.w or 3
-		args.h = args.h or 0.5
-		args.scale = args.scale or 1
-		args.label = args.label or nil
-		args.label_scale = args.label_scale or 0.4
-		args.ref_table = args.ref_table or {}
-		args.ref_value = args.ref_value or "test"
+	--- @class PanelController
+	local PanelController = Object:extend()
 
-		local check = Sprite(0, 0, 0.5 * args.scale, 0.5 * args.scale, G.ASSET_ATLAS["icons"], { x = 1, y = 0 })
-		check.states.drag.can = false
-		check.states.visible = false
+	function PanelController:init(key_append)
+		self.key_append = key_append
 
-		local info = nil
-		if args.info then
-			info = {}
-			for k, v in ipairs(args.info) do
-				table.insert(info, {
-					n = G.UIT.R,
-					config = { align = "cm", minh = 0.05 },
-					nodes = {
-						{ n = G.UIT.T, config = { text = v, scale = 0.25, colour = G.C.UI.TEXT_LIGHT } },
-					},
-				})
-			end
-			info = { n = G.UIT.R, config = { align = "cm", minh = 0.05 }, nodes = info }
-		end
+		self.panel = nil
+		self.panel_key = nil
 
-		local t = {
-			n = args.col and G.UIT.C or G.UIT.R,
-			config = { align = "cm", padding = 0.1, r = 0.1, colour = G.C.CLEAR, focus_args = { funnel_from = true } },
-			nodes = {
-				{
-					n = G.UIT.C,
-					config = { align = "cl", minw = 0.3 * args.w },
-					nodes = {
-						{
-							n = G.UIT.C,
-							config = { align = "cm", r = 0.1, colour = G.C.BLACK },
-							nodes = {
-								{
-									n = G.UIT.C,
-									config = {
-										align = "cm",
-										r = 0.1,
-										padding = 0.03,
-										minw = 0.4 * args.scale,
-										minh = 0.4 * args.scale,
-										outline_colour = G.C.WHITE,
-										outline = 1.2 * args.scale,
-										line_emboss = 0.5 * args.scale,
-										ref_table = args,
-										colour = args.inactive_colour,
-										button = "toggle_button",
-										button_dist = 0.2,
-										hover = true,
-										toggle_callback = args.callback,
-										func = "toggle",
-										focus_args = { funnel_to = true },
-									},
-									nodes = {
-										{ n = G.UIT.O, config = { object = check } },
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		}
-		if args.label then
-			ins = {
-				n = G.UIT.C,
-				config = { align = "cr", minw = args.w },
-				nodes = {
-					{
-						n = G.UIT.T,
-						config = { text = args.label, scale = args.label_scale, colour = G.C.UI.TEXT_LIGHT },
-					},
-					{ n = G.UIT.B, config = { w = 0.1, h = 0.1 } },
-				},
-			}
-			table.insert(t.nodes, 1, ins)
-		end
-		if args.info then
-			t = {
-				n = args.col and G.UIT.C or G.UIT.R,
-				config = { align = "cm" },
-				nodes = {
-					t,
-					info,
-				},
-			}
-		end
-		return t
+		self.previous_panel = nil
+		self.previous_panel_key = nil
+
+		return self
 	end
 
-	function UI.PARTS.create_option_toggle(args)
-		local name = args.name or ""
-		local box_colour = args.box_colour or G.C.L_BLACK
-		local toggle_ref = args.toggle_ref
-		local toggle_value = args.toggle_value or "enabled"
-		local config_button = args.config_button or nil
-
-		local t = {
-			n = G.UIT.R,
+	function PanelController:get_panel_UIBox(definition)
+		return UIBox({
+			definition = definition,
 			config = {
-				align = "cm",
-				padding = 0.05,
-				colour = box_colour,
-				r = 0.3,
+				align = "cmri",
+				offset = { x = 0, y = 0 },
+				major = G.ROOM_ATTACH,
+				id = "twbl_panel",
 			},
-			nodes = {
-				{
-					n = G.UIT.C,
-					config = { align = "cm", padding = 0.1 },
-					nodes = {
-						{
-							n = G.UIT.O,
-							config = {
-								object = DynaText({
-									string = name,
-									colours = { G.C.WHITE },
-									shadow = false,
-									scale = 0.5,
-								}),
-							},
-						},
-					},
-				},
-				{
-					n = G.UIT.C,
-					config = { align = "cm", padding = 0.1 },
-					nodes = {
-						UI.PARTS.create_toggle({
-							ref_table = toggle_ref,
-							ref_value = toggle_value,
-							active_colour = G.C.BOOSTER,
-							callback = args.callback or function(x) end,
-							col = true,
-						}),
-					},
-				},
-				config_button and {
-					n = G.UIT.C,
-					config = { align = "cm", padding = 0.1 },
-					nodes = {
-						UIBox_button({
-							label = { "Config" },
-							button = config_button,
-							minw = 2,
-							minh = 0.75,
-							scale = 0.5,
-							colour = G.C.BOOSTER,
-							col = true,
-						}),
-					},
-				},
-			},
-		}
-		return t
+		})
+	end
+
+	function PanelController:before_remove(panel, panel_name, continue)
+		continue()
+	end
+	function PanelController:remove(panel_name, write)
+		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
+			return
+		end
+		return self:set(nil, write, true)
+	end
+	function PanelController:reset(full)
+		self.panel = nil
+		self.panel_key = nil
+		if full then
+			self.previous_panel = nil
+			self.previous_panel_key = nil
+		end
+		for _, v in pairs(UI.panels) do
+			if v.parent == self then
+				v.parent = nil
+				if v.element then
+					v.element:remove()
+				end
+				v.element = nil
+			end
+		end
+	end
+	function PanelController:set(panel_name, write, full_reload, ...)
+		local args = { panel_name, full_reload, ... }
+		if panel_name == self.panel_key then
+			self:update(unpack(args))
+			return panel_name
+		end
+
+		local previous_panel = self.panel or nil
+		local target_panel = panel_name and UI.panels[panel_name] or nil
+
+		local continue = function()
+			self.previous_panel = self.panel
+			self.previous_panel_key = self.panel_key
+			self:reset()
+			self.panel_key = panel_name or nil
+			self.panel = target_panel or nil
+			if write then
+				self:save()
+			end
+			if target_panel then
+				target_panel.parent = self
+				if type(target_panel.UIBox_definition) == "function" then
+					target_panel.element = self:get_panel_UIBox(target_panel.UIBox_definition(self.panel))
+					self:update(unpack(args))
+					self:update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
+					self:after_set(target_panel, panel_name, function() end)
+				end
+			end
+		end
+
+		if previous_panel and previous_panel.element then
+			self:before_remove(previous_panel, previous_panel_key, continue)
+		else
+			continue()
+		end
+
+		return target_panel and panel_name or nil
+	end
+	function PanelController:after_set(panel, panel_name, continue)
+		continue()
+	end
+
+	function PanelController:notify(panel_name, message)
+		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
+			return
+		end
+		if self.panel.element then
+			attention_text({
+				text = message,
+				scale = 0.3,
+				hold = 0.5,
+				backdrop_colour = G.C.MONEY,
+				align = "rc",
+				major = self.panel.element,
+				offset = { x = 0.15, y = 0 },
+			})
+		end
+	end
+	function PanelController:update(panel_name, full_reload, ...)
+		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
+			return
+		end
+		if self.panel.element and type(self.panel.update) == "function" then
+			self.panel.update(self.panel, full_reload, ...)
+		end
+	end
+	function PanelController:update_status(status)
+		if not self.panel or not self.panel.element then
+			return
+		end
+
+		local text = type(self.panel.localize_status) == "function" and self.panel.localize_status(self.panel, status)
+		if not text then
+			text = G.localization.misc.dictionary.k_twbl_status_unknown
+			local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
+			if status == STATUS.NO_CHANNEL_NAME then
+				text = G.localization.misc.dictionary.k_twbl_status_no_channel_name
+			elseif status == STATUS.CONNECTED then
+				text = G.localization.misc.dictionary.k_twbl_status_connected
+			elseif status == STATUS.CONNECTING then
+				text = G.localization.misc.dictionary.k_twbl_status_connecting
+			elseif status == STATUS.DISCONNECTED then
+				text = G.localization.misc.dictionary.k_twbl_status_disconnected
+			end
+		end
+
+		local status_element = self.panel.element:get_UIE_by_ID("twbl_voting_status")
+		if status_element then
+			status_element.config.object.config.string = { text }
+			status_element.config.object:update_text(true)
+			self.panel.element:recalculate()
+		end
+	end
+
+	function PanelController:save()
+		if G.GAME then
+			G.GAME.twbl["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
+			G.GAME.twbl["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
+		end
+	end
+	function PanelController:load()
+		if G.GAME then
+			self.panel_key = G.GAME.twbl["ui_controller_" .. self.key_append .. "_prev_panel"]
+			self.panel = TW_BL.UI.panels[self.previous_panel_key]
+			self:set(G.GAME.twbl["ui_controller_" .. self.key_append .. "_panel"], false, true)
+		end
 	end
 
 	-- Settings
@@ -199,6 +189,9 @@ function twbl_init_ui()
 
 		for i = 1, #TW_BL.BLINDS.regular do
 			table.insert(forcing_labels, TW_BL.BLINDS.regular[i])
+		end
+		for i = 1, #TW_BL.BLINDS.showdown do
+			table.insert(forcing_labels, TW_BL.BLINDS.showdown[i])
 		end
 
 		local result = {
@@ -454,6 +447,54 @@ function twbl_init_ui()
 		return UI.settings.get_settings_tab("Settings")
 	end
 
+	-- Callbacks
+	------------------------------
+
+	function G.FUNCS.twbl_settings_change_blind_frequency(args)
+		TW_BL.SETTINGS.temp.blind_frequency = args.to_key
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_change_pool_type(args)
+		TW_BL.SETTINGS.temp.pool_type = args.to_key
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_change_forced_blind(args)
+		TW_BL.SETTINGS.temp.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
+		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_paste_channel_name(e)
+		G.CONTROLLER.text_input_hook = e.UIBox:get_UIE_by_ID("text_input").children[1].children[1]
+		for i = 1, 32 do
+			G.FUNCS.text_input_key({ key = "right" })
+		end
+		for i = 1, 32 do
+			G.FUNCS.text_input_key({ key = "backspace" })
+		end
+
+		local clipboard = (G.F_LOCAL_CLIPBOARD and G.CLIPBOARD or love.system.getClipboardText()) or ""
+		local channel_name = clipboard:match("twitch%.tv/([%w_]+)") or clipboard
+
+		for i = 1, #channel_name do
+			local c = channel_name:sub(i, i)
+			G.FUNCS.text_input_key({ key = c })
+		end
+
+		G.FUNCS.text_input_key({ key = "return" })
+	end
+
+	function G.FUNCS.twbl_settings_save_channel_name()
+		TW_BL.SETTINGS.save()
+		TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	end
+
 	-- Panels definitions
 	------------------------------
 
@@ -659,7 +700,8 @@ function twbl_init_ui()
 	UI.panels.voting_process_3 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args or { status = "k_twbl_toggle_ex" }
+				local args_array = G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
+					or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
 		end,
@@ -835,7 +877,7 @@ function twbl_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.pool_flags.twbl_ui_voting_process_args
+			local args_array = G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
 			local do_update = false
 			if args then
 				do_update = true
@@ -850,7 +892,7 @@ function twbl_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.pool_flags.twbl_ui_voting_process_args = args_array
+				G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"] = args_array
 			end
 
 			local element = panel.element
@@ -881,7 +923,8 @@ function twbl_init_ui()
 	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.pool_flags.twbl_ui_command_info_args or { status = "k_twbl_toggle_ex" }
+				local args_array = G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
+					or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
 		end,
@@ -959,7 +1002,7 @@ function twbl_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.pool_flags.twbl_ui_command_info_args
+			local args_array = G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
 			local do_update = false
 			if args then
 				do_update = true
@@ -975,7 +1018,7 @@ function twbl_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.pool_flags.twbl_ui_command_info_args = args_array
+				G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"] = args_array
 			end
 
 			local element = panel.element
@@ -996,246 +1039,100 @@ function twbl_init_ui()
 	}
 
 	for k, v in pairs(UI.panels) do
-		v.name = k
+		v.key = k
 	end
 
-	-- Current panel management
+	-- Controllers
 	------------------------------
 
-	function UI.current_panel.set(panel_name, ...)
-		local args = { ... }
-		if panel_name == UI.current_panel.name then
-			UI.current_panel.update(panel_name, unpack(args))
-			return panel_name
-		end
-
-		local previous_panel = UI.current_panel.config or nil
-		local target_panel = panel_name and UI.panels[panel_name] or nil
-
-		local continue = function()
-			UI.current_panel.name = panel_name or nil
-			UI.current_panel.config = target_panel or nil
-			if target_panel and type(target_panel.UIBox_definition) == "function" then
-				target_panel.element = UIBox({
-					definition = target_panel.UIBox_definition(UI.current_panel.config),
-					config = {
-						align = "cmri",
-						offset = { x = -0.2857, y = PANEL_HIDDEN_Y },
-						major = G.ROOM_ATTACH,
-						id = "twbl_panel",
-					},
-				})
-				UI.current_panel.update(panel_name, unpack(args))
-				UI.current_panel.update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
-				G.E_MANAGER:add_event(Event({
-					trigger = "ease",
-					blockable = false,
-					ref_table = target_panel.element.config.offset,
-					ref_value = "y",
-					ease_to = PANEL_VISIBLE_Y,
-					delay = PANEL_ANIMATION_DELAY,
-					func = function(t)
-						return t
-					end,
-				}))
-			end
-		end
-
-		if previous_panel and previous_panel.element then
-			G.E_MANAGER:add_event(Event({
-				trigger = "ease",
-				blockable = false,
-				ref_table = previous_panel.element.config.offset,
-				ref_value = "y",
-				ease_to = PANEL_HIDDEN_Y,
-				delay = PANEL_ANIMATION_DELAY,
-				func = function(t)
-					return t
-				end,
-			}))
-			G.E_MANAGER:add_event(Event({
-				trigger = "immediate",
-				func = function()
-					UI.reset_panels()
-					continue()
-					return true
-				end,
-			}))
-		else
-			continue()
-		end
-
-		return UI.panels[panel_name] and panel_name or nil
+	UI.controllers.game_top = PanelController:init("game_top")
+	function UI.controllers.game_top:get_panel_UIBox(definition)
+		return UIBox({
+			definition = definition,
+			config = {
+				align = "cmri",
+				offset = { x = -0.2857, y = PANEL_HIDDEN_Y },
+				major = G.ROOM_ATTACH,
+				id = "twbl_panel",
+			},
+		})
+	end
+	function UI.controllers.game_top:before_remove(panel, panel_name, continue)
+		G.E_MANAGER:add_event(Event({
+			trigger = "ease",
+			blockable = false,
+			ref_table = panel.element.config.offset,
+			ref_value = "y",
+			ease_to = PANEL_HIDDEN_Y,
+			delay = PANEL_ANIMATION_DELAY,
+			func = function(t)
+				return t
+			end,
+		}))
+		G.E_MANAGER:add_event(Event({
+			trigger = "immediate",
+			func = function()
+				continue()
+				return true
+			end,
+		}))
+	end
+	function UI.controllers.game_top:after_set(panel, panel_name, continue)
+		G.E_MANAGER:add_event(Event({
+			trigger = "ease",
+			blockable = false,
+			ref_table = panel.element.config.offset,
+			ref_value = "y",
+			ease_to = PANEL_VISIBLE_Y,
+			delay = PANEL_ANIMATION_DELAY,
+			func = function(t)
+				return t
+			end,
+		}))
+		G.E_MANAGER:add_event(Event({
+			trigger = "immediate",
+			func = function()
+				continue()
+				return true
+			end,
+		}))
 	end
 
-	function UI.current_panel.remove(panel_name)
-		if not UI.current_panel.config then
-			return
-		end
-		if panel_name ~= UI.current_panel.name then
-			return
-		end
-		return UI.current_panel.set(nil)
-	end
-
-	function UI.current_panel.update(panel_name, ...)
-		if not UI.current_panel.config then
-			return
-		end
-		if panel_name and panel_name ~= UI.current_panel.name then
-			return
-		end
-		if UI.current_panel.config.element and type(UI.current_panel.config.update) == "function" then
-			UI.current_panel.config.update(UI.current_panel.config, ...)
-		end
-	end
-
-	function UI.current_panel.notify(panel_name, username)
-		if not UI.current_panel.config then
-			return
-		end
-		if panel_name and panel_name ~= UI.current_panel.name then
-			return
-		end
-		if UI.current_panel.config.element then
-			attention_text({
-				text = username,
-				scale = 0.3,
-				hold = 0.5,
-				backdrop_colour = G.C.MONEY,
-				align = "rc",
-				major = UI.current_panel.config.element,
-				offset = { x = 0.15, y = 0 },
-			})
-		end
-	end
-
-	function UI.current_panel.update_status(status)
-		local panel = UI.current_panel.config
-		if not panel or not panel.element then
-			return
-		end
-
-		local text = type(panel.localize_status) == "function"
-			and panel.localize_status(UI.current_panel.config, status)
-		if not text then
-			text = G.localization.misc.dictionary.k_twbl_status_unknown
-			local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
-			if status == STATUS.NO_CHANNEL_NAME then
-				text = G.localization.misc.dictionary.k_twbl_status_no_channel_name
-			elseif status == STATUS.CONNECTED then
-				text = G.localization.misc.dictionary.k_twbl_status_connected
-			elseif status == STATUS.CONNECTING then
-				text = G.localization.misc.dictionary.k_twbl_status_connecting
-			elseif status == STATUS.DISCONNECTED then
-				text = G.localization.misc.dictionary.k_twbl_status_disconnected
-			end
-		end
-
-		local status_element = panel.element:get_UIE_by_ID("twbl_voting_status")
-		if status_element then
-			status_element.config.object.config.string = { text }
-			status_element.config.object:update_text(true)
-			panel.element:recalculate()
-		end
-	end
-
-	-- Callbacks
-	------------------------------
-
-	function G.FUNCS.twbl_settings_change_blind_frequency(args)
-		TW_BL.SETTINGS.temp.blind_frequency = args.to_key
-		TW_BL.SETTINGS.save()
-	end
-
-	function G.FUNCS.twbl_settings_change_pool_type(args)
-		TW_BL.SETTINGS.temp.pool_type = args.to_key
-		TW_BL.SETTINGS.save()
-	end
-
-	function G.FUNCS.twbl_settings_change_forced_blind(args)
-		TW_BL.SETTINGS.temp.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
-		TW_BL.SETTINGS.save()
-	end
-
-	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
-		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
-		TW_BL.SETTINGS.save()
-	end
-
-	function G.FUNCS.twbl_settings_paste_channel_name(e)
-		G.CONTROLLER.text_input_hook = e.UIBox:get_UIE_by_ID("text_input").children[1].children[1]
-		for i = 1, 32 do
-			G.FUNCS.text_input_key({ key = "right" })
-		end
-		for i = 1, 32 do
-			G.FUNCS.text_input_key({ key = "backspace" })
-		end
-
-		local clipboard = (G.F_LOCAL_CLIPBOARD and G.CLIPBOARD or love.system.getClipboardText()) or ""
-		local channel_name = clipboard:match("twitch%.tv/([%w_]+)") or clipboard
-
-		for i = 1, #channel_name do
-			local c = channel_name:sub(i, i)
-			G.FUNCS.text_input_key({ key = c })
-		end
-
-		G.FUNCS.text_input_key({ key = "return" })
-	end
-
-	function G.FUNCS.twbl_settings_save_channel_name()
-		TW_BL.SETTINGS.save()
-		TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
-	end
+	UI.controllers.booster_top = PanelController:init("booster_top")
 
 	-- Functions
 	------------------------------
 
-	function UI.set_panel(panel_name, write, ...)
-		local result = UI.current_panel.set(panel_name, ...)
-		if write then
-			G.GAME.pool_flags.twbl_ui_current_panel = result
+	function UI.set_panel(controller, panel_name, write, full_reload, ...)
+		return UI.controllers[controller]:set(panel_name, write, full_reload, ...)
+	end
+
+	function UI.remove_panel(controller, panel_name, write)
+		return UI.controllers[controller]:remove(panel_name, write)
+	end
+
+	function UI.update_panel(controller, panel_name, full_reload, ...)
+		return UI.controllers[controller]:update(panel_name, full_reload, ...)
+	end
+
+	function UI.create_panel_notify(controller, panel_name, message)
+		return UI.controllers[controller]:notify(panel_name, message)
+	end
+
+	function UI.get_panels_from_game()
+		for k, v in pairs(UI.controllers) do
+			v:reset(true)
+			v:load()
 		end
-		return result
-	end
-
-	function UI.remove_panel(panel_name, write)
-		local result = UI.current_panel.remove(panel_name)
-		if write then
-			G.GAME.pool_flags.twbl_ui_current_panel = result
-		end
-		return result
-	end
-
-	function UI.update_panel(panel_name, ...)
-		return UI.current_panel.update(panel_name, ...)
-	end
-
-	function UI.create_panel_notify(panel_name, ...)
-		return UI.current_panel.notify(panel_name, ...)
-	end
-
-	function UI.reset_panels()
-		UI.current_panel.config = nil
-		UI.current_panel.name = nil
-		for k, v in pairs(UI.panels) do
-			if v.element then
-				v.element:remove()
-			end
-			v.element = nil
-		end
-	end
-
-	function UI.set_panel_from_save()
-		UI.reset_panels()
-		UI.set_panel(G.GAME.pool_flags.twbl_ui_current_panel or nil, false, true)
 	end
 
 	-- Events
 	------------------------------
 
 	TW_BL.EVENTS.add_listener("new_connection_status", "ui_update_status", function(status, channel_name)
-		UI.current_panel.update_status(status)
+		for k, v in pairs(UI.controllers) do
+			v:update_status(status)
+		end
 		UI.settings.update_status(status)
 	end)
 

@@ -157,6 +157,7 @@ return {
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
+			k_twbl_panel_toggle_chat_booster = "Select targets for consumabled (once per user)",
 		},
 	},
 }

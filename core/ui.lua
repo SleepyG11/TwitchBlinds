@@ -1038,6 +1038,93 @@ function twbl_init_ui()
 		end,
 	}
 
+	UI.panels.command_info_1_short = {
+		UIBox_definition = function(panel)
+			return {
+				n = G.UIT.ROOT,
+				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							padding = 0.04,
+						},
+						nodes = {
+							{
+								n = G.UIT.C,
+								config = { align = "cm" },
+								nodes = {
+									{
+										n = G.UIT.C,
+										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
+										nodes = {
+											{
+												n = G.UIT.T,
+												config = {
+													text = "toggle",
+													scale = 0.25,
+													colour = G.C.UI.TEXT_LIGHT,
+													shadow = false,
+													id = "twbl_toggle_command",
+												},
+											},
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
+									{
+										n = G.UIT.T,
+										config = {
+											text = "-",
+											scale = 0.3,
+											colour = G.C.UI.TEXT_LIGHT,
+											shadow = false,
+											id = "twbl_toggle_text",
+										},
+									},
+									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
+								},
+							},
+						},
+					},
+				},
+			}
+		end,
+		update = function(panel, full_update, args)
+			local args_array = G.GAME.twbl["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"]
+			local do_update = false
+			if args then
+				do_update = true
+				args_array = args
+			end
+			if not args_array then
+				do_update = true
+				args_array = {
+					command = "toggle",
+					position = "twbl_position_singular",
+					text = "k_twbl_panel_toggle_default",
+				}
+			end
+			if do_update then
+				G.GAME.twbl["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"] = args_array
+			end
+
+			local element = panel.element
+			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
+			if command_element then
+				if args_array.position then
+					command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
+				else
+					command_element.config.text = args_array.command
+				end
+			end
+			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
+			if text_element then
+				text_element.config.text = localize(args_array.text)
+			end
+			element:recalculate()
+		end,
+	}
+
 	for k, v in pairs(UI.panels) do
 		v.key = k
 	end
@@ -1045,7 +1132,7 @@ function twbl_init_ui()
 	-- Controllers
 	------------------------------
 
-	UI.controllers.game_top = PanelController:init("game_top")
+	UI.controllers.game_top = PanelController("game_top")
 	function UI.controllers.game_top:get_panel_UIBox(definition)
 		return UIBox({
 			definition = definition,
@@ -1098,7 +1185,41 @@ function twbl_init_ui()
 		}))
 	end
 
-	UI.controllers.booster_top = PanelController:init("booster_top")
+	UI.controllers.booster_top = PanelController("booster_top")
+	function UI.controllers.booster_top:get_panel_UIBox(definition)
+		return UIBox({
+			definition = definition,
+			config = {
+				align = "cm",
+				offset = { x = 0, y = -7.12 },
+				major = G.hand,
+				id = "twbl_panel",
+			},
+		})
+	end
+	function UI.controllers.booster_top:after_set(panel, panel_name, continue)
+		panel.element.states.visible = false
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.E_MANAGER:add_event(Event({
+							trigger = "after",
+							delay = 1.3 * math.sqrt(G.SETTINGS.GAMESPEED),
+							blockable = false,
+							func = function()
+								panel.element.states.visible = true
+								continue()
+								return true
+							end,
+						}))
+						return true
+					end,
+				}))
+				return true
+			end,
+		}))
+	end
 
 	-- Functions
 	------------------------------

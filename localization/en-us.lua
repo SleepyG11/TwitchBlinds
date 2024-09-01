@@ -87,11 +87,11 @@ return {
 			},
 			bl_twbl_eraser = {
 				name = "The Eraser",
-				text = { "Chat can select which", "Joker will be destroyed", "after boss defeate" },
+				text = { "Chat can select which", "Joker will be destroyed", "after boss defeat" },
 			},
 			bl_twbl_sketch = {
 				name = "The Sketch",
-				text = { "Chat can select which", "Joker will be copied", "after boss defeate" },
+				text = { "Chat can select which", "Joker will be copied", "after boss defeat" },
 			},
 			bl_twbl_nope = {
 				name = "Nope!",

@@ -22,7 +22,7 @@ local blinds_to_load = {
 	"greed",
 	"eraser",
 	"sketch",
-	"nope",
+	-- "nope",
 	"misstock",
 	"incrementor",
 }
@@ -51,10 +51,10 @@ function twbl_init_blinds()
 		}),
 	}
 
-    TW_BL.BLINDS = BLINDS
+	TW_BL.BLINDS = BLINDS
 
-    --- @param blind_name string
-    --- @param showdown boolean
+	--- @param blind_name string
+	--- @param showdown boolean
 	--- @return string
 	function BLINDS.register(blind_name, showdown)
 		local full_key = BLINDS.get_key(blind_name)
@@ -81,7 +81,9 @@ function twbl_init_blinds()
 	function BLINDS.get_random_boss_blind(pool)
 		local eligible_bosses = {}
 		for k, v in pairs(pool) do
-			if v then eligible_bosses[k] = 0 end
+			if v then
+				eligible_bosses[k] = 0
+			end
 		end
 		local min_use = math.huge
 		for k, v in pairs(G.GAME.bosses_used) do
@@ -204,8 +206,8 @@ function twbl_init_blinds()
 	--- @param blinds string[] List of blinds
 	--- @return boolean `true` if successfully, `false` if `G.GAME` is not ready
 	function BLINDS.set_voting_blinds_to_game(blinds)
-		if G.GAME and G.GAME.pool_flags then
-			G.GAME.pool_flags.twbl_voting_blinds = blinds
+		if G.GAME then
+			G.GAME.twbl.voting_blinds = blinds
 			return true
 		else
 			return false
@@ -217,9 +219,9 @@ function twbl_init_blinds()
 	--- @param generate_if_missing boolean Generate new list if not present
 	--- @return string[]|nil
 	function BLINDS.get_voting_blinds_from_game(pool_type, generate_if_missing)
-		if G.GAME and G.GAME.pool_flags then
-			if G.GAME.pool_flags.twbl_voting_blinds then
-				return G.GAME.pool_flags.twbl_voting_blinds
+		if G.GAME then
+			if G.GAME.twbl.voting_blinds then
+				return G.GAME.twbl.voting_blinds
 			end
 
 			local ante_offset = 0
@@ -230,6 +232,8 @@ function twbl_init_blinds()
 			if generate_if_missing then
 				return BLINDS.generate_new_voting_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, true)
 			end
+
+			return nil
 		else
 			return nil
 		end
@@ -331,8 +335,8 @@ function twbl_init_blinds()
 	--- Generate new list of blinds for voting
 	--- @param pool_type integer Pool type to choose from
 	--- @param ante_offset integer Difference between current ante and target ante
-    --- @param amount integer Amount of blinds to choose
-    --- @param write boolean Save result in game object
+	--- @param amount integer Amount of blinds to choose
+	--- @param write boolean Save result in game object
 	--- @return string[]|nil
 	function BLINDS.generate_new_voting_blinds(pool_type, ante_offset, amount, write)
 		local pool = BLINDS.get_blinds_pool(pool_type, ante_offset)

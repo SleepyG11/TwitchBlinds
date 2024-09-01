@@ -9,8 +9,8 @@ target = "game.lua"
 pattern = 'function Game:update_shop(dt)'
 position = "after"
 payload = """
-if G.GAME.pool_flags.twbl_no_shop then
-  G.GAME.pool_flags.twbl_no_shop = nil
+if G.GAME.twbl.no_shop then
+  G.GAME.twbl.no_shop = nil
   return Game:update_blind_select(dt)
 end
 """

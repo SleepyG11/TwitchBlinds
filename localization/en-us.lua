@@ -67,7 +67,7 @@ return {
 			},
 			bl_twbl_precision = {
 				name = "The Precision",
-				text = { "Must discard 5 cards" },
+				text = { "Only 5 cards", "can be discarded" },
 			},
 			bl_twbl_sparkle = {
 				name = "The Sparkle",
@@ -157,7 +157,7 @@ return {
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
-			k_twbl_panel_toggle_chat_booster = "Select targets for consumabled (once per user)",
+			k_twbl_panel_toggle_chat_booster = "Select a target for consumables (once per user)",
 		},
 	},
 }

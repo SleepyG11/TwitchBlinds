@@ -22,7 +22,7 @@ local blinds_to_load = {
 	"greed",
 	"eraser",
 	"sketch",
-	"nope",
+	-- "nope",
 	"misstock",
 	"incrementor",
 }

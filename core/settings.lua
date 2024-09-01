@@ -3,6 +3,7 @@ local DEFAULT_SETTINGS = {
 	pool_type = 1,
 	channel_name = "",
 	forced_blind = nil,
+	natural_chat_booster_sticker = false,
 }
 
 function twbl_init_settings()
@@ -12,7 +13,7 @@ function twbl_init_settings()
 		current = table_defaults(TW_BL.current_mod.config, DEFAULT_SETTINGS),
 	}
 
-    TW_BL.SETTINGS = SETTINGS
+	TW_BL.SETTINGS = SETTINGS
 
 	function SETTINGS.create_temp()
 		SETTINGS.temp = table_copy(SETTINGS.current)

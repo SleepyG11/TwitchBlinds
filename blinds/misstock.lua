@@ -44,9 +44,9 @@ end
 
 function twbl_blind_misstock_set_type(v)
 	local _type = v.type
-	if G.GAME.pool_flags.twbl_blind_misstock_pool and not POOLS_TO_IGNORE[_type] then
+	if G.GAME.twbl.blind_misstock_pool and not POOLS_TO_IGNORE[_type] then
 		return {
-			type = G.GAME.pool_flags.twbl_blind_misstock_pool,
+			type = G.GAME.twbl.blind_misstock_pool,
 			val = 0,
 		}
 	end
@@ -55,13 +55,13 @@ end
 
 local get_pack_ref = get_pack
 function get_pack(_key, _type)
-	if G.GAME.pool_flags.twbl_blind_misstock_pool then
-		if G.GAME.pool_flags.twbl_blind_misstock_pool == "Enhanced" then
+	if G.GAME.twbl.blind_misstock_pool then
+		if G.GAME.twbl.blind_misstock_pool == "Enhanced" then
 			-- TODO: place playing cards somehow
 			return G.P_CENTERS["p_standard_normal_" .. math.random(1, 4)]
 		else
 			local POOL_ITEMS = {}
-			for k, v in pairs(G.P_CENTER_POOLS[G.GAME.pool_flags.twbl_blind_misstock_pool]) do
+			for k, v in pairs(G.P_CENTER_POOLS[G.GAME.twbl.blind_misstock_pool]) do
 				if not v.no_doe then
 					POOL_ITEMS[#POOL_ITEMS + 1] = v.key
 				end
@@ -90,9 +90,9 @@ function tw_blind:set_blind()
 		pools_to_pick[pool] = nil
 	end
 
-	G.GAME.pool_flags.twbl_blind_misstock_pools = result_pools
+	G.GAME.twbl.blind_misstock_pools = result_pools
 
-	TW_BL.UI.set_panel("voting_process_3", true, true, {
+	TW_BL.UI.set_panel("game_top", "voting_process_3", true, true, {
 		command = "vote",
 		status = "k_twbl_vote_ex",
 		variants = result_variants,
@@ -102,9 +102,9 @@ end
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", false, true)
-	TW_BL.UI.remove_panel("voting_process_3", true)
+	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 
 	local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner()
-	G.GAME.pool_flags.twbl_blind_misstock_pool = G.GAME.pool_flags.twbl_blind_misstock_pools[tonumber(win_index or "1")]
-	G.GAME.pool_flags.twbl_blind_misstock_pools = nil
+	G.GAME.twbl.blind_misstock_pool = G.GAME.twbl.blind_misstock_pools[tonumber(win_index or "1")]
+	G.GAME.twbl.blind_misstock_pools = nil
 end

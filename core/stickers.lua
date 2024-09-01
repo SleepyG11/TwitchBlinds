@@ -1,7 +1,7 @@
 local nativefs = require("nativefs")
 
 local stickers_to_load = {
-	-- "chat_booster",
+	"chat_booster",
 }
 
 function twbl_init_stickers()
@@ -15,7 +15,7 @@ function twbl_init_stickers()
 		}),
 	}
 
-    TW_BL.STICKERS = STICKERS
+	TW_BL.STICKERS = STICKERS
 
 	for _, sticker_name in ipairs(stickers_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "stickers/" .. sticker_name .. ".lua")))()

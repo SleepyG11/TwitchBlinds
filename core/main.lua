@@ -32,12 +32,14 @@ function TwitchBlinds:init()
 
 	local game_start_run_ref = Game.start_run
 	function Game:start_run(...)
+		G.GAME.twbl = G.GAME.twbl or {}
 		game_start_run_ref(self, ...)
 		TW_BL:start_run()
 	end
 
 	local main_menu_ref = Game.main_menu
 	function Game:main_menu(...)
+		G.GAME.twbl = G.GAME.twbl or {}
 		main_menu_ref(self, ...)
 		TW_BL:main_menu()
 	end
@@ -50,6 +52,7 @@ function TwitchBlinds:init()
 
 	local get_new_boss_ref = get_new_boss
 	function get_new_boss(...)
+		G.GAME.twbl = G.GAME.twbl or {}
 		local is_first_boss = not G.GAME.round_resets.blind_choices.Boss
 		local caused_by_boss_defeate = (
 			G.GAME.round_resets.blind_states.Small == "Upcoming" or G.GAME.round_resets.blind_states.Small == "Hide"
@@ -64,9 +67,9 @@ function TwitchBlinds:init()
 		local force_voting_process = false
 		local voting_ante_offset = 0
 
-		if not G.GAME.pool_flags.twbl_blind_chat_antes then
+		if not G.GAME.twbl.blind_chat_antes then
 			-- If no data in save, then assume that we don't see chat at most 1 ante
-			G.GAME.pool_flags.twbl_blind_chat_antes = is_first_boss and 0 or 1
+			G.GAME.twbl.blind_chat_antes = is_first_boss and 0 or 1
 		end
 
 		if G.GAME.round_resets.blind_choices.Small == TW_BL.BLINDS.chat_blind then
@@ -90,7 +93,7 @@ function TwitchBlinds:init()
 				result = get_new_boss_ref(...)
 			elseif TW_BL.SETTINGS.current.blind_frequency == 2 then
 				start_voting_process = true
-				if is_first_boss or G.GAME.pool_flags.twbl_blind_chat_antes < 1 then
+				if is_first_boss or G.GAME.twbl.blind_chat_antes < 1 then
 					-- If in this ante blind was chat, return vanilla one
 					voting_ante_offset = 1
 					force_voting_process = is_first_boss
@@ -112,7 +115,7 @@ function TwitchBlinds:init()
 			if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
 				-- Can't reroll chat
 				result = TW_BL.BLINDS.chat_blind
-			elseif G.GAME.pool_flags.twbl_blind_chat_antes == 0 then
+			elseif G.GAME.twbl.blind_chat_antes == 0 then
 				-- Can't reroll blind selected by chat
 				-- Subject to change?
 				result = G.GAME.round_resets.blind_choices.Boss
@@ -124,8 +127,8 @@ function TwitchBlinds:init()
 
 		if is_first_boss or caused_by_boss_defeate then
 			-- Count how many antes ago was chat blind
-			G.GAME.pool_flags.twbl_blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0)
-				or (G.GAME.pool_flags.twbl_blind_chat_antes + 1)
+			G.GAME.twbl.blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0)
+				or (G.GAME.twbl.blind_chat_antes + 1)
 		end
 
 		if start_voting_process and not is_overriding then
@@ -146,9 +149,9 @@ function TwitchBlinds:init()
 		end
 
 		if TW_BL.CHAT_COMMANDS.can_collect.vote then
-			TW_BL.UI.set_panel("blind_voting_process", true, true)
+			TW_BL.UI.set_panel("game_top", "blind_voting_process", true, true)
 		else
-			TW_BL.UI.remove_panel("blind_voting_process", true)
+			TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 		end
 
 		return result
@@ -156,6 +159,7 @@ function TwitchBlinds:init()
 
 	local select_blind_ref = G.FUNCS.select_blind
 	function G.FUNCS.select_blind(...)
+		G.GAME.twbl = G.GAME.twbl or {}
 		-- Replace with blind selected by chat (or use first if no votes)
 		if
 			G.GAME.blind_on_deck
@@ -182,7 +186,7 @@ function TwitchBlinds:init()
 			TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
 			TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
 			TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-			TW_BL.UI.remove_panel("blind_voting_process", true)
+			TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 		else
 			return select_blind_ref(...)
 		end
@@ -190,6 +194,7 @@ function TwitchBlinds:init()
 end
 
 function TwitchBlinds:start_run()
+	G.GAME.twbl = G.GAME.twbl or {}
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
 	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
 	TW_BL.CHAT_COMMANDS.get_single_use_from_game({
@@ -198,7 +203,7 @@ function TwitchBlinds:start_run()
 	TW_BL.CHAT_COMMANDS.set_enabled(true)
 	TW_BL.CHAT_COMMANDS.reset()
 
-	TW_BL.UI.set_panel_from_save()
+	TW_BL.UI.get_panels_from_game()
 end
 
 function TwitchBlinds:main_menu()

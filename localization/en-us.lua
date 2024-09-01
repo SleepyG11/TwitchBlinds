@@ -1,5 +1,11 @@
 return {
 	descriptions = {
+		Other = {
+			chat_booster = {
+				name = "Chat Booster",
+				text = { "Chat will use additional", "targetable consumable" },
+			},
+		},
 		Blind = {
 			bl_twbl_twitch_chat = {
 				name = "The Chat",
@@ -157,7 +163,7 @@ return {
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
-			k_twbl_panel_toggle_chat_booster = "Select a target for consumables (once per user)",
+			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
 		},
 	},
 }

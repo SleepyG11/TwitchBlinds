@@ -25,6 +25,7 @@ local blinds_to_load = {
 	-- "nope",
 	"misstock",
 	"incrementor",
+	-- "cursed_boosters",
 }
 
 function twbl_init_blinds()

@@ -1209,6 +1209,14 @@ function twbl_init_ui()
 							blockable = false,
 							func = function()
 								panel.element.states.visible = true
+								if G.twbl_chat_booster_cards then
+									G.twbl_chat_booster_cards:hard_set_T(
+										panel.element.T.x + panel.element.T.w,
+										panel.element.T.y - panel.element.T.h,
+										nil,
+										nil
+									)
+								end
 								continue()
 								return true
 							end,

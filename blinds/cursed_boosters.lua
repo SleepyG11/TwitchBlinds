@@ -1,6 +1,7 @@
 -- Not Started
 
 -- function twitch_cursed_boosters_setup_shop()
+-- 	-- TOOO: apply tags
 -- 	local arcana_pack = "p_arcana_mega_" .. math.random(1, 2)
 
 -- 	for i, k in ipairs({ arcana_pack, arcana_pack }) do

@@ -31,6 +31,27 @@ local function select_cards_in_pack(amount)
 	end
 end
 
+local function get_booster_pool(kind)
+	local result_pool = {}
+	local pool_to_copy = {}
+
+	if kind == "Arcana" then
+		pool_to_copy = G.P_CENTER_POOLS.Tarot
+	elseif kind == "Spectral" then
+		pool_to_copy = G.P_CENTER_POOLS.Spectral
+	end
+
+	for k, v in pairs(pool_to_copy) do
+		local min_select = v.config.min_highlighted or 0
+		local max_select = v.config.max_highlighted or 0
+		if (min_select > 0 or max_select > 0) and G.hand.config.card_limit >= min_select then
+			result_pool[k] = v
+		end
+	end
+
+	return result_pool
+end
+
 local tw_sticker = SMODS.Sticker({
 	atlas = "twbl_stickers",
 	pos = { x = 0, y = 0 },
@@ -40,7 +61,7 @@ local tw_sticker = SMODS.Sticker({
 	key = "twbl_chat_booster",
 	loc_text = {
 		name = "Chat Booster",
-		text = { "Only Chat can select", "targets for consumables" },
+		text = { "Chat will use additional", "targetable consumable" },
 	},
 })
 
@@ -58,6 +79,8 @@ function tw_sticker:should_apply(card, center, area)
 		and STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
 end
 
+--
+
 function twbl_sticker_chat_booster_naturally_apply(card, area)
 	if tw_sticker:should_apply(card, card.config.center, area or card.area) then
 		tw_sticker:apply(card, true)
@@ -65,11 +88,16 @@ function twbl_sticker_chat_booster_naturally_apply(card, area)
 end
 
 function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
-	if not G.GAME.twbl.state_chat_booster or not card.ability or not card.ability.consumeable then
-		return
-	end
-	if card.area ~= G.consumeables and card.area ~= G.pack_cards then
-		return
+	if
+		not (
+			G.GAME.twbl.state_sticker_chat_booster
+			and card.ability
+			and card.ability.consumeable
+			and G.twbl_chat_booster_cards
+			and card.area == G.twbl_chat_booster_cards
+		)
+	then
+		return false
 	end
 
 	for _, hand_card in ipairs(G.hand.cards) do
@@ -90,16 +118,41 @@ function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
 				card.ability.consumeable.max_highlighted or card.ability.consumeable.min_highlighted
 			)
 		)
+
 		-- Prevent selecting 2 cards at once
-		if card.area == G.consumeables then
-			G.pack_cards:unhighlight_all()
+		for _, area in ipairs({ G.consumeables, G.pack_cards }) do
+			if area ~= card.area then
+				area:unhighlight_all()
+			end
 		end
-		if card.area == G.pack_cards then
-			G.consumeables:unhighlight_all()
-		end
+
+		return true
 	else
 		G.hand:unhighlight_all()
 	end
+
+	return false
+end
+
+function twbl_sticker_chat_booster_use_card()
+	G.GAME.twbl.state_sticker_chat_booster_use = nil
+	local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
+	if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
+		return false
+	end
+
+	-- If we skipping
+	if G.GAME.pack_choices then
+		G.GAME.pack_choices = 0
+	end
+
+	G.FUNCS.use_card({
+		config = {
+			ref_table = card_to_use,
+		},
+	})
+
+	return true
 end
 
 --
@@ -107,7 +160,8 @@ end
 function twbl_sticker_chat_booster_open(card)
 	local kind = card.config.center.kind
 	if kind == "Spectral" or kind == "Arcana" then
-		G.GAME.twbl.state_chat_booster = true
+		G.GAME.twbl.state_sticker_chat_booster = true
+		G.GAME.twbl.state_sticker_chat_booster_use = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
@@ -117,15 +171,37 @@ function twbl_sticker_chat_booster_open(card)
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster",
 		})
+		G.twbl_chat_booster_cards = CardArea(
+			-99,
+			-99,
+			1.02 * G.CARD_W / 2,
+			1.05 * G.CARD_H / 2,
+			{ card_limit = 1, type = "title_2", highlight_limit = 0 }
+		)
+		local area = G.twbl_chat_booster_cards
+		local center =
+			pseudorandom_element(get_booster_pool(card.config.center.kind), pseudoseed("twbl_chat_booster_chat_card"))
+		local chat_card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W / 2, G.CARD_H / 2, nil, center, {
+			bypass_discovery_center = true,
+			bypass_discovery_ui = true,
+			discover = falses,
+			bypass_back = G.GAME.selected_back.pos,
+		})
+		G.twbl_chat_booster_cards:emplace(chat_card)
 	else
 		card.ability.twbl_chat_booster = nil
-		G.GAME.twbl.state_chat_booster = nil
+		G.GAME.twbl.state_sticker_chat_booster = nil
+		G.GAME.twbl.state_sticker_chat_booster_use = nil
 	end
 end
 
 function twbl_sticker_chat_booster_exit()
-	if G.GAME.twbl.state_chat_booster then
-		G.GAME.twbl.state_chat_booster = nil
+	if G.twbl_chat_booster_cards then
+		G.twbl_chat_booster_cards:remove()
+	end
+	if G.GAME.twbl.state_sticker_chat_booster then
+		G.GAME.twbl.state_sticker_chat_booster = nil
+		G.GAME.twbl.state_sticker_chat_booster_use = nil
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
@@ -140,8 +216,10 @@ function twbl_sticker_chat_booster_exit()
 	end
 end
 
+--
+
 TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(command, username, raw_index)
-	if command ~= "target" or not G.GAME.twbl.state_chat_booster or not G.booster_pack then
+	if command ~= "target" or not G.GAME.twbl.state_sticker_chat_booster or not G.booster_pack then
 		return
 	end
 	local index = tonumber(raw_index)

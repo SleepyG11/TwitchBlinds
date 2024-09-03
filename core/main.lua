@@ -161,35 +161,44 @@ function TwitchBlinds:init()
 	function G.FUNCS.select_blind(...)
 		G.GAME.twbl = G.GAME.twbl or {}
 		-- Replace with blind selected by chat (or use first if no votes)
-		if
-			G.GAME.blind_on_deck
-			and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck]
-			and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] == TW_BL.BLINDS.chat_blind
-		then
-			if G.GAME.blind_on_deck ~= "Boss" then
-				-- If somehow chat is in not boss position, then insert random boss here
-				TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
+		if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] then
+			local current_blind = G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck]
+			if current_blind == TW_BL.BLINDS.chat_blind then
+				if G.GAME.blind_on_deck ~= "Boss" then
+					-- If somehow chat is in not boss position, then insert random boss here
+					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
+					return
+				end
+
+				local blinds_to_choose =
+					TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
+				if not blinds_to_choose then
+					return select_blind_ref(...)
+				end
+				local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
+				local picked_blind = (
+					TW_BL.__DEV_MODE
+					and TW_BL.SETTINGS.current.forced_blind
+					and TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]
+				) or blinds_to_choose[tonumber(win_variant or "1")]
+
+				TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
+				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
+				TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
+				TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 				return
+			elseif current_blind == TW_BL.BLINDS.get_key("lucky_wheel") then
+				if
+					pseudorandom(pseudoseed("twbl_wheels_nope"))
+					> G.GAME.probabilities.normal
+						/ G.P_BLINDS[TW_BL.BLINDS.get_key("lucky_wheel")].config.extra.nope_odds
+				then
+					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, "bl_twbl_nope")
+					return
+				end
 			end
-
-			local blinds_to_choose = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
-			if not blinds_to_choose then
-				return select_blind_ref(...)
-			end
-			local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
-			local picked_blind = (
-				TW_BL.__DEV_MODE
-				and TW_BL.SETTINGS.current.forced_blind
-				and TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]
-			) or blinds_to_choose[tonumber(win_variant or "1")]
-
-			TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
-			TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
-			TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-			TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
-		else
-			return select_blind_ref(...)
 		end
+		return select_blind_ref(...)
 	end
 end
 

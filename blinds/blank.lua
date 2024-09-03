@@ -9,11 +9,16 @@ local tw_blind = SMODS.Blind({
 		extra = { odds = REPLACE_ODDS },
 		tw_bl = { twitch_blind = true, min = 1, max = 4 },
 	},
-	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), REPLACE_ODDS },
 	pos = { x = 0, y = 16 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("636c81"),
 })
+
+function tw_blind:loc_vars()
+	return {
+		vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. REPLACE_ODDS },
+	}
+end
 
 function tw_blind:set_blind(reset, silent)
 	if reset then
@@ -55,6 +60,6 @@ function tw_blind:set_blind(reset, silent)
 				return true
 			end,
 		}))
-		card_eval_status_text(v, "extra", nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_banana_qu })
+		card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_banana_qu") })
 	end
 end

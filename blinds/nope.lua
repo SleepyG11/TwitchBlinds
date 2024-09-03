@@ -8,14 +8,14 @@ local tw_blind = SMODS.Blind({
 	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 24 },
 	config = {
-		tw_bl = { twitch_blind = true },
+		tw_bl = { twitch_blind = true, ignore = true },
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = G.C.SECONDARY_SET.Tarot,
 })
 
 function tw_blind:in_pool()
-	-- Twitch interaction required
+	-- Nope!
 	return false
 end
 

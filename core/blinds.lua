@@ -22,9 +22,10 @@ local blinds_to_load = {
 	"greed",
 	"eraser",
 	"sketch",
-	-- "nope",
 	"misstock",
 	"incrementor",
+	"lucky_wheel",
+	"nope",
 	-- "cursed_boosters",
 }
 

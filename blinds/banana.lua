@@ -9,11 +9,16 @@ local tw_blind = SMODS.Blind({
 		extra = { odds = REPLACE_ODDS },
 		tw_bl = { twitch_blind = true, min = 2 },
 	},
-	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), REPLACE_ODDS },
 	pos = { x = 0, y = 4 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("e2ce00"),
 })
+
+function tw_blind:loc_vars()
+	return {
+		vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. REPLACE_ODDS },
+	}
+end
 
 function tw_blind:set_blind(reset, silent)
 	if reset then
@@ -53,14 +58,7 @@ function tw_blind:set_blind(reset, silent)
 					return true
 				end,
 			}))
-			card_eval_status_text(
-				v,
-				"extra",
-				nil,
-				nil,
-				nil,
-				{ message = G.localization.misc.dictionary.k_twbl_banana_ex }
-			)
+			card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_banana_ex") })
 		else
 			G.E_MANAGER:add_event(Event({
 				func = function()
@@ -75,7 +73,7 @@ function tw_blind:set_blind(reset, silent)
 					return true
 				end,
 			}))
-			card_eval_status_text(v, "extra", nil, nil, nil, { message = G.localization.misc.dictionary.k_safe_ex })
+			card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_safe_ex") })
 		end
 	end
 end

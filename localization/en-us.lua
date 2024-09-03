@@ -111,6 +111,10 @@ return {
 				name = "The Incrementor",
 				text = { "Chat can start counting", "to increase blind size" },
 			},
+			bl_twbl_lucky_wheel = {
+				name = "The Lucky Wheel",
+				text = { "#1# in #2# chance to add or", "replace editions on all Jokers" },
+			},
 		},
 	},
 	misc = {

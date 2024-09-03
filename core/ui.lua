@@ -964,7 +964,7 @@ function twbl_init_ui()
 							},
 							{
 								n = G.UIT.C,
-								config = { minw = 4.25 * 3, align = "cm" },
+								config = { minw = 4.25 * 3 + 0.1, align = "cm" },
 								nodes = {
 									{
 										n = G.UIT.C,

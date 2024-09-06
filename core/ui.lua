@@ -57,9 +57,9 @@ function twbl_init_ui()
 		return self:set(nil, write, true)
 	end
 	function PanelController:reset(full)
-		self.panel = nil
-		self.panel_key = nil
 		if full then
+            self.panel = nil
+            self.panel_key = nil
 			self.previous_panel = nil
 			self.previous_panel_key = nil
 		end
@@ -76,26 +76,30 @@ function twbl_init_ui()
 	function PanelController:set(panel_name, write, full_reload, ...)
 		local args = { panel_name, full_reload, ... }
 		if panel_name == self.panel_key then
-			self:update(unpack(args))
+            if self.panel_key then
+                self:update(unpack(args))
+            end
 			return panel_name
 		end
 
 		local previous_panel = self.panel or nil
 		local target_panel = panel_name and UI.panels[panel_name] or nil
 
+        self.previous_panel = self.panel
+        self.previous_panel_key = self.panel_key
+        self.panel_key = panel_name or nil
+        self.panel = target_panel or nil
+
+        if write then
+            self:save()
+        end
+
 		local continue = function()
-			self.previous_panel = self.panel
-			self.previous_panel_key = self.panel_key
-			self:reset()
-			self.panel_key = panel_name or nil
-			self.panel = target_panel or nil
-			if write then
-				self:save()
-			end
+            self:reset()
 			if target_panel then
 				target_panel.parent = self
 				if type(target_panel.UIBox_definition) == "function" then
-					target_panel.element = self:get_panel_UIBox(target_panel.UIBox_definition(self.panel))
+					target_panel.element = self:get_panel_UIBox(target_panel.UIBox_definition(target_panel))
 					self:update(unpack(args))
 					self:update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
 					self:after_set(target_panel, panel_name, function() end)
@@ -168,17 +172,16 @@ function twbl_init_ui()
 	end
 
 	function PanelController:save()
-		if G.GAME then
-			G.GAME.twbl["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
-			G.GAME.twbl["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
-		end
+        if G.GAME then
+            TW_BL.G["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
+            TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
+        end
 	end
 	function PanelController:load()
-		if G.GAME then
-			self.panel_key = G.GAME.twbl["ui_controller_" .. self.key_append .. "_prev_panel"]
-			self.panel = TW_BL.UI.panels[self.previous_panel_key]
-			self:set(G.GAME.twbl["ui_controller_" .. self.key_append .. "_panel"], false, true)
-		end
+        if G.GAME then
+            self.previous_panel_key = TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"]
+            self:set(TW_BL.G["ui_controller_" .. self.key_append .. "_panel"], false, true)
+        end
 	end
 
 	-- Settings
@@ -700,7 +703,7 @@ function twbl_init_ui()
 	UI.panels.voting_process_3 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
+				local args_array = TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
 					or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
@@ -877,7 +880,7 @@ function twbl_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
+			local args_array = TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
 			local do_update = false
 			if args then
 				do_update = true
@@ -892,7 +895,7 @@ function twbl_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.twbl["ui_voting_process_3_" .. panel.parent.key_append .. "_args"] = args_array
+				TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"] = args_array
 			end
 
 			local element = panel.element
@@ -923,7 +926,7 @@ function twbl_init_ui()
 	UI.panels.command_info_1 = {
 		localize_status = function(panel, status)
 			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
+				local args_array = TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
 					or { status = "k_twbl_toggle_ex" }
 				return localize(args_array.status)
 			end
@@ -1002,7 +1005,7 @@ function twbl_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
+			local args_array = TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
 			local do_update = false
 			if args then
 				do_update = true
@@ -1018,7 +1021,7 @@ function twbl_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.twbl["ui_command_info_1_" .. panel.parent.key_append .. "_args"] = args_array
+				TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"] = args_array
 			end
 
 			local element = panel.element
@@ -1090,7 +1093,7 @@ function twbl_init_ui()
 			}
 		end,
 		update = function(panel, full_update, args)
-			local args_array = G.GAME.twbl["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"]
+			local args_array = TW_BL.G["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"]
 			local do_update = false
 			if args then
 				do_update = true
@@ -1105,7 +1108,7 @@ function twbl_init_ui()
 				}
 			end
 			if do_update then
-				G.GAME.twbl["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"] = args_array
+				TW_BL.G["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"] = args_array
 			end
 
 			local element = panel.element
@@ -1248,9 +1251,14 @@ function twbl_init_ui()
 		return UI.controllers[controller]:notify(panel_name, message)
 	end
 
+    function UI.reset()
+        for k, v in pairs(UI.controllers) do
+			v:reset(true)
+		end
+    end
+
 	function UI.get_panels_from_game()
 		for k, v in pairs(UI.controllers) do
-			v:reset(true)
 			v:load()
 		end
 	end

@@ -48,7 +48,7 @@ function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.reset(true, "vote")
 
 	local dx_to_pick = get_ante_dx()
-	G.GAME.twbl.blind_spiral_dx_variants = dx_to_pick
+	TW_BL.G.blind_spiral_dx_variants = dx_to_pick
 
 	local result_variants = {}
 	for _, dx in ipairs(dx_to_pick) do
@@ -69,10 +69,10 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 
 	local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner()
-	local win_dx = G.GAME.twbl.blind_spiral_dx_variants[tonumber(win_index or "1")]
+	local win_dx = TW_BL.G.blind_spiral_dx_variants[tonumber(win_index or "1")]
 
 	ease_ante(win_dx)
 	G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante or G.GAME.round_resets.ante
 	G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante - win_dx
-	G.GAME.twbl.blind_spiral_dx_variants = nil
+	TW_BL.G.blind_spiral_dx_variants = nil
 end

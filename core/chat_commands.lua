@@ -151,7 +151,7 @@ function twbl_init_chat_commands()
 	function CHAT_COMMANDS.toggle_can_collect(command, b, write)
 		CHAT_COMMANDS.can_collect[command] = b
 		if write and G.GAME then
-			G.GAME.twbl["commands_can_collect_" .. command] = b
+			TW_BL.G["commands_can_collect_" .. command] = b
 		end
 	end
 
@@ -162,7 +162,7 @@ function twbl_init_chat_commands()
 	function CHAT_COMMANDS.toggle_single_use(command, b, write)
 		CHAT_COMMANDS.single_use[command] = b
 		if write and G.GAME then
-			G.GAME.twbl["commands_single_use_" .. command] = b
+			TW_BL.G["commands_single_use_" .. command] = b
 		end
 	end
 
@@ -172,7 +172,7 @@ function twbl_init_chat_commands()
 	function CHAT_COMMANDS.set_vote_variants(variants, write)
 		CHAT_COMMANDS.vote_variants = variants
 		if write and G.GAME then
-			G.GAME.twbl.vote_variants = variants
+			TW_BL.G.vote_variants = variants
 		end
 	end
 
@@ -184,8 +184,8 @@ function twbl_init_chat_commands()
 			if default_values then
 				set_value = default_values[command]
 			end
-			if G.GAME and G.GAME.twbl["commands_can_collect_" .. command] ~= nil then
-				set_value = G.GAME.twbl["commands_can_collect_" .. command]
+			if G.GAME and TW_BL.G["commands_can_collect_" .. command] ~= nil then
+				set_value = TW_BL.G["commands_can_collect_" .. command]
 			end
 			CHAT_COMMANDS.can_collect[command] = set_value or false
 		end
@@ -199,8 +199,8 @@ function twbl_init_chat_commands()
 			if default_values then
 				set_value = default_values[command]
 			end
-			if G.GAME and G.GAME.twbl["commands_single_use_" .. command] ~= nil then
-				set_value = G.GAME.twbl["commands_single_use_" .. command]
+			if G.GAME and TW_BL.G["commands_single_use_" .. command] ~= nil then
+				set_value = TW_BL.G["commands_single_use_" .. command]
 			end
 			CHAT_COMMANDS.single_use[command] = set_value or false
 		end
@@ -210,7 +210,7 @@ function twbl_init_chat_commands()
 	--- @param default_value string[] Value if data in game object not found
 	function CHAT_COMMANDS.get_vote_variants_from_game(default_value)
 		if G.GAME then
-			CHAT_COMMANDS.vote_variants = G.GAME.twbl.vote_variants or default_value
+			CHAT_COMMANDS.vote_variants = TW_BL.G.vote_variants or default_value
 		end
 	end
 

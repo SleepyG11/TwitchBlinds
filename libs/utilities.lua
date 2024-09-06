@@ -49,6 +49,10 @@ function table_merge(target, ...)
 	return target
 end
 
+function table_print(arg)
+    if tprint then print(tprint(arg)) else print(table_stringify(arg)) end
+end
+
 function table_defaults(target, default)
 	assert(type(target) == "table", "Target is not a table")
 	if type(default) ~= "table" then

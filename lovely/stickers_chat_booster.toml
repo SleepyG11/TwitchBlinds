@@ -23,7 +23,7 @@ target = "functions/button_callbacks.lua"
 pattern = 'G.FUNCS.end_consumeable(e)'
 position = "before"
 payload = """
-if G.GAME.twbl.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then return end
+if TW_BL.G.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then return end
 """
 match_indent = true
 
@@ -34,7 +34,7 @@ target = "functions/button_callbacks.lua"
 pattern = 'G.GAME.pack_choices = G.GAME.pack_choices - 1'
 position = "after"
 payload = """
-elseif G.GAME.twbl.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then
+elseif TW_BL.G.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then
 """
 match_indent = true
 
@@ -46,7 +46,7 @@ target = "functions/button_callbacks.lua"
 pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
 position = "after"
 payload = """
-if G.booster_pack and G.GAME.twbl.state_sticker_chat_booster then
+if G.booster_pack and TW_BL.G.state_sticker_chat_booster then
     twbl_sticker_chat_booster_exit()
 end
 """

@@ -210,7 +210,7 @@ function twbl_init_blinds()
 	--- @return boolean `true` if successfully, `false` if `G.GAME` is not ready
 	function BLINDS.set_voting_blinds_to_game(blinds)
 		if G.GAME then
-			G.GAME.twbl.voting_blinds = blinds
+			TW_BL.G.voting_blinds = blinds
 			return true
 		else
 			return false
@@ -223,8 +223,8 @@ function twbl_init_blinds()
 	--- @return string[]|nil
 	function BLINDS.get_voting_blinds_from_game(pool_type, generate_if_missing)
 		if G.GAME then
-			if G.GAME.twbl.voting_blinds then
-				return G.GAME.twbl.voting_blinds
+			if TW_BL.G.voting_blinds then
+				return TW_BL.G.voting_blinds
 			end
 
 			local ante_offset = 0

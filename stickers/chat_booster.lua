@@ -90,7 +90,7 @@ end
 function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
 	if
 		not (
-			G.GAME.twbl.state_sticker_chat_booster
+			TW_BL.G.state_sticker_chat_booster
 			and card.ability
 			and card.ability.consumeable
 			and G.twbl_chat_booster_cards
@@ -135,7 +135,7 @@ function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
 end
 
 function twbl_sticker_chat_booster_use_card()
-	G.GAME.twbl.state_sticker_chat_booster_use = nil
+	TW_BL.G.state_sticker_chat_booster_use = nil
 	local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
 	if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
 		return false
@@ -160,8 +160,8 @@ end
 function twbl_sticker_chat_booster_open(card)
 	local kind = card.config.center.kind
 	if kind == "Spectral" or kind == "Arcana" then
-		G.GAME.twbl.state_sticker_chat_booster = true
-		G.GAME.twbl.state_sticker_chat_booster_use = true
+		TW_BL.G.state_sticker_chat_booster = true
+		TW_BL.G.state_sticker_chat_booster_use = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
@@ -190,8 +190,8 @@ function twbl_sticker_chat_booster_open(card)
 		G.twbl_chat_booster_cards:emplace(chat_card)
 	else
 		card.ability.twbl_chat_booster = nil
-		G.GAME.twbl.state_sticker_chat_booster = nil
-		G.GAME.twbl.state_sticker_chat_booster_use = nil
+		TW_BL.G.state_sticker_chat_booster = nil
+		TW_BL.G.state_sticker_chat_booster_use = nil
 	end
 end
 
@@ -199,9 +199,9 @@ function twbl_sticker_chat_booster_exit()
 	if G.twbl_chat_booster_cards then
 		G.twbl_chat_booster_cards:remove()
 	end
-	if G.GAME.twbl.state_sticker_chat_booster then
-		G.GAME.twbl.state_sticker_chat_booster = nil
-		G.GAME.twbl.state_sticker_chat_booster_use = nil
+	if TW_BL.G.state_sticker_chat_booster then
+		TW_BL.G.state_sticker_chat_booster = nil
+		TW_BL.G.state_sticker_chat_booster_use = nil
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
@@ -219,7 +219,7 @@ end
 --
 
 TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(command, username, raw_index)
-	if command ~= "target" or not G.GAME.twbl.state_sticker_chat_booster or not G.booster_pack then
+	if command ~= "target" or not TW_BL.G.state_sticker_chat_booster or not G.booster_pack then
 		return
 	end
 	local index = tonumber(raw_index)

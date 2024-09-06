@@ -44,9 +44,9 @@ end
 
 function twbl_blind_misstock_set_type(v)
 	local _type = v.type
-	if G.GAME.twbl.blind_misstock_pool and not POOLS_TO_IGNORE[_type] then
+	if TW_BL.G.blind_misstock_pool and not POOLS_TO_IGNORE[_type] then
 		return {
-			type = G.GAME.twbl.blind_misstock_pool,
+			type = TW_BL.G.blind_misstock_pool,
 			val = 0,
 		}
 	end
@@ -55,13 +55,13 @@ end
 
 local get_pack_ref = get_pack
 function get_pack(_key, _type)
-	if G.GAME.twbl.blind_misstock_pool then
-		if G.GAME.twbl.blind_misstock_pool == "Enhanced" then
+	if TW_BL.G.blind_misstock_pool then
+		if TW_BL.G.blind_misstock_pool == "Enhanced" then
 			-- TODO: place playing cards somehow
 			return G.P_CENTERS["p_standard_normal_" .. math.random(1, 4)]
 		else
 			local POOL_ITEMS = {}
-			for k, v in pairs(G.P_CENTER_POOLS[G.GAME.twbl.blind_misstock_pool]) do
+			for k, v in pairs(G.P_CENTER_POOLS[TW_BL.G.blind_misstock_pool]) do
 				if not v.no_doe then
 					POOL_ITEMS[#POOL_ITEMS + 1] = v.key
 				end
@@ -89,7 +89,7 @@ function tw_blind:set_blind()
 		pools_to_pick[pool] = nil
 	end
 
-	G.GAME.twbl.blind_misstock_pools = result_pools
+	TW_BL.G.blind_misstock_pools = result_pools
 
 	TW_BL.UI.set_panel("game_top", "voting_process_3", true, true, {
 		command = "vote",
@@ -105,6 +105,6 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 
 	local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner()
-	G.GAME.twbl.blind_misstock_pool = G.GAME.twbl.blind_misstock_pools[tonumber(win_index or "1")]
-	G.GAME.twbl.blind_misstock_pools = nil
+	TW_BL.G.blind_misstock_pool = TW_BL.G.blind_misstock_pools[tonumber(win_index or "1")]
+	TW_BL.G.blind_misstock_pools = nil
 end

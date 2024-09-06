@@ -126,10 +126,19 @@ function twbl_init_chat_commands()
 	end
 
 	--- Reset voting scores and commands uses
-	function CHAT_COMMANDS.reset()
-		CHAT_COMMANDS.vote_score = {}
-		for k, v in pairs(CHAT_COMMANDS.users) do
-			CHAT_COMMANDS.users[k] = {}
+	--- @param reset_vote_score boolean Reset voting score
+	--- @param command string? Command to reset
+	function CHAT_COMMANDS.reset(reset_vote_score, command)
+		if reset_vote_score then
+			CHAT_COMMANDS.vote_score = {}
+			TW_BL.UI.update_panel("game_top", nil, false)
+		end
+		if command then
+			CHAT_COMMANDS.users[command] = {}
+		else
+			for k, v in pairs(CHAT_COMMANDS.users) do
+				CHAT_COMMANDS.users[k] = {}
+			end
 		end
 	end
 

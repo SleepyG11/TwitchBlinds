@@ -165,7 +165,7 @@ function twbl_sticker_chat_booster_open(card)
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
-		TW_BL.CHAT_COMMANDS.reset()
+		TW_BL.CHAT_COMMANDS.reset(true, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
@@ -227,7 +227,6 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(comman
 		local card = G.hand.cards[index]
 		card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.CHIPS })
-		select_cards_in_pack(#G.hand.highlighted)
 	else
 		TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
 	end

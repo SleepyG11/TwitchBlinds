@@ -26,6 +26,7 @@ local blinds_to_load = {
 	"incrementor",
 	"lucky_wheel",
 	"nope",
+	-- "spiral",
 	-- "cursed_boosters",
 }
 

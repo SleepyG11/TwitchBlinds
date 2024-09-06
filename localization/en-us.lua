@@ -115,6 +115,10 @@ return {
 				name = "The Lucky Wheel",
 				text = { "#1# in #2# chance to add or", "replace editions on all Jokers" },
 			},
+			bl_twbl_spiral = {
+				name = "The Time Spiral",
+				text = { "Chat can move in time" },
+			},
 		},
 	},
 	misc = {
@@ -168,6 +172,11 @@ return {
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
 			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
+
+			k_twbl_spiral_p_1 = "+1 Ante",
+			k_twbl_spiral_p_2 = "+2 Antes",
+			k_twbl_spiral_m_1 = "-1 Ante",
+			k_twbl_spiral_m_2 = "-2 Antes",
 		},
 	},
 }

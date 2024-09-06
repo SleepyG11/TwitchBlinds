@@ -143,8 +143,7 @@ function TwitchBlinds:init()
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
 				TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
-				TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", false, true)
-				TW_BL.CHAT_COMMANDS.reset()
+				TW_BL.CHAT_COMMANDS.reset(true, "vote")
 			end
 		end
 
@@ -210,7 +209,7 @@ function TwitchBlinds:start_run()
 		vote = not TW_BL.__DEV_MODE,
 	})
 	TW_BL.CHAT_COMMANDS.set_enabled(true)
-	TW_BL.CHAT_COMMANDS.reset()
+	TW_BL.CHAT_COMMANDS.reset(true)
 
 	TW_BL.UI.get_panels_from_game()
 end
@@ -218,5 +217,5 @@ end
 function TwitchBlinds:main_menu()
 	TW_BL.CHAT_COMMANDS.set_vote_variants({}, false)
 	TW_BL.CHAT_COMMANDS.set_enabled(false)
-	TW_BL.CHAT_COMMANDS.reset()
+	TW_BL.CHAT_COMMANDS.reset(true)
 end

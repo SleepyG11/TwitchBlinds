@@ -32,6 +32,6 @@ function tw_blind:set_blind(reset, silent)
 				return true
 			end,
 		}))
-		card_eval_status_text(v, "extra", nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_taxes_ex })
+		card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_taxes_ex") })
 	end
 end

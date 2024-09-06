@@ -165,7 +165,7 @@ function twbl_sticker_chat_booster_open(card)
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
-		TW_BL.CHAT_COMMANDS.reset(true, "target")
+		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
@@ -205,6 +205,7 @@ function twbl_sticker_chat_booster_exit()
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
 		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
+		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.remove_panel("booster_top", "command_info_1_short", true)
 
 		for _, v in ipairs(G.hand.cards) do

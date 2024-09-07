@@ -221,7 +221,7 @@ function twbl_init_blinds()
 	end
 
 	--- Save voting blinds in game object
-	--- @param blinds string[] List of blinds
+	--- @param blinds string[] | nil List of blinds
 	--- @return boolean `true` if successfully, `false` if `G.GAME` is not ready
 	function BLINDS.set_voting_blinds_to_game(blinds)
 		if G.GAME then
@@ -366,6 +366,18 @@ function twbl_init_blinds()
 	end
 
 	--
+
+	TW_BL.EVENTS.add_listener("twitch_command", "chat_commands_init", function(command, username, variant)
+		if command == "vote" and TW_BL.G.voting_blinds then
+			if TW_BL.CHAT_COMMANDS.can_vote_for_variant("voting_blind", variant) then
+				TW_BL.CHAT_COMMANDS.increment_vote_score("voting_blind", variant)
+				TW_BL.UI.update_panel("game_top", nil, false)
+				TW_BL.UI.create_panel_notify("game_top", nil, username)
+			else
+				TW_BL.CHAT_COMMANDS.decrement_command_use(command, username)
+			end
+		end
+	end)
 
 	return BLINDS
 end

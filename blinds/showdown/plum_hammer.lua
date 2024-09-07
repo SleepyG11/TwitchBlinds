@@ -2,12 +2,11 @@ local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("plum_hammer", true),
 	dollars = 8,
 	mult = 2,
-	boss = { min = -1, max = -1 },
+	boss = { min = -1, max = -1, showdown = true },
 	pos = { x = 0, y = 0 },
 	config = {
 		tw_bl = { twitch_blind = true },
 	},
-	showdown = true,
 	atlas = "twbl_showdown_blind_chips",
 	boss_colour = HEX("DDA0DD"),
 })

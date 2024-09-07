@@ -364,11 +364,11 @@ function twbl_init_ui()
 							w = 4,
 							label = "Blinds available for voting",
 							scale = 0.8,
-							options = { 
-                                localize("twbl_settings_blind_pool_1"),
+							options = {
+								localize("twbl_settings_blind_pool_1"),
 								localize("twbl_settings_blind_pool_2"),
 								localize("twbl_settings_blind_pool_3"),
-                             },
+							},
 							opt_callback = "twbl_settings_change_pool_type",
 							current_option = TW_BL.SETTINGS.temp.pool_type,
 						}),
@@ -690,7 +690,7 @@ function twbl_init_ui()
 			local element = panel.element
 			local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
 			if blinds_to_vote then
-				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
+				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status("voting_blind")
 				for i = 1, TW_BL.BLINDS.blinds_to_vote do
 					if full_update then
 						local boss_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_blind_name")
@@ -910,23 +910,25 @@ function twbl_init_ui()
 			end
 
 			local element = panel.element
-			local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status()
-			for i = 1, 3 do
-				if full_update then
-					local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
-					if text_element then
-						text_element.config.text = localize(args_array.variants[i])
-					end
+			if args_array.id then
+				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status(args_array.id)
+				for i = 1, 3 do
+					if full_update then
+						local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
+						if text_element then
+							text_element.config.text = localize(args_array.variants[i])
+						end
 
-					local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")
-					if command_element then
-						command_element.config.text = args_array.command .. " " .. tostring(i)
+						local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")
+						if command_element then
+							command_element.config.text = args_array.command .. " " .. tostring(i)
+						end
 					end
-				end
-				local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
-				if percent_element then
-					local variant_status = vote_status[tostring(i)]
-					percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
+					local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
+					if percent_element then
+						local variant_status = vote_status[tostring(i)]
+						percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
+					end
 				end
 			end
 

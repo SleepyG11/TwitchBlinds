@@ -34,17 +34,15 @@ function twbl_init_chat_commands()
 	local next_reconnect_timeout = 1
 	local reconnect_timeout = 0
 
-	--
+	---------------------------------------
 
-	--- Enable or disable message processing entirely
 	--- @param b boolean
 	function CHAT_COMMANDS.set_enabled(b)
 		CHAT_COMMANDS.enabled = b
 	end
 
-	--- Process message
-	--- @param username string Username who send message
-	--- @param message string Message content
+	--- @param username string
+	--- @param message string
 	function CHAT_COMMANDS.process_message(username, message)
 		local iterator = string.gmatch(message, "%S+")
 
@@ -65,9 +63,11 @@ function twbl_init_chat_commands()
 		end
 	end
 
-	--- Chech can user use this command
-	--- @param command string Command
-	--- @param username string Twitch username
+	-- Command use
+	---------------------------------------
+
+	--- @param command string
+	--- @param username string
 	--- @return boolean
 	function CHAT_COMMANDS.can_use_command(command, username)
 		if not CHAT_COMMANDS.can_collect[command] then
@@ -86,9 +86,8 @@ function twbl_init_chat_commands()
 		return true
 	end
 
-	--- Increment command use count
-	--- @param command string Command
-	--- @param username string Twitch username
+	--- @param command string
+	--- @param username string
 	function CHAT_COMMANDS.increment_command_use(command, username)
 		if not CHAT_COMMANDS.users[command] then
 			CHAT_COMMANDS.users[command] = {}
@@ -96,9 +95,8 @@ function twbl_init_chat_commands()
 		CHAT_COMMANDS.users[command][username] = (CHAT_COMMANDS.users[command][username] or 0) + 1
 	end
 
-	--- Decrement command use count
-	--- @param command string Command
-	--- @param username string Twitch username
+	--- @param command string
+	--- @param username string
 	function CHAT_COMMANDS.decrement_command_use(command, username)
 		if not CHAT_COMMANDS.users[command] then
 			CHAT_COMMANDS.users[command] = {}
@@ -106,46 +104,88 @@ function twbl_init_chat_commands()
 		CHAT_COMMANDS.users[command][username] = math.max((CHAT_COMMANDS.users[command][username] or 1) - 1, 0)
 	end
 
-	--- Check is this variant valid
-	--- @param variant string Variant
+	-- Vote score
+	---------------------------------------
+
+	--- @param id string
+	--- @param variant string
+	--- @return integer | nil
+	function CHAT_COMMANDS.get_vote_score(id, variant)
+		if not CHAT_COMMANDS.vote_score[id] then
+			CHAT_COMMANDS.vote_score[id] = {}
+		end
+		return CHAT_COMMANDS.vote_score[id][variant]
+	end
+
+	--- @param id string
+	--- @param variant string
+	--- @param score integer | nil
+	function CHAT_COMMANDS.set_vote_score(id, variant, score)
+		if not CHAT_COMMANDS.vote_score[id] then
+			CHAT_COMMANDS.vote_score[id] = {}
+		end
+		CHAT_COMMANDS.vote_score[id][variant] = score
+	end
+
+	--- @param id string
+	--- @param variant string
+	function CHAT_COMMANDS.increment_vote_score(id, variant)
+		CHAT_COMMANDS.set_vote_score(id, variant, (CHAT_COMMANDS.get_vote_score(id, variant) or 0) + 1)
+	end
+
+	--- @param id string
+	--- @param variant string
+	function CHAT_COMMANDS.decrement_vote_score(id, variant)
+		CHAT_COMMANDS.set_vote_score(id, variant, math.max(0, (CHAT_COMMANDS.get_vote_score(id, variant) or 0) - 1))
+	end
+
+	-- Vote variants
+	---------------------------------------
+
+	function CHAT_COMMANDS.get_vote_variants(id)
+		if not CHAT_COMMANDS.vote_variants[id] then
+			CHAT_COMMANDS.vote_variants[id] = {}
+		end
+		return CHAT_COMMANDS.vote_variants[id]
+	end
+
+	--- @param id string
+	--- @param variants string[]
+	--- @param write boolean Save value in game object
+	function CHAT_COMMANDS.set_vote_variants(id, variants, write)
+		CHAT_COMMANDS.vote_variants[id] = variants
+		if write and G.GAME then
+			TW_BL.G.vote_variants = TW_BL.G.vote_variants or {}
+			TW_BL.G.vote_variants[id] = variants
+		end
+	end
+
+	--- @param id string
+	--- @param variant string
 	--- @return boolean
-	function CHAT_COMMANDS.can_vote_for_variant(variant)
-		return table_contains(CHAT_COMMANDS.vote_variants, variant)
+	function CHAT_COMMANDS.can_vote_for_variant(id, variant)
+		return table_contains(CHAT_COMMANDS.get_vote_variants(id), variant)
 	end
 
-	--- Increment variant score
-	--- @param variant string Variant
-	function CHAT_COMMANDS.increment_vote_score(variant)
-		CHAT_COMMANDS.vote_score[variant] = (CHAT_COMMANDS.vote_score[variant] or 0) + 1
-	end
-
-	--- Decrement variant score
-	--- @param variant string Variant
-	function CHAT_COMMANDS.decrement_vote_score(variant)
-		CHAT_COMMANDS.vote_score[variant] = math.max(0, (CHAT_COMMANDS.vote_score[variant] or 0) - 1)
-	end
-
-	--- Reset voting scores and commands uses
-	--- @param reset_vote_score boolean Reset voting score
-	--- @param command string? Command to reset
-	function CHAT_COMMANDS.reset(reset_vote_score, command)
-		if reset_vote_score then
-			CHAT_COMMANDS.vote_score = {}
-			TW_BL.UI.update_panel("game_top", nil, false)
+	function CHAT_COMMANDS.get_vote_variants_for_blinds()
+		local variants = {}
+		for i = 1, TW_BL.BLINDS.blinds_to_vote do
+			table.insert(variants, tostring(i))
 		end
-		if command then
-			CHAT_COMMANDS.users[command] = {}
-		else
-			for k, v in pairs(CHAT_COMMANDS.users) do
-				CHAT_COMMANDS.users[k] = {}
-			end
+		return variants
+	end
+
+	--- @param default_value string[] Value if data in game object not found
+	function CHAT_COMMANDS.get_vote_variants_from_game(default_value)
+		if G.GAME then
+			CHAT_COMMANDS.vote_variants = TW_BL.G.vote_variants or default_value or {}
 		end
 	end
 
-	--
+	-- Can collect
+	---------------------------------------
 
-	--- Set can command can be processed
-	--- @param command string Command
+	--- @param command string
 	--- @param b boolean
 	--- @param write boolean Save value in game object
 	function CHAT_COMMANDS.toggle_can_collect(command, b, write)
@@ -155,29 +195,8 @@ function twbl_init_chat_commands()
 		end
 	end
 
-	--- Set can command can be used one time only
-	--- @param command string Command
-	--- @param b boolean
-	--- @param write boolean Save value in game object
-	function CHAT_COMMANDS.toggle_single_use(command, b, write)
-		CHAT_COMMANDS.single_use[command] = b
-		if write and G.GAME then
-			TW_BL.G["commands_single_use_" .. command] = b
-		end
-	end
-
-	--- Set vote variants
-	--- @param variants string[]
-	--- @param write boolean Save value in game object
-	function CHAT_COMMANDS.set_vote_variants(variants, write)
-		CHAT_COMMANDS.vote_variants = variants
-		if write and G.GAME then
-			TW_BL.G.vote_variants = variants
-		end
-	end
-
 	--- Get can each command can be processed from game object
-	--- @param default_values { [string]: boolean } Values if data in game object not found
+	--- @param default_values table<string, boolean> Values if data in game object not found
 	function CHAT_COMMANDS.get_can_collect_from_game(default_values)
 		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
@@ -191,8 +210,21 @@ function twbl_init_chat_commands()
 		end
 	end
 
+	-- Single use
+	---------------------------------------
+
+	--- @param command string
+	--- @param b boolean
+	--- @param write boolean Save value in game object
+	function CHAT_COMMANDS.toggle_single_use(command, b, write)
+		CHAT_COMMANDS.single_use[command] = b
+		if write and G.GAME then
+			TW_BL.G["commands_single_use_" .. command] = b
+		end
+	end
+
 	--- Get can each command can be used one time only from game object
-	--- @param default_values { [string]: boolean } Values if data in game object not found
+	--- @param default_values table<string, boolean> Values if data in game object not found
 	function CHAT_COMMANDS.get_single_use_from_game(default_values)
 		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
@@ -206,36 +238,21 @@ function twbl_init_chat_commands()
 		end
 	end
 
-	--- Get vote variants from game object
-	--- @param default_value string[] Value if data in game object not found
-	function CHAT_COMMANDS.get_vote_variants_from_game(default_value)
-		if G.GAME then
-			CHAT_COMMANDS.vote_variants = TW_BL.G.vote_variants or default_value
-		end
-	end
-
-	--- Get vote variants from, which can be used for voting for boss blind
-	function CHAT_COMMANDS.get_vote_variants_for_blinds()
-		local variants = {}
-		for i = 1, TW_BL.BLINDS.blinds_to_vote do
-			table.insert(variants, tostring(i))
-		end
-		return variants
-	end
-
-	--
+	-- Vote stats
+	---------------------------------------
 
 	--- Get most voted variant and it's score
+	--- @param id string
 	--- @return string|nil win_index Variant with highest score or `nil` if no votes collected
 	--- @return number win_score Score of win variant
 	--- @return number win_percent Percent of votes of win variant (0-100)
-	function CHAT_COMMANDS.get_vote_winner()
+	function CHAT_COMMANDS.get_vote_winner(id)
 		local total_score = 0
 		local win_score = 0
 		local win_variant = nil
 
-		for _, v in ipairs(CHAT_COMMANDS.vote_variants) do
-			local variant_score = CHAT_COMMANDS.vote_score[v]
+		for _, v in ipairs(CHAT_COMMANDS.get_vote_variants(id)) do
+			local variant_score = CHAT_COMMANDS.get_vote_score(id, v)
 			if variant_score then
 				total_score = total_score + variant_score
 				if variant_score > win_score then
@@ -251,14 +268,17 @@ function twbl_init_chat_commands()
 	end
 
 	--- Get all variants score
+	--- @param id string
 	--- @return { [string]: { score: number, percent: number, winner: boolean } }
-	function CHAT_COMMANDS.get_vote_status()
+	function CHAT_COMMANDS.get_vote_status(id)
 		local total_score = 0
 		local win_score = 0
 		local win_variant = nil
 
-		for _, v in ipairs(CHAT_COMMANDS.vote_variants) do
-			local variant_score = CHAT_COMMANDS.vote_score[v]
+		local vote_variants = CHAT_COMMANDS.get_vote_variants(id)
+
+		for _, v in ipairs(vote_variants) do
+			local variant_score = CHAT_COMMANDS.get_vote_score(id, v)
 			if variant_score then
 				total_score = total_score + variant_score
 				-- If no winner, first win automatically
@@ -274,8 +294,8 @@ function twbl_init_chat_commands()
 
 		local result = {}
 
-		for _, v in ipairs(CHAT_COMMANDS.vote_variants) do
-			local variant_score = CHAT_COMMANDS.vote_score[v] or 0
+		for _, v in ipairs(vote_variants) do
+			local variant_score = CHAT_COMMANDS.get_vote_score(id, v) or 0
 			local variant_percent = total_score == 0 and 0 or (variant_score / total_score * 100)
 			local variant_winner = v == win_variant
 			result[v] = {
@@ -286,6 +306,30 @@ function twbl_init_chat_commands()
 		end
 
 		return result
+	end
+
+	-- Other
+	---------------------------------------
+
+	--- Reset voting scores and commands uses
+	--- @param reset_vote_score? string | boolean Reset all or specific voting score id
+	--- @param command string? Command to reset
+	function CHAT_COMMANDS.reset(reset_vote_score, command)
+		if reset_vote_score then
+			if reset_vote_score == true then
+				CHAT_COMMANDS.vote_score = {}
+			else
+				CHAT_COMMANDS.vote_score[reset_vote_score] = {}
+			end
+			TW_BL.UI.update_panel("game_top", nil, false)
+		end
+		if command then
+			CHAT_COMMANDS.users[command] = {}
+		else
+			for k, v in pairs(CHAT_COMMANDS.users) do
+				CHAT_COMMANDS.users[k] = {}
+			end
+		end
 	end
 
 	--
@@ -320,18 +364,6 @@ function twbl_init_chat_commands()
 			end
 		end
 		CHAT_COMMANDS.collector:update()
-	end)
-
-	TW_BL.EVENTS.add_listener("twitch_command", "chat_commands_init", function(command, username, variant)
-		if command == "vote" then
-			if CHAT_COMMANDS.can_vote_for_variant(variant) then
-				CHAT_COMMANDS.increment_vote_score(variant)
-				TW_BL.UI.update_panel("game_top", nil, false)
-				TW_BL.UI.create_panel_notify("game_top", nil, username)
-			else
-				CHAT_COMMANDS.decrement_command_use(command, username)
-			end
-		end
 	end)
 
 	return CHAT_COMMANDS

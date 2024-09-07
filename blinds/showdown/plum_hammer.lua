@@ -19,7 +19,7 @@ end
 
 function tw_blind:set_blind(reset, silent)
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", true, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "toggle",

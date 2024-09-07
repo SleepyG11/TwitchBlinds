@@ -26,8 +26,11 @@ local blinds_to_load = {
 	"incrementor",
 	"lucky_wheel",
 	"nope",
-	-- "spiral",
-	-- "cursed_boosters",
+	"spiral",
+}
+
+local showdown_blinds_to_load = {
+	"plum_hammer",
 }
 
 function twbl_init_blinds()
@@ -49,6 +52,15 @@ function twbl_init_blinds()
 			px = 34,
 			py = 34,
 			path = "BlindChips.png",
+			atlas_table = "ANIMATION_ATLAS",
+			frames = 21,
+		}),
+
+		SHOWDOWN_ATLAS = SMODS.Atlas({
+			key = "twbl_showdown_blind_chips",
+			px = 34,
+			py = 34,
+			path = "ShowdownBlindChips.png",
 			atlas_table = "ANIMATION_ATLAS",
 			frames = 21,
 		}),
@@ -75,6 +87,9 @@ function twbl_init_blinds()
 	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
 	for _, blind_name in ipairs(blinds_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
+	end
+	for _, blind_name in ipairs(showdown_blinds_to_load) do
+		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/showdown/" .. blind_name .. ".lua")))()
 	end
 	BLINDS.chat_blind = "bl_twbl_twitch_chat"
 

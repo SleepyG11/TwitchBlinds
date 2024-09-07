@@ -219,7 +219,7 @@ end
 
 --
 
-TW_BL.EVENTS.add_listener("twitch_command", "twbl_chat_booster", function(command, username, raw_index)
+TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", function(command, username, raw_index)
 	if command ~= "target" or not TW_BL.G.state_sticker_chat_booster or not G.booster_pack then
 		return
 	end

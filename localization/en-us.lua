@@ -119,6 +119,13 @@ return {
 				name = "The Time Spiral",
 				text = { "Chat can move in time" },
 			},
+
+			-- Showdown
+
+			bl_twbl_plum_hammer = {
+				name = "Plum Hammer",
+				text = { "Chat can add or remove", "debuff on Jokers" },
+			},
 		},
 	},
 	misc = {
@@ -171,6 +178,8 @@ return {
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
+			k_twbl_panel_toggle_plum_hammer = "Add/remove debuff on Joker (once per user)",
+
 			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
 
 			k_twbl_spiral_p_1 = "+1 Ante",

@@ -36,10 +36,11 @@ function tw_blind:defeat()
 end
 
 TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("chaos"), function(command, username, raw_index)
-	if command ~= "toggle" then
+	if command ~= "toggle" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("chaos") then
 		return
 	end
-	if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("chaos") then
+	if G.STATE ~= G.STATES.SELECTING_HAND then
+		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 		return
 	end
 	local index = tonumber(raw_index)

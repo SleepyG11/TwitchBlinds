@@ -1,4 +1,4 @@
-local MEGA_FORWARD_ODDS = 2
+local MEGA_FORWARD_ODDS = 3
 
 local function get_ante_dx()
 	return {
@@ -16,7 +16,7 @@ local tw_blind = SMODS.Blind({
 		min = 999,
 		max = 999,
 	},
-	pos = { x = 0, y = 6 },
+	pos = { x = 0, y = 28 },
 	config = {
 		tw_bl = {
 			twitch_blind = true,
@@ -31,7 +31,7 @@ local tw_blind = SMODS.Blind({
 		},
 	},
 	atlas = "twbl_blind_chips",
-	boss_colour = HEX("be35b0"),
+	boss_colour = HEX("a17040"),
 })
 
 function tw_blind:in_pool()
@@ -73,6 +73,6 @@ function tw_blind:defeat()
 
 	ease_ante(win_dx)
 	G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante or G.GAME.round_resets.ante
-	G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante - win_dx
+	G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante + win_dx
 	TW_BL.G.blind_spiral_dx_variants = nil
 end

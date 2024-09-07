@@ -58,8 +58,8 @@ function twbl_init_ui()
 	end
 	function PanelController:reset(full)
 		if full then
-            self.panel = nil
-            self.panel_key = nil
+			self.panel = nil
+			self.panel_key = nil
 			self.previous_panel = nil
 			self.previous_panel_key = nil
 		end
@@ -76,26 +76,26 @@ function twbl_init_ui()
 	function PanelController:set(panel_name, write, full_reload, ...)
 		local args = { panel_name, full_reload, ... }
 		if panel_name == self.panel_key then
-            if self.panel_key then
-                self:update(unpack(args))
-            end
+			if self.panel_key then
+				self:update(unpack(args))
+			end
 			return panel_name
 		end
 
 		local previous_panel = self.panel or nil
 		local target_panel = panel_name and UI.panels[panel_name] or nil
 
-        self.previous_panel = self.panel
-        self.previous_panel_key = self.panel_key
-        self.panel_key = panel_name or nil
-        self.panel = target_panel or nil
+		self.previous_panel = self.panel
+		self.previous_panel_key = self.panel_key
+		self.panel_key = panel_name or nil
+		self.panel = target_panel or nil
 
-        if write then
-            self:save()
-        end
+		if write then
+			self:save()
+		end
 
 		local continue = function()
-            self:reset()
+			self:reset()
 			if target_panel then
 				target_panel.parent = self
 				if type(target_panel.UIBox_definition) == "function" then
@@ -172,16 +172,16 @@ function twbl_init_ui()
 	end
 
 	function PanelController:save()
-        if G.GAME then
-            TW_BL.G["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
-            TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
-        end
+		if G.GAME then
+			TW_BL.G["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
+			TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
+		end
 	end
 	function PanelController:load()
-        if G.GAME then
-            self.previous_panel_key = TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"]
-            self:set(TW_BL.G["ui_controller_" .. self.key_append .. "_panel"], false, true)
-        end
+		if G.GAME then
+			self.previous_panel_key = TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"]
+			self:set(TW_BL.G["ui_controller_" .. self.key_append .. "_panel"], false, true)
+		end
 	end
 
 	-- Settings
@@ -216,7 +216,7 @@ function twbl_init_ui()
 						{
 							n = G.UIT.T,
 							config = {
-								text = "Twitch channel name",
+								text = localize("twbl_settings_twitch_channel_name"),
 								scale = 0.4,
 								colour = G.C.UI.TEXT_LIGHT,
 								shadow = false,
@@ -240,7 +240,7 @@ function twbl_init_ui()
 								create_text_input({
 									w = 4,
 									max_length = 32,
-									prompt_text = "Enter channel name",
+									prompt_text = localize("twbl_settings_enter_channel_name"),
 									ref_table = TW_BL.SETTINGS.temp,
 									ref_value = "channel_name",
 									extended_corpus = true,
@@ -248,7 +248,10 @@ function twbl_init_ui()
 								}),
 								{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
 								UIBox_button({
-									label = { "Paste name", "or url" },
+									label = {
+										localize("twbl_settings_paste_name_or_url_1"),
+										localize("twbl_settings_paste_name_or_url_2"),
+									},
 									minw = 2,
 									minh = 0.6,
 									button = "twbl_settings_paste_channel_name",
@@ -280,7 +283,7 @@ function twbl_init_ui()
 					},
 					nodes = {
 						UIBox_button({
-							label = { "Apply" },
+							label = { localize("b_set_apply") },
 							minw = 2,
 							minh = 0.6,
 							button = "twbl_settings_save_channel_name",
@@ -336,9 +339,13 @@ function twbl_init_ui()
 					nodes = {
 						create_option_cycle({
 							w = 4,
-							label = "Twitch Blind frequency",
+							label = localize("twbl_settings_blind_frequency"),
 							scale = 0.8,
-							options = { "None", "One after one", "Every one" },
+							options = {
+								localize("twbl_settings_blind_frequency_1"),
+								localize("twbl_settings_blind_frequency_2"),
+								localize("twbl_settings_blind_frequency_3"),
+							},
 							opt_callback = "twbl_settings_change_blind_frequency",
 							current_option = TW_BL.SETTINGS.temp.blind_frequency,
 						}),
@@ -355,9 +362,13 @@ function twbl_init_ui()
 					nodes = {
 						create_option_cycle({
 							w = 4,
-							label = "Blinds pool to vote",
+							label = "Blinds available for voting",
 							scale = 0.8,
-							options = { "Twitch Blinds", "All other", "All" },
+							options = { 
+                                localize("twbl_settings_blind_pool_1"),
+								localize("twbl_settings_blind_pool_2"),
+								localize("twbl_settings_blind_pool_3"),
+                             },
 							opt_callback = "twbl_settings_change_pool_type",
 							current_option = TW_BL.SETTINGS.temp.pool_type,
 						}),
@@ -376,7 +387,7 @@ function twbl_init_ui()
 				create_toggle({
 					callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
 					label_scale = 0.4,
-					label = "Natural appearing Chat Booster sticker",
+					label = localize("twbl_settings_natural_chat_booster_sticker"),
 					ref_table = TW_BL.SETTINGS.temp,
 					ref_value = "natural_chat_booster_sticker",
 				}),
@@ -1251,11 +1262,11 @@ function twbl_init_ui()
 		return UI.controllers[controller]:notify(panel_name, message)
 	end
 
-    function UI.reset()
-        for k, v in pairs(UI.controllers) do
+	function UI.reset()
+		for k, v in pairs(UI.controllers) do
 			v:reset(true)
 		end
-    end
+	end
 
 	function UI.get_panels_from_game()
 		for k, v in pairs(UI.controllers) do

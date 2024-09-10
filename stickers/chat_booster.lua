@@ -164,7 +164,7 @@ function twbl_sticker_chat_booster_open(card)
 		TW_BL.G.state_sticker_chat_booster_use = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
+		TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
 		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
@@ -184,7 +184,7 @@ function twbl_sticker_chat_booster_open(card)
 		local chat_card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W / 2, G.CARD_H / 2, nil, center, {
 			bypass_discovery_center = true,
 			bypass_discovery_ui = true,
-			discover = falses,
+			discover = false,
 			bypass_back = G.GAME.selected_back.pos,
 		})
 		G.twbl_chat_booster_cards:emplace(chat_card)

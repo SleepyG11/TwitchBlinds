@@ -16,6 +16,17 @@ end
 """
 match_indent = true
 
+# On booster pack open
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = 'pack_cards[i] = card'
+position = "after"
+payload = """
+if i == _size then twbl_sticker_planets() end
+"""
+match_indent = true
+
 # On booster pack skip
 [[patches]]
 [patches.pattern]

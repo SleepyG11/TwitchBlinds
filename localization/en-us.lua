@@ -168,6 +168,7 @@ return {
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
 			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
+			k_twbl_panel_toggle_chat_booster_celestial = "Select a target to downgrade (once per user)",
 		},
 	},
 }

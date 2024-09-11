@@ -3,12 +3,12 @@ function string_starts(s, start)
 end
 
 --- Check is table contain a value
---- @param table table
+--- @param t table
 --- @param value any
 --- @return boolean
-function table_contains(table, value)
-	for i, v in ipairs(table) do
-		if v == value then
+function table_contains(t, value)
+	for i = #t, 1, -1 do
+		if t[i] and t[i] == value then
 			return true
 		end
 	end
@@ -47,6 +47,14 @@ function table_merge(target, ...)
 	end
 
 	return target
+end
+
+function table_print(arg)
+	if tprint then
+		print(tprint(arg))
+	else
+		print(table_stringify(arg))
+	end
 end
 
 function table_defaults(target, default)

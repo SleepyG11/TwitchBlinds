@@ -115,10 +115,35 @@ return {
 				name = "The Lucky Wheel",
 				text = { "#1# in #2# chance to add or", "replace editions on all Jokers" },
 			},
+			bl_twbl_spiral = {
+				name = "The Time Spiral",
+				text = { "Chat can move in time" },
+			},
+
+			-- Showdown
+
+			bl_twbl_plum_hammer = {
+				name = "Plum Hammer",
+				text = { "Chat can add or remove", "debuff on Jokers" },
+			},
 		},
 	},
 	misc = {
 		dictionary = {
+			twbl_settings_twitch_channel_name = "Twitch channel name",
+			twbl_settings_enter_channel_name = "Enter channel name",
+			twbl_settings_paste_name_or_url_1 = "Paste name",
+			twbl_settings_paste_name_or_url_2 = "or url",
+			twbl_settings_blind_frequency = "Voting frequency",
+			twbl_settings_blind_frequency_1 = "None",
+			twbl_settings_blind_frequency_2 = "Every 2 antes",
+			twbl_settings_blind_frequency_3 = "Every ante",
+			twbl_settings_blind_pool = "Blinds available for voting",
+			twbl_settings_blind_pool_1 = "Twitch Blinds",
+			twbl_settings_blind_pool_2 = "Vanilla + Mods",
+			twbl_settings_blind_pool_3 = "All",
+			twbl_settings_natural_chat_booster_sticker = "Natural appearing Chat Booster sticker",
+
 			twbl_argument_type_Number = "number",
 
 			twbl_position_DEFAULT_singular = "item position",
@@ -167,8 +192,15 @@ return {
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per user)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
 			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
+			k_twbl_panel_toggle_plum_hammer = "Add/remove debuff on Joker (once per user)",
+
 			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
 			k_twbl_panel_toggle_chat_booster_celestial = "Select a target to downgrade (once per user)",
+
+			k_twbl_spiral_p_1 = "+1 Ante",
+			k_twbl_spiral_p_2 = "+2 Antes",
+			k_twbl_spiral_m_1 = "-1 Ante",
+			k_twbl_spiral_m_2 = "-2 Antes",
 		},
 	},
 }

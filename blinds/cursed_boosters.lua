@@ -22,4 +22,4 @@
 -- 	end
 -- end
 
--- G.GAME.twbl.cursed_boosters = true
+-- TW_BL.G.cursed_boosters = true

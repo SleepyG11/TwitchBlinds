@@ -19,6 +19,7 @@ end
 function tw_blind:set_blind(reset, silent)
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", true, true)
+	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "toggle",
 		status = "k_twbl_lock_ex",
@@ -30,14 +31,16 @@ end
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("toggle", false, true)
+	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.remove_panel("game_top", "command_info_1", true)
 end
 
 TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), function(command, username, raw_index)
-	if command ~= "toggle" then
+	if command ~= "toggle" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("lock") then
 		return
 	end
-	if G.STATE ~= G.STATES.SELECTING_HAND or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("lock") then
+	if G.STATE ~= G.STATES.SELECTING_HAND then
+		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 		return
 	end
 	local index = tonumber(raw_index)

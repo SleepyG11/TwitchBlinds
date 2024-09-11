@@ -66,7 +66,7 @@ function twbl_init_utilities()
 			return false
 		end
 		if reset then
-			TW_BL.CHAT_COMMANDS.reset()
+			TW_BL.CHAT_COMMANDS.reset(true, "vote")
 		end
 		if notify and TW_BL.UI.controllers.main_top.panel_key == "blind_voting_process" then
 			local element = TW_BL.UI.controllers.main_top.panel and TW_BL.UI.controllers.main_top.panel.element

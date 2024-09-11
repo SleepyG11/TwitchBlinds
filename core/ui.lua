@@ -1239,7 +1239,6 @@ function twbl_init_ui()
 										panel.element.T.w,
 										nil
 									)
-									G.twbl_chat_booster_planets:align_cards()
 								end
 								
 								continue()

@@ -74,7 +74,7 @@ local function generate_initial_planets()
 	local all_planets = {"c_mercury", "c_venus", "c_earth", "c_mars", "c_jupiter", "c_saturn", "c_uranus", "c_neptune", "c_pluto", "c_planet_x", "c_ceres", "c_eris"}
 	local pool = {}
 	-- iterate over planets and remove any that are already in the pack
-	for i, planet in ipairs(planets) do
+	for i, planet in ipairs(all_planets) do
 		local center = G.P_CENTERS[planet]
 		if center and center.config and center.config.hand_type then
 			if not (center.config.softlock and G.GAME.hands[center.config.hand_type].played <= 0) then
@@ -82,7 +82,6 @@ local function generate_initial_planets()
 			end
 		end
 	end
-
 	return pool
 end
 
@@ -174,11 +173,11 @@ function twbl_sticker_chat_booster_select_targets(card, set_highlighted)
 end
 
 function twbl_sticker_chat_booster_get_planet()
-	if not G.GAME.twbl.state_sticker_chat_booster then
+	if not TW_BL.G.state_sticker_chat_booster then
 		return nil
 	end
 
-	for _, planet in ipairs(G.pack_cards.cards) do
+	for _, planet in ipairs(G.twbl_chat_booster_planets.cards) do
 		if planet.ability and not planet.ability.twbl_sticker_chat_booster_pseudo then
 			planet.ability.twbl_sticker_chat_booster_pseudo =
 				pseudorandom(pseudoseed("twbl_chat_booster_card_pseudo"))
@@ -190,17 +189,13 @@ end
 
 function twbl_sticker_chat_booster_use_card()
 	TW_BL.G.state_sticker_chat_booster_use = nil
-	local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
-	if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
-		return false
-	end
 
 	-- If we skipping
 	if G.GAME.pack_choices then
 		G.GAME.pack_choices = 0
 	end
 
-	if G.GAME.twbl.state_sticker_chat_booster ~= "Celestial" then
+	if TW_BL.G.state_sticker_chat_booster ~= "Celestial" then
 		local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
 		if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
 			return false
@@ -251,6 +246,12 @@ function twbl_sticker_planets()
 			if not hand_type then
 				return false
 			end
+
+			-- Don't level down to Level 0
+			if G.GAME.hands[hand_type].level <= 1 then
+				return false
+			end
+		
 			update_hand_text({sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3}, {handname=localize(hand_type, 'poker_hands'),chips = G.GAME.hands[hand_type].chips, mult = G.GAME.hands[hand_type].mult, level=G.GAME.hands[hand_type].level})
 			level_up_hand(check, hand_type, nil, -1)
 			update_hand_text({sound = 'button', volume = 0.7, pitch = 1.1, delay = 0}, {mult = 0, chips = 0, handname = '', level = ''})
@@ -260,20 +261,17 @@ function twbl_sticker_planets()
 		local chat_card = Card(area.T.x + area.T.w / 2 + (i * G.CARD_W / 2), area.T.y, G.CARD_W / 2, G.CARD_H / 2, nil, center, {
 			bypass_discovery_center = true,
 			bypass_discovery_ui = true,
-			discover = falses,
+			discover = false,
 			bypass_back = G.GAME.selected_back.pos,
 		})
 		G.twbl_chat_booster_planets:emplace(chat_card)
-
 	end
-	G.twbl_chat_booster_planets:set_ranks()
-	G.twbl_chat_booster_planets:align_cards()
 end
 
 function twbl_sticker_chat_booster_open(card)
 	local kind = card.config.center.kind
 	if kind == "Spectral" or kind == "Arcana" then
-		TW_BL.G.state_sticker_chat_booster = true
+		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
@@ -302,12 +300,12 @@ function twbl_sticker_chat_booster_open(card)
 		})
 		G.twbl_chat_booster_cards:emplace(chat_card)
 	elseif kind == "Celestial" then 
-		G.GAME.twbl.state_sticker_chat_booster = card.config.center.kind
-		G.GAME.twbl.state_sticker_chat_booster_use = true
+		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
+		TW_BL.G.state_sticker_chat_booster_use = true
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
-		TW_BL.CHAT_COMMANDS.reset()
+		TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
+		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
@@ -333,6 +331,11 @@ end
 function twbl_sticker_chat_booster_exit()
 	if G.twbl_chat_booster_cards then
 		G.twbl_chat_booster_cards:remove()
+		G.twbl_chat_booster_cards = nil
+	end
+	if G.twbl_chat_booster_planets then
+		G.twbl_chat_booster_planets:remove()
+		G.twbl_chat_booster_planets = nil
 	end
 	if TW_BL.G.state_sticker_chat_booster then
 		TW_BL.G.state_sticker_chat_booster = nil
@@ -359,7 +362,7 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 		return
 	end
 	local index = tonumber(raw_index)
-	if G.GAME.twbl.state_sticker_chat_booster == "Celestial" then
+	if TW_BL.G.state_sticker_chat_booster == "Celestial" then
 		if index and G.twbl_chat_booster_planets and G.twbl_chat_booster_planets.cards and G.twbl_chat_booster_planets.cards[index] then
 			local card = G.twbl_chat_booster_planets.cards[index]
 			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1

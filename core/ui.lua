@@ -1232,7 +1232,15 @@ function twbl_init_ui()
 										nil,
 										nil
 									)
+								elseif G.twbl_chat_booster_planets then
+									G.twbl_chat_booster_planets:hard_set_T(
+										panel.element.T.x,
+										panel.element.T.y + panel.element.T.h,
+										panel.element.T.w,
+										nil
+									)
 								end
+
 								continue()
 								return true
 							end,

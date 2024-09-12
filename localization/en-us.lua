@@ -195,6 +195,7 @@ return {
 			k_twbl_panel_toggle_plum_hammer = "Add/remove debuff on Joker (once per user)",
 
 			k_twbl_panel_toggle_chat_booster = "Select a target for consumable (once per user)",
+			k_twbl_panel_toggle_chat_booster_celestial = "Select a poker hand to downgrade (once per user)",
 
 			k_twbl_spiral_p_1 = "+1 Ante",
 			k_twbl_spiral_p_2 = "+2 Antes",

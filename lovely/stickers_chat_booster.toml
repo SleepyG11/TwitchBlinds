@@ -23,7 +23,7 @@ target = "card.lua"
 pattern = 'pack_cards[i] = card'
 position = "after"
 payload = """
-if i == _size and self.ability.name:find('Celestial') then twbl_sticker_chat_booster_emplace_planets() end
+if i == _size and self.ability.name:find('Celestial') and self.ability.twbl_chat_booster then twbl_sticker_chat_booster_emplace_planets() end
 """
 match_indent = true
 

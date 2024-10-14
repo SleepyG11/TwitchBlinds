@@ -315,7 +315,7 @@ function twbl_sticker_chat_booster_open(card)
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
-			text = "k_twbl_panel_toggle_chat_booster",
+			text = "k_twbl_panel_toggle_chat_booster_consumeable",
 		})
 
 		G.twbl_chat_booster_cards = CardArea(

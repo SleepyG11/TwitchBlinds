@@ -209,8 +209,6 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
 					nodes = {
 						{
@@ -219,7 +217,6 @@ function twbl_init_ui()
 								text = localize("twbl_settings_twitch_channel_name"),
 								scale = 0.4,
 								colour = G.C.UI.TEXT_LIGHT,
-								shadow = false,
 							},
 						},
 					},
@@ -229,8 +226,6 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
 					nodes = {
 						{
@@ -268,18 +263,13 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
-					nodes = {},
 				},
 				{
 					n = G.UIT.R,
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
 					nodes = {
 						UIBox_button({
@@ -323,18 +313,13 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
-					nodes = {},
 				},
 				{
 					n = G.UIT.R,
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
 					nodes = {
 						create_option_cycle({
@@ -356,8 +341,6 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
 					nodes = {
 						create_option_cycle({
@@ -379,10 +362,7 @@ function twbl_init_ui()
 					config = {
 						align = "cm",
 						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
 					},
-					nodes = {},
 				},
 				create_toggle({
 					callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
@@ -390,6 +370,20 @@ function twbl_init_ui()
 					label = localize("twbl_settings_natural_chat_booster_sticker"),
 					ref_table = TW_BL.SETTINGS.temp,
 					ref_value = "natural_chat_booster_sticker",
+				}),
+				{
+					n = G.UIT.R,
+					config = {
+						align = "cm",
+						padding = 0.05,
+					},
+				},
+				create_toggle({
+					callback = G.FUNCS.twbl_settings_toggle_natural_blinds,
+					label_scale = 0.4,
+					label = localize("twbl_settings_natural_blinds"),
+					ref_table = TW_BL.SETTINGS.temp,
+					ref_value = "natural_blinds",
 				}),
 			}
 			if TW_BL.__DEV_MODE then
@@ -481,6 +475,11 @@ function twbl_init_ui()
 
 	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
 		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_toggle_natural_blinds(args)
+		TW_BL.SETTINGS.temp.natural_blinds = args
 		TW_BL.SETTINGS.save()
 	end
 

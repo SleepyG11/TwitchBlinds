@@ -11,6 +11,10 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("ce512b"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 function tw_blind:loc_vars()
 	local selected_hand = nil
 	if G.GAME.blind and G.GAME.blind.hands and G.GAME.blind.hands.selected then

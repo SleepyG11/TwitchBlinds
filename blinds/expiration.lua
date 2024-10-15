@@ -85,7 +85,7 @@ local tw_blind = SMODS.Blind({
 })
 
 function tw_blind:in_pool()
-	return check_is_food_jokers()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind) and check_is_food_jokers()
 end
 
 function tw_blind:set_blind(reset, silent)

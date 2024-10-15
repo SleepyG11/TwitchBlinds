@@ -11,6 +11,10 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("dc6a10"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 -- Implementation in lovely/blinds_trash_can.toml
 
 function blind_trash_can_remove_scored_cards(scoring_hand)

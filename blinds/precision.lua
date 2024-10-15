@@ -11,4 +11,8 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("90c8c2"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 -- Implementation in lovely/blinds_precision.toml

@@ -4,13 +4,16 @@ local DEFAULT_SETTINGS = {
 	channel_name = "",
 	forced_blind = nil,
 	natural_chat_booster_sticker = false,
+	natural_blinds = false,
 }
 
 function twbl_init_settings()
+	local init_settings = table_defaults(TW_BL.current_mod.config, DEFAULT_SETTINGS)
+
 	local SETTINGS = {
 		default = DEFAULT_SETTINGS,
-		temp = nil,
-		current = table_defaults(TW_BL.current_mod.config, DEFAULT_SETTINGS),
+		temp = table_copy(init_settings),
+		current = table_copy(init_settings),
 	}
 
 	TW_BL.SETTINGS = SETTINGS

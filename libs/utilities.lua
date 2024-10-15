@@ -16,12 +16,15 @@ function table_contains(t, value)
 end
 
 --- Merge target table with source tables
---- @param target table
---- @param ... table[]
---- @return table
-function table_merge(target, ...)
+--- @generic T
+--- @generic S
+--- @param target T
+--- @param source S
+--- @param ... any
+--- @return T | S
+function table_merge(target, source, ...)
 	assert(type(target) == "table", "Target is not a table")
-	local tables_to_merge = { ... }
+	local tables_to_merge = { source, ... }
 	if #tables_to_merge == 0 then
 		return target
 	end
@@ -57,6 +60,11 @@ function table_print(arg)
 	end
 end
 
+--- @generic T
+--- @generic S
+--- @param target T
+--- @param default S
+--- @return T | S
 function table_defaults(target, default)
 	assert(type(target) == "table", "Target is not a table")
 	if type(default) ~= "table" then
@@ -73,8 +81,9 @@ function table_defaults(target, default)
 end
 
 --- Create a deep copy of table
---- @param orig table The table to copy
---- @return table
+--- @generic T
+--- @param orig T The table to copy
+--- @return T
 function table_copy(orig)
 	local orig_type = type(orig)
 	local copy

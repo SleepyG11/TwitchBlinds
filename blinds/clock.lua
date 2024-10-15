@@ -16,6 +16,10 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("896665"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 local timeout = TIME_DELAY
 
 local function increment_clock_chips(current_chips, base_chips)

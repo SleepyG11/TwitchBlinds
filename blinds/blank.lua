@@ -14,6 +14,10 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("636c81"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 function tw_blind:loc_vars()
 	return {
 		vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. REPLACE_ODDS },

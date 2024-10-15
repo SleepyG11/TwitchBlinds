@@ -143,6 +143,7 @@ return {
 			twbl_settings_blind_pool_2 = "Vanilla + Mods",
 			twbl_settings_blind_pool_3 = "All",
 			twbl_settings_natural_chat_booster_sticker = "Natural appearing Chat Booster sticker",
+			twbl_settings_natural_blinds = "Natural appearing some of Twitch Blinds",
 
 			twbl_argument_type_Number = "number",
 

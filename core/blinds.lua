@@ -84,6 +84,13 @@ function twbl_init_blinds()
 		return "bl_twbl_" .. blind_name
 	end
 
+	function BLINDS.can_natural_appear(blind)
+		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
+			return false
+		end
+		return math.max(G.GAME.round_resets.ante, 0) >= math.max(blind.boss.min or 0, 0)
+	end
+
 	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
 	for _, blind_name in ipairs(blinds_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()

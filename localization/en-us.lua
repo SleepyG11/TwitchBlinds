@@ -137,7 +137,7 @@ return {
 			twbl_settings_enter_channel_name = "Enter channel name",
 			twbl_settings_paste_name_or_url_1 = "Paste name",
 			twbl_settings_paste_name_or_url_2 = "or url",
-			twbl_settings_blind_frequency = "Voting frequency",
+			twbl_settings_blind_frequency = "Blind voting frequency",
 			twbl_settings_blind_frequency_1 = "None",
 			twbl_settings_blind_frequency_2 = "Every 2 antes",
 			twbl_settings_blind_frequency_3 = "Every ante",
@@ -145,8 +145,8 @@ return {
 			twbl_settings_blind_pool_1 = "Twitch Blinds",
 			twbl_settings_blind_pool_2 = "Vanilla + Mods",
 			twbl_settings_blind_pool_3 = "All",
-			twbl_settings_natural_chat_booster_sticker = "Natural appearing Chat Booster sticker",
-			twbl_settings_natural_blinds = "Natural appearing some of Twitch Blinds",
+			twbl_settings_natural_chat_booster_sticker = "Enable Chat Booster sticker",
+			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",
 
 			twbl_argument_type_Number = "number",
 

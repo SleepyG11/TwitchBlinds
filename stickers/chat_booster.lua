@@ -96,14 +96,10 @@ end
 local tw_sticker = SMODS.Sticker({
 	atlas = "twbl_stickers",
 	pos = { x = 0, y = 0 },
-	colour = HEX("8e15ad"),
+	badge_colour = HEX("8e15ad"),
 	config = {},
 	rate = 0,
 	key = "twbl_chat_booster",
-	loc_text = {
-		name = "Chat Booster",
-		text = { "Chat will use additional", "targetable consumable" },
-	},
 })
 
 -- Implementation in lovely/stickers_chat_booster.toml

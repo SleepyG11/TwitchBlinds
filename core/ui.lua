@@ -187,7 +187,7 @@ function twbl_init_ui()
 	-- Settings
 	------------------------------
 
-	function UI.settings.get_settings_tab(_tab)
+	function UI.settings.get_settings_tab()
 		local forcing_labels = { "None" }
 
 		for i = 1, #TW_BL.BLINDS.regular do
@@ -202,223 +202,223 @@ function twbl_init_ui()
 			config = { align = "cm", padding = 0.05, colour = G.C.CLEAR, minh = 5, minw = 5 },
 			nodes = {},
 		}
-		if _tab == "Settings" then
-			result.nodes = {
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-					nodes = {
-						{
-							n = G.UIT.T,
-							config = {
-								text = localize("twbl_settings_twitch_channel_name"),
-								scale = 0.4,
-								colour = G.C.UI.TEXT_LIGHT,
-							},
-						},
-					},
+		result.nodes = {
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
 				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-					nodes = {
-						{
-							n = G.UIT.C,
-							config = { align = "cm", minw = 0.1 },
-							nodes = {
-								create_text_input({
-									w = 4,
-									max_length = 32,
-									prompt_text = localize("twbl_settings_enter_channel_name"),
-									ref_table = TW_BL.SETTINGS.temp,
-									ref_value = "channel_name",
-									extended_corpus = true,
-									keyboard_offset = 1,
-								}),
-								{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
-								UIBox_button({
-									label = {
-										localize("twbl_settings_paste_name_or_url_1"),
-										localize("twbl_settings_paste_name_or_url_2"),
-									},
-									minw = 2,
-									minh = 0.6,
-									button = "twbl_settings_paste_channel_name",
-									colour = G.C.BLUE,
-									scale = 0.3,
-									col = true,
-								}),
-							},
-						},
-					},
-				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-					nodes = {
-						UIBox_button({
-							label = { localize("b_set_apply") },
-							minw = 2,
-							minh = 0.6,
-							button = "twbl_settings_save_channel_name",
-							colour = G.C.GREEN,
+				nodes = {
+					{
+						n = G.UIT.T,
+						config = {
+							text = localize("twbl_settings_twitch_channel_name"),
 							scale = 0.4,
-							col = true,
-						}),
-						{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
-						{
-							n = G.UIT.C,
-							config = {
-								align = "cm",
-								padding = 0.05,
-								colour = nil,
-								r = 0.3,
-								minw = 3,
-							},
-							nodes = {
-								{
-									n = G.UIT.O,
-									config = {
-										id = "twbl_settings_status",
-										object = DynaText({
-											string = UI.settings.get_status_text(),
-											colours = { G.C.WHITE },
-											shadow = false,
-											scale = 0.4,
-										}),
-									},
+							colour = G.C.UI.TEXT_LIGHT,
+						},
+					},
+				},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = "cm", minw = 0.1 },
+						nodes = {
+							create_text_input({
+								w = 4,
+								max_length = 32,
+								prompt_text = localize("twbl_settings_enter_channel_name"),
+								ref_table = TW_BL.SETTINGS.temp,
+								ref_value = "channel_name",
+								extended_corpus = true,
+								keyboard_offset = 1,
+							}),
+							{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
+							UIBox_button({
+								label = {
+									localize("twbl_settings_paste_name_or_url_1"),
+									localize("twbl_settings_paste_name_or_url_2"),
+								},
+								minw = 2,
+								minh = 0.6,
+								button = "twbl_settings_paste_channel_name",
+								colour = G.C.BLUE,
+								scale = 0.3,
+								col = true,
+							}),
+						},
+					},
+				},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+				nodes = {
+					UIBox_button({
+						label = { localize("b_set_apply") },
+						minw = 2,
+						minh = 0.6,
+						button = "twbl_settings_save_channel_name",
+						colour = G.C.GREEN,
+						scale = 0.4,
+						col = true,
+					}),
+					{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
+					{
+						n = G.UIT.C,
+						config = {
+							align = "cm",
+							padding = 0.05,
+							colour = nil,
+							r = 0.3,
+							minw = 3,
+						},
+						nodes = {
+							{
+								n = G.UIT.O,
+								config = {
+									id = "twbl_settings_status",
+									object = DynaText({
+										string = UI.settings.get_status_text(),
+										colours = { G.C.WHITE },
+										shadow = false,
+										scale = 0.4,
+									}),
 								},
 							},
 						},
 					},
 				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
 				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-					nodes = {
-						create_option_cycle({
-							w = 4,
-							label = localize("twbl_settings_blind_frequency"),
-							scale = 0.8,
-							options = {
-								localize("twbl_settings_blind_frequency_1"),
-								localize("twbl_settings_blind_frequency_2"),
-								localize("twbl_settings_blind_frequency_3"),
-							},
-							opt_callback = "twbl_settings_change_blind_frequency",
-							current_option = TW_BL.SETTINGS.temp.blind_frequency,
-						}),
-					},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
 				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
-					nodes = {
-						create_option_cycle({
-							w = 4,
-							label = "Blinds available for voting",
-							scale = 0.8,
-							options = {
-								localize("twbl_settings_blind_pool_1"),
-								localize("twbl_settings_blind_pool_2"),
-								localize("twbl_settings_blind_pool_3"),
-							},
-							opt_callback = "twbl_settings_change_pool_type",
-							current_option = TW_BL.SETTINGS.temp.pool_type,
-						}),
-					},
+				nodes = {
+					create_option_cycle({
+						w = 4,
+						label = localize("twbl_settings_blind_frequency"),
+						scale = 0.8,
+						options = {
+							localize("twbl_settings_blind_frequency_1"),
+							localize("twbl_settings_blind_frequency_2"),
+							localize("twbl_settings_blind_frequency_3"),
+						},
+						opt_callback = "twbl_settings_change_blind_frequency",
+						current_option = TW_BL.SETTINGS.temp.blind_frequency,
+					}),
 				},
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
 				},
-				create_toggle({
-					callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
-					label_scale = 0.4,
-					label = localize("twbl_settings_natural_chat_booster_sticker"),
-					ref_table = TW_BL.SETTINGS.temp,
-					ref_value = "natural_chat_booster_sticker",
-				}),
-				{
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-					},
+				nodes = {
+					create_option_cycle({
+						w = 4,
+						label = "Blinds available for voting",
+						scale = 0.8,
+						options = {
+							localize("twbl_settings_blind_pool_1"),
+							localize("twbl_settings_blind_pool_2"),
+							localize("twbl_settings_blind_pool_3"),
+						},
+						opt_callback = "twbl_settings_change_pool_type",
+						current_option = TW_BL.SETTINGS.temp.pool_type,
+					}),
 				},
-				create_toggle({
-					callback = G.FUNCS.twbl_settings_toggle_natural_blinds,
-					label_scale = 0.4,
-					label = localize("twbl_settings_natural_blinds"),
-					ref_table = TW_BL.SETTINGS.temp,
-					ref_value = "natural_blinds",
-				}),
-			}
-			if TW_BL.__DEV_MODE then
-				table.insert(result.nodes, {
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
-						minh = 0.1,
-					},
-					nodes = {},
-				})
-				table.insert(result.nodes, {
-					n = G.UIT.R,
-					config = {
-						align = "cm",
-						padding = 0.05,
-						colour = box_colour,
-						r = 0.3,
-					},
-					nodes = {
-						create_option_cycle({
-							w = 6,
-							label = "[DEV] Forced blind",
-							scale = 0.8,
-							options = forcing_labels,
-							opt_callback = "twbl_settings_change_forced_blind",
-							current_option = (TW_BL.SETTINGS.temp.forced_blind or 0) + 1,
-						}),
-					},
-				})
-			end
+			},
+		}
+		if TW_BL.__DEV_MODE then
+			table.insert(result.nodes, {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+					colour = box_colour,
+					r = 0.3,
+					minh = 0.1,
+				},
+				nodes = {},
+			})
+			table.insert(result.nodes, {
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+					colour = box_colour,
+					r = 0.3,
+				},
+				nodes = {
+					create_option_cycle({
+						w = 6,
+						label = "[DEV] Forced blind",
+						scale = 0.8,
+						options = forcing_labels,
+						opt_callback = "twbl_settings_change_forced_blind",
+						current_option = (TW_BL.SETTINGS.temp.forced_blind or 0) + 1,
+					}),
+				},
+			})
 		end
+
+		return result
+	end
+
+	function UI.settings.get_appearance_tab()
+		local result = {
+			n = G.UIT.ROOT,
+			config = { align = "cm", padding = 0.05, colour = G.C.CLEAR, minh = 5, minw = 5 },
+			nodes = {},
+		}
+		result.nodes = {
+			create_toggle({
+				callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
+				label_scale = 0.4,
+				label = localize("twbl_settings_natural_chat_booster_sticker"),
+				ref_table = TW_BL.SETTINGS.temp,
+				ref_value = "natural_chat_booster_sticker",
+			}),
+			{
+				n = G.UIT.R,
+				config = { align = "cm", padding = 0.05 },
+			},
+			create_toggle({
+				callback = G.FUNCS.twbl_settings_toggle_natural_blinds,
+				label_scale = 0.4,
+				label = localize("twbl_settings_natural_blinds"),
+				ref_table = TW_BL.SETTINGS.temp,
+				ref_value = "natural_blinds",
+			}),
+		}
 
 		return result
 	end
@@ -451,8 +451,21 @@ function twbl_init_ui()
 		end
 	end
 
-	TW_BL.current_mod.config_tab = function()
-		return UI.settings.get_settings_tab("Settings")
+	TW_BL.current_mod.extra_tabs = function()
+		return {
+			{
+				label = "Settings",
+				tab_definition_function = function()
+					return UI.settings.get_settings_tab()
+				end,
+			},
+			{
+				label = "Appearance",
+				tab_definition_function = function()
+					return UI.settings.get_appearance_tab()
+				end,
+			},
+		}
 	end
 
 	-- Callbacks

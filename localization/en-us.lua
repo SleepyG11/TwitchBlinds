@@ -1,9 +1,9 @@
 return {
 	descriptions = {
 		Other = {
-			chat_booster = {
+			twbl_chat_booster = {
 				name = "Chat Booster",
-				text = { "Chat will use additional", "targetable consumable" },
+				text = { "Chat can interact", "inside this booster pack" },
 			},
 		},
 		Blind = {
@@ -129,6 +129,9 @@ return {
 		},
 	},
 	misc = {
+		labels = {
+			twbl_chat_booster = "Chat Booster",
+		},
 		dictionary = {
 			twbl_settings_twitch_channel_name = "Twitch channel name",
 			twbl_settings_enter_channel_name = "Enter channel name",

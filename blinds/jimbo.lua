@@ -5,7 +5,12 @@ local tw_blind = SMODS.Blind({
 	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 12 },
 	config = {
-		tw_bl = { twitch_blind = true },
+		tw_bl = {
+			twitch_blind = true,
+			in_pool = function()
+				return pseudorandom(pseudoseed("twbl_blind_jimbo_in_pool")) > 3 / 4
+			end,
+		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("0077e8"),

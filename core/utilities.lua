@@ -98,5 +98,9 @@ function twbl_init_utilities()
 		return G.GAME and G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind
 	end
 
+	function UTILITIES.is_next_blind_a_chat()
+		return G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] == TW_BL.BLINDS.chat_blind
+	end
+
 	return UTILITIES
 end

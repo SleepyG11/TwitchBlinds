@@ -5,7 +5,17 @@ local tw_blind = SMODS.Blind({
 	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 1 },
 	config = {
-		tw_bl = { twitch_blind = true, min = 4, max = 5 },
+		tw_bl = {
+			twitch_blind = true,
+			min = 4,
+			max = 5,
+			in_pool = function()
+				return pseudorandom(pseudoseed("twbl_blind_isaac_in_pool")) > 4 / 5
+					and G.GAME
+					and G.GAME.round_resets.ante >= 4
+					and G.GAME.round_resets.ante <= 5
+			end,
+		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("d82727"),

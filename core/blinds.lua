@@ -110,19 +110,22 @@ function twbl_init_blinds()
 				eligible_bosses[k] = 0
 			end
 		end
-		local min_use = math.huge
-		for k, v in pairs(G.GAME.bosses_used) do
-			if eligible_bosses[k] then
-				eligible_bosses[k] = v
-				if eligible_bosses[k] <= min_use then
-					min_use = eligible_bosses[k]
+		if TW_BL.SETTINGS.current.blind_pool_type < 2 then
+			-- Remove already used blinds
+			local min_use = math.huge
+			for k, v in pairs(G.GAME.bosses_used) do
+				if eligible_bosses[k] then
+					eligible_bosses[k] = v
+					if eligible_bosses[k] <= min_use then
+						min_use = eligible_bosses[k]
+					end
 				end
 			end
-		end
-		for k, v in pairs(eligible_bosses) do
-			if eligible_bosses[k] then
-				if eligible_bosses[k] > min_use then
-					eligible_bosses[k] = nil
+			for k, v in pairs(eligible_bosses) do
+				if eligible_bosses[k] then
+					if eligible_bosses[k] > min_use then
+						eligible_bosses[k] = nil
+					end
 				end
 			end
 		end
@@ -154,9 +157,11 @@ function twbl_init_blinds()
 				end
 			end
 			table.insert(result, boss)
-			for _, v in ipairs(result) do
-				-- No repeat bosses
-				current_pool[v] = nil
+			if TW_BL.SETTINGS.current.blind_pool_type < 3 then
+				for _, v in ipairs(result) do
+					-- No repeat bosses
+					current_pool[v] = nil
+				end
 			end
 		end
 		return result

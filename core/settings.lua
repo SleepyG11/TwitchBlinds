@@ -1,8 +1,12 @@
 local DEFAULT_SETTINGS = {
 	blind_frequency = 2,
+	blind_pool_type = 1,
 	pool_type = 1,
 	channel_name = "",
 	forced_blind = nil,
+
+	delay_for_chat = 1,
+
 	natural_chat_booster_sticker = false,
 	natural_blinds = false,
 }

@@ -59,7 +59,7 @@ function TwitchBlinds:init()
 	local love_update_ref = love.update
 	function love.update(dt, ...)
 		love_update_ref(dt, ...)
-		TW_BL.EVENTS.emit("game_update", dt)
+		TW_BL.EVENTS.process_dt(dt)
 	end
 
 	local get_new_boss_ref = get_new_boss
@@ -170,6 +170,7 @@ function TwitchBlinds:init()
 
 	local select_blind_ref = G.FUNCS.select_blind
 	function G.FUNCS.select_blind(...)
+		local args = { ... }
 		TW_BL.G = TW_BL.G or {}
 		-- Replace with blind selected by chat (or use first if no votes)
 		if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] then
@@ -178,6 +179,12 @@ function TwitchBlinds:init()
 				if G.GAME.blind_on_deck ~= "Boss" then
 					-- If somehow chat is in non-boss position, then insert random boss here
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
+					return
+				end
+
+				if TW_BL.EVENTS.request_delay(5, function()
+					G.FUNCS.select_blind(unpack(args))
+				end) then
 					return
 				end
 

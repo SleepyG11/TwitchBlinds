@@ -344,7 +344,7 @@ function twbl_init_ui()
 				nodes = {
 					create_option_cycle({
 						w = 4,
-						label = "Blinds available for voting",
+						label = localize("twbl_settings_blind_pool"),
 						scale = 0.8,
 						options = {
 							localize("twbl_settings_blind_pool_1"),
@@ -353,6 +353,48 @@ function twbl_init_ui()
 						},
 						opt_callback = "twbl_settings_change_pool_type",
 						current_option = TW_BL.SETTINGS.temp.pool_type,
+					}),
+				},
+			},
+			-- {
+			-- 	n = G.UIT.R,
+			-- 	config = {
+			-- 		align = "cm",
+			-- 		padding = 0.05,
+			-- 	},
+			-- 	nodes = {
+			-- 		create_option_cycle({
+			-- 			w = 4,
+			-- 			label = localize("twbl_settings_delay_for_chat"),
+			-- 			scale = 0.8,
+			-- 			options = {
+			-- 				localize("twbl_settings_delay_for_chat_1"),
+			-- 				localize("twbl_settings_delay_for_chat_2"),
+			-- 				localize("twbl_settings_delay_for_chat_3"),
+			-- 			},
+			-- 			opt_callback = "twbl_settings_change_delay_for_chat",
+			-- 			current_option = TW_BL.SETTINGS.temp.delay_for_chat,
+			-- 		}),
+			-- 	},
+			-- },
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+				nodes = {
+					create_option_cycle({
+						w = 6,
+						label = localize("twbl_settings_blind_pool_type"),
+						scale = 0.8,
+						options = {
+							localize("twbl_settings_blind_pool_type_1"),
+							localize("twbl_settings_blind_pool_type_2"),
+							localize("twbl_settings_blind_pool_type_3"),
+						},
+						opt_callback = "twbl_settings_change_blind_pool_type",
+						current_option = TW_BL.SETTINGS.temp.blind_pool_type,
 					}),
 				},
 			},
@@ -519,6 +561,16 @@ function twbl_init_ui()
 	function G.FUNCS.twbl_settings_save_channel_name()
 		TW_BL.SETTINGS.save()
 		TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	end
+
+	function G.FUNCS.twbl_settings_change_delay_for_chat(args)
+		TW_BL.SETTINGS.temp.delay_for_chat = args.to_key
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_change_blind_pool_type(args)
+		TW_BL.SETTINGS.temp.blind_pool_type = args.to_key
+		TW_BL.SETTINGS.save()
 	end
 
 	-- Panels definitions

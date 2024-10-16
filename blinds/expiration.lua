@@ -85,7 +85,7 @@ local tw_blind = SMODS.Blind({
 })
 
 function tw_blind:in_pool()
-	return check_is_food_jokers()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind) and check_is_food_jokers()
 end
 
 function tw_blind:set_blind(reset, silent)
@@ -126,7 +126,6 @@ function tw_blind:set_blind(reset, silent)
 				return true
 			end,
 		}))
-		-- TODO: localization
-		card_eval_status_text(v, "extra", nil, nil, nil, { message = G.localization.misc.dictionary.k_twbl_tumors_ex })
+		card_eval_status_text(v, "extra", nil, nil, nil, { message = localize("k_twbl_tumors_ex") })
 	end
 end

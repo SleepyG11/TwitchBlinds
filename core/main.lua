@@ -1,6 +1,25 @@
 local nativefs = require("nativefs")
 
-TwitchBlinds = Object:extend()
+--- @class TwitchBlinds
+--- @field G table<string, any> Place for run data
+TwitchBlinds = setmetatable(Object:extend(), {
+	__index = function(table, index)
+		if index == "G" then
+			return G.GAME and G.GAME.twbl or {}
+		else
+			return rawget(table, index)
+		end
+	end,
+	__newindex = function(table, index, value)
+		if index == "G" then
+			if G.GAME then
+				G.GAME.twbl = (G.GAME.twbl or value or {})
+			end
+		else
+			rawset(table, index, value)
+		end
+	end,
+})
 TW_BL = TwitchBlinds
 
 assert(load(nativefs.read(SMODS.current_mod.path .. "core/events.lua")))()
@@ -30,16 +49,9 @@ function TwitchBlinds:init()
 
 	-- Overriding
 
-	local game_start_run_ref = Game.start_run
-	function Game:start_run(...)
-		G.GAME.twbl = G.GAME.twbl or {}
-		game_start_run_ref(self, ...)
-		TW_BL:start_run()
-	end
-
 	local main_menu_ref = Game.main_menu
 	function Game:main_menu(...)
-		G.GAME.twbl = G.GAME.twbl or {}
+		TW_BL.G = {}
 		main_menu_ref(self, ...)
 		TW_BL:main_menu()
 	end
@@ -52,7 +64,7 @@ function TwitchBlinds:init()
 
 	local get_new_boss_ref = get_new_boss
 	function get_new_boss(...)
-		G.GAME.twbl = G.GAME.twbl or {}
+		TW_BL.G = {}
 		local is_first_boss = not G.GAME.round_resets.blind_choices.Boss
 		local caused_by_boss_defeate = (
 			G.GAME.round_resets.blind_states.Small == "Upcoming" or G.GAME.round_resets.blind_states.Small == "Hide"
@@ -67,9 +79,9 @@ function TwitchBlinds:init()
 		local force_voting_process = false
 		local voting_ante_offset = 0
 
-		if not G.GAME.twbl.blind_chat_antes then
+		if not TW_BL.G.blind_chat_antes then
 			-- If no data in save, then assume that we don't see chat at most 1 ante
-			G.GAME.twbl.blind_chat_antes = is_first_boss and 0 or 1
+			TW_BL.G.blind_chat_antes = is_first_boss and 0 or 1
 		end
 
 		if G.GAME.round_resets.blind_choices.Small == TW_BL.BLINDS.chat_blind then
@@ -93,7 +105,7 @@ function TwitchBlinds:init()
 				result = get_new_boss_ref(...)
 			elseif TW_BL.SETTINGS.current.blind_frequency == 2 then
 				start_voting_process = true
-				if is_first_boss or G.GAME.twbl.blind_chat_antes < 1 then
+				if is_first_boss or TW_BL.G.blind_chat_antes < 1 then
 					-- If in this ante blind was chat, return vanilla one
 					voting_ante_offset = 1
 					force_voting_process = is_first_boss
@@ -115,7 +127,7 @@ function TwitchBlinds:init()
 			if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
 				-- Can't reroll chat
 				result = TW_BL.BLINDS.chat_blind
-			elseif G.GAME.twbl.blind_chat_antes == 0 then
+			elseif TW_BL.G.blind_chat_antes == 0 then
 				-- Can't reroll blind selected by chat
 				-- Subject to change?
 				result = G.GAME.round_resets.blind_choices.Boss
@@ -127,13 +139,16 @@ function TwitchBlinds:init()
 
 		if is_first_boss or caused_by_boss_defeate then
 			-- Count how many antes ago was chat blind
-			G.GAME.twbl.blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0)
-				or (G.GAME.twbl.blind_chat_antes + 1)
+			TW_BL.G.blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0) or (TW_BL.G.blind_chat_antes + 1)
 		end
 
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
-				TW_BL.CHAT_COMMANDS.set_vote_variants(TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(), true)
+				TW_BL.CHAT_COMMANDS.set_vote_variants(
+					"voting_blind",
+					TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(),
+					true
+				)
 				TW_BL.BLINDS.generate_new_voting_blinds(
 					TW_BL.SETTINGS.current.pool_type,
 					voting_ante_offset,
@@ -143,15 +158,11 @@ function TwitchBlinds:init()
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
 				TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
-				TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", false, true)
-				TW_BL.CHAT_COMMANDS.reset()
+				TW_BL.CHAT_COMMANDS.reset("voting_blind", "vote")
+				TW_BL.UI.set_panel("game_top", "blind_voting_process", true, true)
+			else
+				TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 			end
-		end
-
-		if TW_BL.CHAT_COMMANDS.can_collect.vote then
-			TW_BL.UI.set_panel("game_top", "blind_voting_process", true, true)
-		else
-			TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 		end
 
 		return result
@@ -159,13 +170,13 @@ function TwitchBlinds:init()
 
 	local select_blind_ref = G.FUNCS.select_blind
 	function G.FUNCS.select_blind(...)
-		G.GAME.twbl = G.GAME.twbl or {}
+		TW_BL.G = TW_BL.G or {}
 		-- Replace with blind selected by chat (or use first if no votes)
 		if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] then
 			local current_blind = G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck]
 			if current_blind == TW_BL.BLINDS.chat_blind then
 				if G.GAME.blind_on_deck ~= "Boss" then
-					-- If somehow chat is in not boss position, then insert random boss here
+					-- If somehow chat is in non-boss position, then insert random boss here
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
 					return
 				end
@@ -175,14 +186,15 @@ function TwitchBlinds:init()
 				if not blinds_to_choose then
 					return select_blind_ref(...)
 				end
-				local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner()
+				local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner("voting_blind")
 				local picked_blind = (
 					TW_BL.__DEV_MODE
 					and TW_BL.SETTINGS.current.forced_blind
 					and TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]
 				) or blinds_to_choose[tonumber(win_variant or "1")]
 
-				TW_BL.CHAT_COMMANDS.set_vote_variants({}, true)
+				TW_BL.BLINDS.set_voting_blinds_to_game(nil)
+				TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 				TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
 				TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
@@ -193,7 +205,7 @@ function TwitchBlinds:init()
 					> G.GAME.probabilities.normal
 						/ G.P_BLINDS[TW_BL.BLINDS.get_key("lucky_wheel")].config.extra.nope_odds
 				then
-					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, "bl_twbl_nope")
+					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, TW_BL.BLINDS.get_key("nope"))
 					return
 				end
 			end
@@ -203,20 +215,21 @@ function TwitchBlinds:init()
 end
 
 function TwitchBlinds:start_run()
-	G.GAME.twbl = G.GAME.twbl or {}
+	TW_BL.G = {}
+	TW_BL.CHAT_COMMANDS.reset(true)
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
 	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
 	TW_BL.CHAT_COMMANDS.get_single_use_from_game({
 		vote = not TW_BL.__DEV_MODE,
 	})
-	TW_BL.CHAT_COMMANDS.set_enabled(true)
-	TW_BL.CHAT_COMMANDS.reset()
 
+	TW_BL.UI.reset()
 	TW_BL.UI.get_panels_from_game()
+
+	TW_BL.CHAT_COMMANDS.set_enabled(true)
 end
 
 function TwitchBlinds:main_menu()
-	TW_BL.CHAT_COMMANDS.set_vote_variants({}, false)
 	TW_BL.CHAT_COMMANDS.set_enabled(false)
-	TW_BL.CHAT_COMMANDS.reset()
+	TW_BL.CHAT_COMMANDS.reset(true)
 end

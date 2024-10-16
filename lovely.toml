@@ -3,17 +3,17 @@ version = "1.0.0"
 dump_lua = true
 priority = 0
 
-# WIP
-# [[patches]]
-# [patches.pattern]
-# target = "game.lua"
-# pattern = 'G.load_shop_booster = nil'
-# position = "after"
-# payload = """
-# elseif G.GAME.twbl.cursed_boosters then 
-#     twitch_cursed_boosters_setup_shop()
-# """
-# match_indent = true
+# Run start
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''self.GAME = saveTable and saveTable.GAME or self:init_game_object()'''
+position = "after"
+payload = '''
+TW_BL:start_run()
+'''
+match_indent = true
+overwrite = false
 
 [[patches]]
 [patches.pattern]
@@ -25,3 +25,15 @@ if self.ability and self.ability.twbl_state_prevent_action then return end
 '''
 match_indent = true
 overwrite = false
+
+# WIP
+# [[patches]]
+# [patches.pattern]
+# target = "game.lua"
+# pattern = 'G.load_shop_booster = nil'
+# position = "after"
+# payload = """
+# elseif TW_BL.G.cursed_boosters then 
+#     twitch_cursed_boosters_setup_shop()
+# """
+# match_indent = true

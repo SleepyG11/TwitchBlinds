@@ -11,11 +11,15 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("bcbcbc"),
 })
 
+function tw_blind:in_pool()
+	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+end
+
 -- Implementation in lovely/blinds_greed.toml
 
 function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-	G.GAME.twbl.no_shop = true
+	TW_BL.G.no_shop = true
 end

@@ -3,12 +3,12 @@ function string_starts(s, start)
 end
 
 --- Check is table contain a value
---- @param table table
+--- @param t table
 --- @param value any
 --- @return boolean
-function table_contains(table, value)
-	for i, v in ipairs(table) do
-		if v == value then
+function table_contains(t, value)
+	for i = #t, 1, -1 do
+		if t[i] and t[i] == value then
 			return true
 		end
 	end
@@ -16,12 +16,15 @@ function table_contains(table, value)
 end
 
 --- Merge target table with source tables
---- @param target table
---- @param ... table[]
---- @return table
-function table_merge(target, ...)
+--- @generic T
+--- @generic S
+--- @param target T
+--- @param source S
+--- @param ... any
+--- @return T | S
+function table_merge(target, source, ...)
 	assert(type(target) == "table", "Target is not a table")
-	local tables_to_merge = { ... }
+	local tables_to_merge = { source, ... }
 	if #tables_to_merge == 0 then
 		return target
 	end
@@ -49,6 +52,19 @@ function table_merge(target, ...)
 	return target
 end
 
+function table_print(arg)
+	if tprint then
+		print(tprint(arg))
+	else
+		print(table_stringify(arg))
+	end
+end
+
+--- @generic T
+--- @generic S
+--- @param target T
+--- @param default S
+--- @return T | S
 function table_defaults(target, default)
 	assert(type(target) == "table", "Target is not a table")
 	if type(default) ~= "table" then
@@ -65,8 +81,9 @@ function table_defaults(target, default)
 end
 
 --- Create a deep copy of table
---- @param orig table The table to copy
---- @return table
+--- @generic T
+--- @param orig T The table to copy
+--- @return T
 function table_copy(orig)
 	local orig_type = type(orig)
 	local copy

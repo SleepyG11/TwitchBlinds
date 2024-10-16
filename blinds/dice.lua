@@ -25,11 +25,13 @@ end
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("roll", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("roll", true, true)
+	TW_BL.CHAT_COMMANDS.reset(false, "roll")
 end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("roll", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_single_use("roll", false, true)
+	TW_BL.CHAT_COMMANDS.reset(false, "roll")
 end
 
 TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("dice"), function(command, username)

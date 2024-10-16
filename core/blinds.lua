@@ -26,7 +26,11 @@ local blinds_to_load = {
 	"incrementor",
 	"lucky_wheel",
 	"nope",
-	-- "cursed_boosters",
+	"spiral",
+}
+
+local showdown_blinds_to_load = {
+	"plum_hammer",
 }
 
 function twbl_init_blinds()
@@ -51,6 +55,15 @@ function twbl_init_blinds()
 			atlas_table = "ANIMATION_ATLAS",
 			frames = 21,
 		}),
+
+		SHOWDOWN_ATLAS = SMODS.Atlas({
+			key = "twbl_showdown_blind_chips",
+			px = 34,
+			py = 34,
+			path = "ShowdownBlindChips.png",
+			atlas_table = "ANIMATION_ATLAS",
+			frames = 21,
+		}),
 	}
 
 	TW_BL.BLINDS = BLINDS
@@ -71,9 +84,19 @@ function twbl_init_blinds()
 		return "bl_twbl_" .. blind_name
 	end
 
+	function BLINDS.can_natural_appear(blind)
+		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
+			return false
+		end
+		return math.max(G.GAME.round_resets.ante, 0) >= math.max(blind.boss.min or 0, 0)
+	end
+
 	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
 	for _, blind_name in ipairs(blinds_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
+	end
+	for _, blind_name in ipairs(showdown_blinds_to_load) do
+		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/showdown/" .. blind_name .. ".lua")))()
 	end
 	BLINDS.chat_blind = "bl_twbl_twitch_chat"
 
@@ -205,11 +228,11 @@ function twbl_init_blinds()
 	end
 
 	--- Save voting blinds in game object
-	--- @param blinds string[] List of blinds
+	--- @param blinds string[] | nil List of blinds
 	--- @return boolean `true` if successfully, `false` if `G.GAME` is not ready
 	function BLINDS.set_voting_blinds_to_game(blinds)
 		if G.GAME then
-			G.GAME.twbl.voting_blinds = blinds
+			TW_BL.G.voting_blinds = blinds
 			return true
 		else
 			return false
@@ -222,8 +245,8 @@ function twbl_init_blinds()
 	--- @return string[]|nil
 	function BLINDS.get_voting_blinds_from_game(pool_type, generate_if_missing)
 		if G.GAME then
-			if G.GAME.twbl.voting_blinds then
-				return G.GAME.twbl.voting_blinds
+			if TW_BL.G.voting_blinds then
+				return TW_BL.G.voting_blinds
 			end
 
 			local ante_offset = 0
@@ -350,6 +373,18 @@ function twbl_init_blinds()
 	end
 
 	--
+
+	TW_BL.EVENTS.add_listener("twitch_command", "chat_commands_init", function(command, username, variant)
+		if command == "vote" and TW_BL.G.voting_blinds then
+			if TW_BL.CHAT_COMMANDS.can_vote_for_variant("voting_blind", variant) then
+				TW_BL.CHAT_COMMANDS.increment_vote_score("voting_blind", variant)
+				TW_BL.UI.update_panel("game_top", nil, false)
+				TW_BL.UI.create_panel_notify("game_top", nil, username)
+			else
+				TW_BL.CHAT_COMMANDS.decrement_command_use(command, username)
+			end
+		end
+	end)
 
 	return BLINDS
 end

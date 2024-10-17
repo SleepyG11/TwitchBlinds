@@ -157,7 +157,7 @@ function TwitchBlinds:init()
 				)
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-				TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
+				TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 				TW_BL.CHAT_COMMANDS.reset("voting_blind", "vote")
 				TW_BL.UI.set_panel("game_top", "blind_voting_process", true, true)
 			else
@@ -226,7 +226,7 @@ function TwitchBlinds:start_run()
 	TW_BL.CHAT_COMMANDS.reset(true)
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
 	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
-	TW_BL.CHAT_COMMANDS.get_single_use_from_game({
+	TW_BL.CHAT_COMMANDS.get_max_uses_from_game({
 		vote = not TW_BL.__DEV_MODE,
 	})
 

@@ -196,7 +196,7 @@ return {
 			k_twbl_count_ex = "Count!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
-			k_twbl_panel_toggle_flashlight = "Flip a card in hand (once per user)",
+			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per user)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per user)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per user)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",

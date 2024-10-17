@@ -22,7 +22,7 @@ function twbl_init_chat_commands()
 
 		can_collect = {},
 		users = {},
-		single_use = {},
+		max_uses = {},
 
 		vote_variants = {},
 		vote_score = {},
@@ -77,9 +77,9 @@ function twbl_init_chat_commands()
 			CHAT_COMMANDS.users[command] = {}
 		end
 		if
-			CHAT_COMMANDS.single_use[command]
+			CHAT_COMMANDS.max_uses[command]
 			and CHAT_COMMANDS.users[command][username]
-			and CHAT_COMMANDS.users[command][username] > 0
+			and CHAT_COMMANDS.users[command][username] >= CHAT_COMMANDS.max_uses[command]
 		then
 			return false
 		end
@@ -214,27 +214,27 @@ function twbl_init_chat_commands()
 	---------------------------------------
 
 	--- @param command string
-	--- @param b boolean
+	--- @param count integer | nil
 	--- @param write boolean Save value in game object
-	function CHAT_COMMANDS.toggle_single_use(command, b, write)
-		CHAT_COMMANDS.single_use[command] = b
+	function CHAT_COMMANDS.toggle_max_uses(command, count, write)
+		CHAT_COMMANDS.max_uses[command] = count
 		if write and G.GAME then
-			TW_BL.G["commands_single_use_" .. command] = b
+			TW_BL.G["commands_max_uses_" .. command] = count
 		end
 	end
 
 	--- Get can each command can be used one time only from game object
 	--- @param default_values table<string, boolean> Values if data in game object not found
-	function CHAT_COMMANDS.get_single_use_from_game(default_values)
+	function CHAT_COMMANDS.get_max_uses_from_game(default_values)
 		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
 			if default_values then
 				set_value = default_values[command]
 			end
-			if G.GAME and TW_BL.G["commands_single_use_" .. command] ~= nil then
-				set_value = TW_BL.G["commands_single_use_" .. command]
+			if G.GAME and TW_BL.G["commands_max_uses_" .. command] ~= nil then
+				set_value = TW_BL.G["commands_max_uses_" .. command]
 			end
-			CHAT_COMMANDS.single_use[command] = set_value or false
+			CHAT_COMMANDS.max_uses[command] = set_value or nil
 		end
 	end
 

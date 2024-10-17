@@ -23,7 +23,7 @@ end
 
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "target")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "target",
@@ -35,7 +35,7 @@ end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("target", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "target")
 	TW_BL.UI.remove_panel("game_top", "command_info_1", true)
 

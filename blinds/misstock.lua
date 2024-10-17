@@ -75,7 +75,7 @@ end
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_misstock_pool", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 	TW_BL.CHAT_COMMANDS.reset("blind_misstock_pool", "vote")
 
 	local pools_to_pick = table_copy(POOLS_TO_PICK)
@@ -101,7 +101,7 @@ end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", nil, true)
 
 	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 

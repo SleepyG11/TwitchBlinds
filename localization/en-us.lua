@@ -194,6 +194,7 @@ return {
 			k_twbl_erase_ex = "Erase!",
 			k_twbl_sketch_ex = "Sketch!",
 			k_twbl_count_ex = "Count!",
+			k_twbl_reset_ex = "Reset!",
 
 			k_twbl_panel_toggle_default = "Trigger boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per user)",

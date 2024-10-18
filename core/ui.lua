@@ -1,13 +1,222 @@
-local PANEL_VISIBLE_Y = -6.1
-local PANEL_HIDDEN_Y = -9.1
-local PANEL_ANIMATION_DELAY = 0.75
+local nativefs = require("nativefs")
+
+local controllers_to_load = {
+	"booster_top",
+	"game_top",
+}
+local panels_to_load = {
+	"blind_voting_process",
+	"command_info_1",
+	"command_info_1_short",
+	"voting_process_3",
+}
+
+--- @class TWBLPanelController
+TWBLPanelController = Object:extend()
+
+function TWBLPanelController:is_current_panel(panel_key, strict)
+	local current_key = self.panel and self.panel.key_append or nil
+	if strict then
+		return current_key == panel_key
+	else
+		return not panel_key or (current_key == panel_key)
+	end
+end
+function TWBLPanelController:init(key_append)
+	self.key_append = key_append
+
+	--- @type TWBLPanel
+	self.panel = nil
+
+	--- @type TWBLPanel
+	self.previous_panel = nil
+
+	return self
+end
+
+function TWBLPanelController:get_panel_UIBox(definition)
+	if not definition then
+		return
+	end
+	return UIBox({
+		definition = definition,
+		config = {
+			align = "cmri",
+			offset = { x = 0, y = 0 },
+			major = G.ROOM_ATTACH,
+			id = "twbl_panel",
+		},
+	})
+end
+
+function TWBLPanelController:before_remove(panel, continue)
+	continue()
+end
+function TWBLPanelController:remove(panel_key, write)
+	if self:is_current_panel(panel_key) and self.panel then
+		self:set(nil, write, true)
+	end
+end
+function TWBLPanelController:reset()
+	self.panel = nil
+	self.previous_panel = nil
+end
+function TWBLPanelController:set(panel_key, write, full_reload, ...)
+	local args = { panel_key, full_reload, ... }
+	if self:is_current_panel(panel_key, true) then
+		if self.panel then
+			self:update(unpack(args))
+		end
+		return panel_key
+	end
+
+	local previous_panel = self.panel or nil
+	local target_panel = panel_key and TW_BL.UI.panels[panel_key] or nil
+
+	self.previous_panel = self.panel
+	self.panel = target_panel or nil
+
+	if write then
+		self:save()
+	end
+
+	local continue = function()
+		if self.previous_panel then
+			self.previous_panel:reset()
+		end
+		if target_panel then
+			target_panel.element = self:get_panel_UIBox(target_panel:get_definition())
+			self:update(unpack(args))
+			self:update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
+			self:after_set(target_panel, function() end)
+		end
+	end
+
+	if previous_panel and previous_panel.element then
+		self:before_remove(previous_panel, continue)
+	else
+		continue()
+	end
+
+	return target_panel and panel_key or nil
+end
+function TWBLPanelController:after_set(panel, continue)
+	continue()
+end
+
+function TWBLPanelController:notify(panel_key, message)
+	if self:is_current_panel(panel_key) and self.panel then
+		self.panel:notify(message)
+	end
+end
+function TWBLPanelController:update(panel_key, full_reload, ...)
+	if self:is_current_panel(panel_key) and self.panel then
+		self.panel:update(full_reload, ...)
+	end
+end
+function TWBLPanelController:update_status(status)
+	if not (self.panel and self.panel.element) then
+		return
+	end
+
+	local text = self.panel:localize_status(status)
+	if not text then
+		text = localize("k_twbl_status_unknown")
+		local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
+		if status == STATUS.NO_CHANNEL_NAME then
+			text = localize("k_twbl_status_no_channel_name")
+		elseif status == STATUS.CONNECTED then
+			text = localize("k_twbl_status_connected")
+		elseif status == STATUS.CONNECTING then
+			text = localize("k_twbl_status_connecting")
+		elseif status == STATUS.DISCONNECTED then
+			text = localize("k_twbl_status_disconnected")
+		end
+	end
+
+	local status_element = self.panel.element:get_UIE_by_ID("twbl_voting_status")
+	if status_element then
+		status_element.config.object.config.string = { text }
+		status_element.config.object:update_text(true)
+		self.panel.element:recalculate()
+	end
+end
+
+function TWBLPanelController:save()
+	TW_BL.G["ui_controller_" .. self.key_append .. "_panel"] = self.panel and self.panel.key_append or nil
+end
+function TWBLPanelController:load()
+	self:set(TW_BL.G["ui_controller_" .. self.key_append .. "_panel"], false, true)
+end
+
+--- @class TWBLPanel
+--- @field parent TWBLPanelController?
+TWBLPanel = setmetatable(Object:extend(), {
+	__call = function(table, ...)
+		table.__index = function(t, index)
+			if index == "parent" then
+				for k, v in pairs(TW_BL.UI.controllers) do
+					if v.panel == t then
+						return v
+					end
+				end
+				return nil
+			else
+				return rawget(table, index)
+			end
+		end
+		local obj = setmetatable({}, table)
+		obj:init(...)
+		return obj
+	end,
+})
+
+function TWBLPanel:init(key_append, default_args)
+	self.key_append = key_append
+
+	self.default_args = default_args
+	self.args = self.default_args
+
+	self.element = nil
+end
+
+function TWBLPanel:resolve_args(full_update, args)
+	local args_key = "ui_" .. self.key_append .. "_" .. self.parent.key_append .. "_args"
+	local args_array = TW_BL.G[args_key]
+	local do_update = false
+	if args then
+		do_update = true
+		args_array = args
+	end
+	if not args_array then
+		do_update = true
+		args_array = self.default_args
+	end
+	if do_update then
+		self.args = args_array
+		TW_BL.G[args_key] = args_array
+	end
+	return args_array, do_update
+end
+function TWBLPanel:reset()
+	if self.element then
+		self.element:remove()
+	end
+	self.element = nil
+end
+
+function TWBLPanel:localize_status(status) end
+function TWBLPanel:get_definition() end
+function TWBLPanel:update(full_update, args, ...) end
+function TWBLPanel:notify(message) end
 
 function twbl_init_ui()
 	local UI = {
 		PARTS = {},
 
+		--- @type table<string, TWBLPanel>
 		panels = {},
-		--- @type table<string, PanelController>
+		--- @type table<string, TWBLPanelController>
 		controllers = {},
 
 		settings = {
@@ -17,171 +226,23 @@ function twbl_init_ui()
 
 	TW_BL.UI = UI
 
-	-- PanelController class
+	-- Init
 	------------------------------
 
-	--- @class PanelController
-	local PanelController = Object:extend()
-
-	function PanelController:init(key_append)
-		self.key_append = key_append
-
-		self.panel = nil
-		self.panel_key = nil
-
-		self.previous_panel = nil
-		self.previous_panel_key = nil
-
-		return self
+	---@param controller TWBLPanelController
+	function UI.register_controller(controller)
+		UI.controllers[controller.key_append] = controller
+	end
+	---@param panel TWBLPanel
+	function UI.register_panel(panel)
+		UI.panels[panel.key_append] = panel
 	end
 
-	function PanelController:get_panel_UIBox(definition)
-		return UIBox({
-			definition = definition,
-			config = {
-				align = "cmri",
-				offset = { x = 0, y = 0 },
-				major = G.ROOM_ATTACH,
-				id = "twbl_panel",
-			},
-		})
+	for _, controller_key in ipairs(controllers_to_load) do
+		assert(load(nativefs.read(TW_BL.current_mod.path .. "ui/controllers/" .. controller_key .. ".lua")))()
 	end
-
-	function PanelController:before_remove(panel, panel_name, continue)
-		continue()
-	end
-	function PanelController:remove(panel_name, write)
-		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
-			return
-		end
-		return self:set(nil, write, true)
-	end
-	function PanelController:reset(full)
-		if full then
-			self.panel = nil
-			self.panel_key = nil
-			self.previous_panel = nil
-			self.previous_panel_key = nil
-		end
-		for _, v in pairs(UI.panels) do
-			if v.parent == self then
-				v.parent = nil
-				if v.element then
-					v.element:remove()
-				end
-				v.element = nil
-			end
-		end
-	end
-	function PanelController:set(panel_name, write, full_reload, ...)
-		local args = { panel_name, full_reload, ... }
-		if panel_name == self.panel_key then
-			if self.panel_key then
-				self:update(unpack(args))
-			end
-			return panel_name
-		end
-
-		local previous_panel = self.panel or nil
-		local target_panel = panel_name and UI.panels[panel_name] or nil
-
-		self.previous_panel = self.panel
-		self.previous_panel_key = self.panel_key
-		self.panel_key = panel_name or nil
-		self.panel = target_panel or nil
-
-		if write then
-			self:save()
-		end
-
-		local continue = function()
-			self:reset()
-			if target_panel then
-				target_panel.parent = self
-				if type(target_panel.UIBox_definition) == "function" then
-					target_panel.element = self:get_panel_UIBox(target_panel.UIBox_definition(target_panel))
-					self:update(unpack(args))
-					self:update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
-					self:after_set(target_panel, panel_name, function() end)
-				end
-			end
-		end
-
-		if previous_panel and previous_panel.element then
-			self:before_remove(previous_panel, previous_panel_key, continue)
-		else
-			continue()
-		end
-
-		return target_panel and panel_name or nil
-	end
-	function PanelController:after_set(panel, panel_name, continue)
-		continue()
-	end
-
-	function PanelController:notify(panel_name, message)
-		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
-			return
-		end
-		if self.panel.element then
-			attention_text({
-				text = message,
-				scale = 0.3,
-				hold = 0.5,
-				backdrop_colour = G.C.MONEY,
-				align = "rc",
-				major = self.panel.element,
-				offset = { x = 0.15, y = 0 },
-			})
-		end
-	end
-	function PanelController:update(panel_name, full_reload, ...)
-		if not self.panel or (panel_name and panel_name ~= self.panel_key) then
-			return
-		end
-		if self.panel.element and type(self.panel.update) == "function" then
-			self.panel.update(self.panel, full_reload, ...)
-		end
-	end
-	function PanelController:update_status(status)
-		if not self.panel or not self.panel.element then
-			return
-		end
-
-		local text = type(self.panel.localize_status) == "function" and self.panel.localize_status(self.panel, status)
-		if not text then
-			text = G.localization.misc.dictionary.k_twbl_status_unknown
-			local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
-			if status == STATUS.NO_CHANNEL_NAME then
-				text = G.localization.misc.dictionary.k_twbl_status_no_channel_name
-			elseif status == STATUS.CONNECTED then
-				text = G.localization.misc.dictionary.k_twbl_status_connected
-			elseif status == STATUS.CONNECTING then
-				text = G.localization.misc.dictionary.k_twbl_status_connecting
-			elseif status == STATUS.DISCONNECTED then
-				text = G.localization.misc.dictionary.k_twbl_status_disconnected
-			end
-		end
-
-		local status_element = self.panel.element:get_UIE_by_ID("twbl_voting_status")
-		if status_element then
-			status_element.config.object.config.string = { text }
-			status_element.config.object:update_text(true)
-			self.panel.element:recalculate()
-		end
-	end
-
-	function PanelController:save()
-		if G.GAME then
-			TW_BL.G["ui_controller_" .. self.key_append .. "_panel"] = self.panel_key
-			TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"] = self.previous_panel_key
-		end
-	end
-	function PanelController:load()
-		if G.GAME then
-			self.previous_panel_key = TW_BL.G["ui_controller_" .. self.key_append .. "_prev_panel"]
-			self:set(TW_BL.G["ui_controller_" .. self.key_append .. "_panel"], false, true)
-		end
+	for _, panel_key in ipairs(panels_to_load) do
+		assert(load(nativefs.read(TW_BL.current_mod.path .. "ui/panels/" .. panel_key .. ".lua")))()
 	end
 
 	-- Settings
@@ -573,772 +634,31 @@ function twbl_init_ui()
 		TW_BL.SETTINGS.save()
 	end
 
-	-- Panels definitions
-	------------------------------
-
-	UI.panels.blind_voting_process = {
-		localize_status = function(panel, status)
-			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				return G.localization.misc.dictionary.k_twbl_vote_ex
-			end
-		end,
-		UIBox_definition = function(panel)
-			return {
-				n = G.UIT.ROOT,
-				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
-				nodes = {
-					{
-						n = G.UIT.R,
-						config = {
-							padding = 0.04,
-						},
-						nodes = {
-							{
-								n = G.UIT.C,
-								config = { minw = 1.915, align = "c" },
-								nodes = {
-									{
-										n = G.UIT.O,
-										config = {
-											id = "twbl_voting_status",
-											object = DynaText({
-												string = { "" },
-												colours = { G.C.UI.TEXT_LIGHT },
-												shadow = false,
-												rotate = false,
-												float = true,
-												bump = true,
-												scale = 0.35,
-												spacing = 1,
-												pop_in = 1,
-											}),
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 1",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_1_blind_name",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_1_percent",
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 2",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_2_blind_name",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_2_percent",
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 3",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_3_blind_name",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_3_percent",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			}
-		end,
-		update = function(panel, full_update)
-			local element = panel.element
-			local blinds_to_vote = TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, false)
-			if blinds_to_vote then
-				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status("voting_blind")
-				for i = 1, TW_BL.BLINDS.blinds_to_vote do
-					if full_update then
-						local boss_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_blind_name")
-						if boss_element then
-							boss_element.config.text = blinds_to_vote[i]
-									and localize({ type = "name_text", key = blinds_to_vote[i], set = "Blind" })
-								or "-"
-						end
-					end
-					local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
-					if percent_element then
-						local variant_status = vote_status[tostring(i)]
-						percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
-					end
-				end
-			end
-			element:recalculate()
-		end,
-	}
-
-	UI.panels.voting_process_3 = {
-		localize_status = function(panel, status)
-			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
-					or { status = "k_twbl_toggle_ex" }
-				return localize(args_array.status)
-			end
-		end,
-		UIBox_definition = function(panel)
-			return {
-				n = G.UIT.ROOT,
-				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
-				nodes = {
-					{
-						n = G.UIT.R,
-						config = {
-							padding = 0.04,
-						},
-						nodes = {
-							{
-								n = G.UIT.C,
-								config = { minw = 1.915, align = "c" },
-								nodes = {
-									{
-										n = G.UIT.O,
-										config = {
-											id = "twbl_voting_status",
-											object = DynaText({
-												string = { "" },
-												colours = { G.C.UI.TEXT_LIGHT },
-												shadow = false,
-												rotate = false,
-												float = true,
-												bump = true,
-												scale = 0.35,
-												spacing = 1,
-												pop_in = 1,
-											}),
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 1",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-													id = "twbl_vote_1_command",
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_1_text",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_1_percent",
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 2",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-													id = "twbl_vote_2_command",
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_2_text",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_2_percent",
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "vote 3",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-													id = "twbl_vote_3_command",
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_3_text",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "0%",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_vote_3_percent",
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			}
-		end,
-		update = function(panel, full_update, args)
-			local args_array = TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"]
-			local do_update = false
-			if args then
-				do_update = true
-				args_array = args
-			end
-			if not args_array then
-				do_update = true
-				args_array = {
-					command = "vote",
-					status = "k_twbl_vote_ex",
-					variants = { "", "", "" },
-				}
-			end
-			if do_update then
-				TW_BL.G["ui_voting_process_3_" .. panel.parent.key_append .. "_args"] = args_array
-			end
-
-			local element = panel.element
-			if args_array.id then
-				local vote_status = TW_BL.CHAT_COMMANDS.get_vote_status(args_array.id)
-				for i = 1, 3 do
-					if full_update then
-						local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
-						if text_element then
-							text_element.config.text = localize(args_array.variants[i])
-						end
-
-						local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")
-						if command_element then
-							command_element.config.text = args_array.command .. " " .. tostring(i)
-						end
-					end
-					local percent_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")
-					if percent_element then
-						local variant_status = vote_status[tostring(i)]
-						percent_element.config.text = math.floor(variant_status and variant_status.percent or 0) .. "%"
-					end
-				end
-			end
-
-			element:recalculate()
-		end,
-	}
-
-	UI.panels.command_info_1 = {
-		localize_status = function(panel, status)
-			if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
-				local args_array = TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
-					or { status = "k_twbl_toggle_ex" }
-				return localize(args_array.status)
-			end
-		end,
-		UIBox_definition = function(panel)
-			return {
-				n = G.UIT.ROOT,
-				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
-				nodes = {
-					{
-						n = G.UIT.R,
-						config = {
-							padding = 0.04,
-						},
-						nodes = {
-							{
-								n = G.UIT.C,
-								config = { minw = 1.915, align = "c" },
-								nodes = {
-									{
-										n = G.UIT.O,
-										config = {
-											id = "twbl_voting_status",
-											object = DynaText({
-												string = { "" },
-												colours = { G.C.UI.TEXT_LIGHT },
-												shadow = false,
-												rotate = false,
-												float = true,
-												bump = true,
-												scale = 0.35,
-												spacing = 1,
-												pop_in = 1,
-											}),
-										},
-									},
-								},
-							},
-							{
-								n = G.UIT.C,
-								config = { minw = 4.25 * 3 + 0.1, align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "toggle",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-													id = "twbl_toggle_command",
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_toggle_text",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-								},
-							},
-						},
-					},
-				},
-			}
-		end,
-		update = function(panel, full_update, args)
-			local args_array = TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"]
-			local do_update = false
-			if args then
-				do_update = true
-				args_array = args
-			end
-			if not args_array then
-				do_update = true
-				args_array = {
-					command = "toggle",
-					status = "k_twbl_toggle_ex",
-					position = "twbl_position_singular",
-					text = "k_twbl_panel_toggle_default",
-				}
-			end
-			if do_update then
-				TW_BL.G["ui_command_info_1_" .. panel.parent.key_append .. "_args"] = args_array
-			end
-
-			local element = panel.element
-			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
-			if command_element then
-				if args_array.position then
-					command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
-				else
-					command_element.config.text = args_array.command
-				end
-			end
-			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
-			if text_element then
-				text_element.config.text = localize(args_array.text)
-			end
-			element:recalculate()
-		end,
-	}
-
-	UI.panels.command_info_1_short = {
-		UIBox_definition = function(panel)
-			return {
-				n = G.UIT.ROOT,
-				config = { padding = 0.04, r = 0.3, colour = G.C.BLACK },
-				nodes = {
-					{
-						n = G.UIT.R,
-						config = {
-							padding = 0.04,
-						},
-						nodes = {
-							{
-								n = G.UIT.C,
-								config = { align = "cm" },
-								nodes = {
-									{
-										n = G.UIT.C,
-										config = { padding = 0.08, r = 0.3, align = "cm", colour = G.C.CHIPS },
-										nodes = {
-											{
-												n = G.UIT.T,
-												config = {
-													text = "toggle",
-													scale = 0.25,
-													colour = G.C.UI.TEXT_LIGHT,
-													shadow = false,
-													id = "twbl_toggle_command",
-												},
-											},
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.1, minw = 0.1 } },
-									{
-										n = G.UIT.T,
-										config = {
-											text = "-",
-											scale = 0.3,
-											colour = G.C.UI.TEXT_LIGHT,
-											shadow = false,
-											id = "twbl_toggle_text",
-										},
-									},
-									{ n = G.UIT.C, config = { align = "cm", w = 0.15, minw = 0.15 } },
-								},
-							},
-						},
-					},
-				},
-			}
-		end,
-		update = function(panel, full_update, args)
-			local args_array = TW_BL.G["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"]
-			local do_update = false
-			if args then
-				do_update = true
-				args_array = args
-			end
-			if not args_array then
-				do_update = true
-				args_array = {
-					command = "toggle",
-					position = "twbl_position_singular",
-					text = "k_twbl_panel_toggle_default",
-				}
-			end
-			if do_update then
-				TW_BL.G["ui_command_info_1_short_" .. panel.parent.key_append .. "_args"] = args_array
-			end
-
-			local element = panel.element
-			local command_element = element:get_UIE_by_ID("twbl_toggle_command")
-			if command_element then
-				if args_array.position then
-					command_element.config.text = args_array.command .. " <" .. localize(args_array.position) .. ">"
-				else
-					command_element.config.text = args_array.command
-				end
-			end
-			local text_element = element:get_UIE_by_ID("twbl_toggle_text")
-			if text_element then
-				text_element.config.text = localize(args_array.text)
-			end
-			element:recalculate()
-		end,
-	}
-
-	for k, v in pairs(UI.panels) do
-		v.key = k
-	end
-
-	-- Controllers
-	------------------------------
-
-	UI.controllers.game_top = PanelController("game_top")
-	function UI.controllers.game_top:get_panel_UIBox(definition)
-		return UIBox({
-			definition = definition,
-			config = {
-				align = "cmri",
-				offset = { x = -0.2857, y = PANEL_HIDDEN_Y },
-				major = G.ROOM_ATTACH,
-				id = "twbl_panel",
-			},
-		})
-	end
-	function UI.controllers.game_top:before_remove(panel, panel_name, continue)
-		G.E_MANAGER:add_event(Event({
-			trigger = "ease",
-			blockable = false,
-			ref_table = panel.element.config.offset,
-			ref_value = "y",
-			ease_to = PANEL_HIDDEN_Y,
-			delay = PANEL_ANIMATION_DELAY,
-			func = function(t)
-				return t
-			end,
-		}))
-		G.E_MANAGER:add_event(Event({
-			trigger = "immediate",
-			func = function()
-				continue()
-				return true
-			end,
-		}))
-	end
-	function UI.controllers.game_top:after_set(panel, panel_name, continue)
-		G.E_MANAGER:add_event(Event({
-			trigger = "ease",
-			blockable = false,
-			ref_table = panel.element.config.offset,
-			ref_value = "y",
-			ease_to = PANEL_VISIBLE_Y,
-			delay = PANEL_ANIMATION_DELAY,
-			func = function(t)
-				return t
-			end,
-		}))
-		G.E_MANAGER:add_event(Event({
-			trigger = "immediate",
-			func = function()
-				continue()
-				return true
-			end,
-		}))
-	end
-
-	UI.controllers.booster_top = PanelController("booster_top")
-	function UI.controllers.booster_top:get_panel_UIBox(definition)
-		return UIBox({
-			definition = definition,
-			config = {
-				align = "cm",
-				offset = { x = 0, y = -7.12 },
-				major = G.hand,
-				id = "twbl_panel",
-			},
-		})
-	end
-	function UI.controllers.booster_top:after_set(panel, panel_name, continue)
-		panel.element.states.visible = false
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						G.E_MANAGER:add_event(Event({
-							trigger = "after",
-							delay = 1.3 * math.sqrt(G.SETTINGS.GAMESPEED),
-							blockable = false,
-							func = function()
-								panel.element.states.visible = true
-								if G.twbl_chat_booster_cards then
-									G.twbl_chat_booster_cards:hard_set_T(
-										panel.element.T.x + panel.element.T.w,
-										panel.element.T.y - panel.element.T.h,
-										nil,
-										nil
-									)
-								elseif G.twbl_chat_booster_planets then
-									G.twbl_chat_booster_planets:hard_set_T(
-										panel.element.T.x,
-										panel.element.T.y + panel.element.T.h,
-										panel.element.T.w,
-										nil
-									)
-								end
-
-								continue()
-								return true
-							end,
-						}))
-						return true
-					end,
-				}))
-				return true
-			end,
-		}))
-	end
-
 	-- Functions
 	------------------------------
 
-	function UI.set_panel(controller, panel_name, write, full_reload, ...)
-		return UI.controllers[controller]:set(panel_name, write, full_reload, ...)
+	function UI.set_panel(controller_key, panel_key, write, full_reload, ...)
+		return UI.controllers[controller_key]:set(panel_key, write, full_reload, ...)
 	end
 
-	function UI.remove_panel(controller, panel_name, write)
-		return UI.controllers[controller]:remove(panel_name, write)
+	function UI.remove_panel(controller_key, panel_key, write)
+		return UI.controllers[controller_key]:remove(panel_key, write)
 	end
 
-	function UI.update_panel(controller, panel_name, full_reload, ...)
-		return UI.controllers[controller]:update(panel_name, full_reload, ...)
+	function UI.update_panel(controller_key, panel_key, full_reload, ...)
+		return UI.controllers[controller_key]:update(panel_key, full_reload, ...)
 	end
 
-	function UI.create_panel_notify(controller, panel_name, message)
-		return UI.controllers[controller]:notify(panel_name, message)
+	function UI.create_panel_notify(controller_key, panel_key, message)
+		return UI.controllers[controller_key]:notify(panel_key, message)
 	end
 
 	function UI.reset()
 		for k, v in pairs(UI.controllers) do
-			v:reset(true)
+			v:reset()
+		end
+		for k, v in pairs(UI.panels) do
+			v:reset()
 		end
 	end
 

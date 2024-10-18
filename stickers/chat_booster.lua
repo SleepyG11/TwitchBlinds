@@ -294,7 +294,7 @@ function twbl_sticker_chat_booster_emplace_consumeable(kind)
 		discover = false,
 		bypass_back = G.GAME.selected_back.pos,
 	})
-	G.twbl_chat_booster_cards:emplace(chat_card)
+	area:emplace(chat_card)
 end
 
 --
@@ -305,6 +305,11 @@ function twbl_sticker_chat_booster_open(card)
 		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
 
+		G.twbl_chat_booster_cards =
+			CardArea(0, 0, G.CARD_W / 2, G.CARD_H / 2, { card_limit = 1, type = "title_2", highlight_limit = 0 })
+		twbl_sticker_chat_booster_emplace_consumeable(kind)
+		G.twbl_chat_booster_cards.states.visible = false
+
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
 		TW_BL.CHAT_COMMANDS.reset(false, "target")
@@ -313,18 +318,14 @@ function twbl_sticker_chat_booster_open(card)
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_consumeable",
 		})
-
-		G.twbl_chat_booster_cards = CardArea(
-			-99,
-			-99,
-			1.02 * G.CARD_W / 2,
-			1.05 * G.CARD_H / 2,
-			{ card_limit = 1, type = "title_2", highlight_limit = 0 }
-		)
-		twbl_sticker_chat_booster_emplace_consumeable(kind)
 	elseif kind == "Celestial" then
 		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
+
+		G.twbl_chat_booster_planets =
+			CardArea(0, 0, 5 * G.CARD_W / 2, G.CARD_H / 2, { card_limit = 5, type = "title_2", highlight_limit = 0 })
+		twbl_sticker_chat_booster_emplace_planets(kind)
+		G.twbl_chat_booster_planets.states.visible = false
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
 		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
@@ -334,14 +335,6 @@ function twbl_sticker_chat_booster_open(card)
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_celestial",
 		})
-
-		G.twbl_chat_booster_planets = CardArea(
-			-99,
-			-99,
-			5.02 * G.CARD_W / 2,
-			1.05 * G.CARD_H / 2,
-			{ card_limit = 5, type = "title_2", highlight_limit = 0 }
-		)
 	else
 		card.ability.twbl_chat_booster = nil
 		TW_BL.G.state_sticker_chat_booster = nil
@@ -351,10 +344,14 @@ end
 
 function twbl_sticker_chat_booster_exit()
 	if G.twbl_chat_booster_cards then
+		G.twbl_chat_booster_cards_UIBox:remove()
+		G.twbl_chat_booster_cards_UIBox = nil
 		G.twbl_chat_booster_cards:remove()
 		G.twbl_chat_booster_cards = nil
 	end
 	if G.twbl_chat_booster_planets then
+		G.twbl_chat_booster_planets_UIBox:remove()
+		G.twbl_chat_booster_planets_UIBox = nil
 		G.twbl_chat_booster_planets:remove()
 		G.twbl_chat_booster_planets = nil
 	end

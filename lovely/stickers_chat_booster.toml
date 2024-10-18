@@ -7,23 +7,12 @@ priority = 0
 [[patches]]
 [patches.pattern]
 target = "card.lua"
-pattern = 'function Card:open()'
-position = "after"
+pattern = 'if G.pack_cards then'
+position = "before"
 payload = """
 if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
     twbl_sticker_chat_booster_open(self)
 end
-"""
-match_indent = true
-
-# Choose planets after booster pack selects them
-[[patches]]
-[patches.pattern]
-target = "card.lua"
-pattern = 'pack_cards[i] = card'
-position = "after"
-payload = """
-if i == _size and self.ability.name:find('Celestial') and self.ability.twbl_chat_booster then twbl_sticker_chat_booster_emplace_planets() end
 """
 match_indent = true
 

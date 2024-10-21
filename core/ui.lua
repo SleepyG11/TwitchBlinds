@@ -601,6 +601,7 @@ function twbl_init_ui()
 
 	function G.FUNCS.twbl_settings_paste_channel_name(e)
 		G.CONTROLLER.text_input_hook = e.UIBox:get_UIE_by_ID("text_input").children[1].children[1]
+		G.CONTROLLER.text_input_hook:click()
 		for i = 1, 32 do
 			G.FUNCS.text_input_key({ key = "right" })
 		end

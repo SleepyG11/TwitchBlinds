@@ -50,7 +50,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("plum_hammer"),
 		card:set_debuff(not initial_value)
 		if card.debuff ~= initial_value then
 			G.GAME.blind:wiggle()
-			card_eval_status_text(card, "extra", nil, nil, nil, { message = username })
+			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
 			card:juice_up()
 		else
 			TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)

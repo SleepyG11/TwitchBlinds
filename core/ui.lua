@@ -222,6 +222,10 @@ function twbl_init_ui()
 		settings = {
 			element = nil,
 		},
+
+		waiting_for_chat = {
+			element = nil,
+		},
 	}
 
 	TW_BL.UI = UI
@@ -417,27 +421,29 @@ function twbl_init_ui()
 					}),
 				},
 			},
-			-- {
-			-- 	n = G.UIT.R,
-			-- 	config = {
-			-- 		align = "cm",
-			-- 		padding = 0.05,
-			-- 	},
-			-- 	nodes = {
-			-- 		create_option_cycle({
-			-- 			w = 4,
-			-- 			label = localize("twbl_settings_delay_for_chat"),
-			-- 			scale = 0.8,
-			-- 			options = {
-			-- 				localize("twbl_settings_delay_for_chat_1"),
-			-- 				localize("twbl_settings_delay_for_chat_2"),
-			-- 				localize("twbl_settings_delay_for_chat_3"),
-			-- 			},
-			-- 			opt_callback = "twbl_settings_change_delay_for_chat",
-			-- 			current_option = TW_BL.SETTINGS.temp.delay_for_chat,
-			-- 		}),
-			-- 	},
-			-- },
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+				nodes = {
+					create_option_cycle({
+						w = 4,
+						label = localize("twbl_settings_delay_for_chat"),
+						scale = 0.8,
+						options = {
+							localize("twbl_settings_delay_for_chat_1"),
+							localize("twbl_settings_delay_for_chat_2"),
+							localize("twbl_settings_delay_for_chat_3"),
+							localize("twbl_settings_delay_for_chat_4"),
+							localize("twbl_settings_delay_for_chat_5"),
+						},
+						opt_callback = "twbl_settings_change_delay_for_chat",
+						current_option = TW_BL.SETTINGS.temp.delay_for_chat,
+					}),
+				},
+			},
 			{
 				n = G.UIT.R,
 				config = {
@@ -661,12 +667,67 @@ function twbl_init_ui()
 		for k, v in pairs(UI.panels) do
 			v:reset()
 		end
+		UI.create_waiting_for_chat_panel(true)
 	end
 
 	function UI.get_panels_from_game()
 		for k, v in pairs(UI.controllers) do
 			v:load()
 		end
+		UI.create_waiting_for_chat_panel(true)
+	end
+
+	function UI.create_waiting_for_chat_panel(force)
+		if not force and UI.waiting_for_chat.element then
+			return
+		end
+		UI.waiting_for_chat.element = UIBox({
+			definition = {
+				n = G.UIT.R,
+				config = {
+					colour = G.C.L_BLACK,
+					r = 0.1,
+					padding = 0.075,
+				},
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							colour = G.C.BLACK,
+							r = 0.1,
+							padding = 0.25,
+						},
+						nodes = {
+							{
+								n = G.UIT.O,
+								config = {
+									object = DynaText({
+										string = { localize("k_twbl_waiting_for_chat") .. " " .. "20" },
+										colours = { G.C.UI.TEXT_LIGHT },
+										shadow = true,
+										float = false,
+										bump = true,
+										silent = true,
+										pop_in = 0.1,
+										scale = 0.5,
+									}),
+									id = "twbl_waiting_for_chat_text",
+								},
+							},
+						},
+					},
+				},
+			},
+			config = {
+				align = "cm",
+				offset = { x = 1, y = 0 },
+				major = G.ROOM_ATTACH,
+				id = "twbl_waiting_for_chat",
+			},
+		})
+		UI.waiting_for_chat.text_element = UI.waiting_for_chat.element:get_UIE_by_ID("twbl_waiting_for_chat_text")
+		UI.waiting_for_chat.element.attention_text = true
+		UI.waiting_for_chat.element.states.visible = false
 	end
 
 	-- Events
@@ -677,6 +738,24 @@ function twbl_init_ui()
 			v:update_status(status)
 		end
 		UI.settings.update_status(status)
+	end)
+
+	local last_remaining_time = nil
+
+	TW_BL.EVENTS.add_listener("game_update", "waiting_for_chat_panel", function()
+		UI.create_waiting_for_chat_panel()
+		UI.waiting_for_chat.element.states.visible = TW_BL.EVENTS.delay_requested
+		local remaining_time = math.floor(TW_BL.EVENTS.delay_dt) or 0
+		if
+			last_remaining_time ~= remaining_time
+			and TW_BL.EVENTS.delay_requested
+			and UI.waiting_for_chat.text_element
+			and UI.waiting_for_chat.text_element.config.object
+		then
+			UI.waiting_for_chat.text_element.config.object.config.string =
+				{ localize("k_twbl_waiting_for_chat") .. " " .. remaining_time }
+			UI.waiting_for_chat.text_element.config.object:update_text(true)
+		end
 	end)
 
 	return UI

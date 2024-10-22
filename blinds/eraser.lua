@@ -87,7 +87,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("eraser"), func
 		G.GAME.blind:wiggle()
 		local card = G.jokers.cards[index]
 		card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
-		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.XMULT })
+		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.XMULT, instant = true })
 	else
 		TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
 	end

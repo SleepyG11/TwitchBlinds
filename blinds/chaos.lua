@@ -47,7 +47,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("chaos"), funct
 	if index and G.hand and G.hand.cards and G.hand.cards[index] then
 		G.GAME.blind:wiggle()
 		local card = G.hand.cards[index]
-		card_eval_status_text(card, "extra", nil, nil, nil, { message = username })
+		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
 		for i = #G.hand.highlighted, 1, -1 do
 			if G.hand.highlighted[i] == card then
 				table.remove(G.hand.highlighted, i)

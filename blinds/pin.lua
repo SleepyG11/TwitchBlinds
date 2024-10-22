@@ -47,7 +47,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("pin"), functio
 	if index and G.jokers and G.jokers.cards and G.jokers.cards[index] then
 		G.GAME.blind:wiggle()
 		local card = G.jokers.cards[index]
-		card_eval_status_text(card, "extra", nil, nil, nil, { message = username })
+		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
 		card.pinned = not card.pinned
 		card:juice_up()
 	else

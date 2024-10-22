@@ -18,6 +18,7 @@ end
 function controller:before_remove(panel, continue)
 	G.E_MANAGER:add_event(Event({
 		trigger = "ease",
+		blocking = false,
 		blockable = false,
 		ref_table = panel.element.config.offset,
 		ref_value = "y",
@@ -38,6 +39,7 @@ end
 function controller:after_set(panel, continue)
 	G.E_MANAGER:add_event(Event({
 		trigger = "ease",
+		blocking = false,
 		blockable = false,
 		ref_table = panel.element.config.offset,
 		ref_value = "y",

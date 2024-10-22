@@ -98,7 +98,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), functi
 				nil,
 				nil,
 				nil,
-				{ message = localize("k_twbl_nope_ex"), colour = G.C.SECONDARY_SET.Tarot }
+				{ message = localize("k_twbl_nope_ex"), colour = G.C.SECONDARY_SET.Tarot, instant = true }
 			)
 		end
 
@@ -110,7 +110,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), functi
 				nil,
 				nil,
 				nil,
-				{ message = localize("k_twbl_nope_ex"), colour = G.C.SECONDARY_SET.Tarot }
+				{ message = localize("k_twbl_nope_ex"), colour = G.C.SECONDARY_SET.Tarot, instant = true }
 			)
 		end
 	end

@@ -147,8 +147,10 @@ return {
 			twbl_settings_blind_pool_3 = "All",
 			twbl_settings_delay_for_chat = "Delay for chat before action",
 			twbl_settings_delay_for_chat_1 = "None",
-			twbl_settings_delay_for_chat_2 = "Normal",
-			twbl_settings_delay_for_chat_3 = "Long",
+			twbl_settings_delay_for_chat_2 = "~5 seconds",
+			twbl_settings_delay_for_chat_3 = "~10 seconds",
+			twbl_settings_delay_for_chat_4 = "~15 seconds",
+			twbl_settings_delay_for_chat_5 = "~20 seconds",
 			twbl_settings_blind_pool_type = "Blinds pool type",
 			twbl_settings_blind_pool_type_1 = "Once per pool (Vanilla)",
 			twbl_settings_blind_pool_type_2 = "Once per vote",
@@ -214,6 +216,8 @@ return {
 			k_twbl_spiral_p_2 = "+2 Antes",
 			k_twbl_spiral_m_1 = "-1 Ante",
 			k_twbl_spiral_m_2 = "-2 Antes",
+
+			k_twbl_waiting_for_chat = "Waiting for chat...",
 		},
 	},
 }

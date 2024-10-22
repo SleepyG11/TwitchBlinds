@@ -100,6 +100,7 @@ local tw_sticker = SMODS.Sticker({
 	config = {},
 	rate = 0,
 	key = "twbl_chat_booster",
+	discovered = true,
 })
 
 -- Implementation in lovely/stickers_chat_booster.toml

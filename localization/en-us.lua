@@ -145,18 +145,40 @@ return {
 			twbl_settings_blind_pool_1 = "Twitch Blinds",
 			twbl_settings_blind_pool_2 = "Vanilla + Mods",
 			twbl_settings_blind_pool_3 = "All",
-			twbl_settings_delay_for_chat = "Delay for chat before action",
+			twbl_settings_desc_blind_pool = {
+				"Twitch Blinds: all blinds added by this mod",
+				"Vanilla + Mods: all except blinds added by mod",
+				"All: every blind added to a game",
+			},
+			twbl_settings_delay_for_chat = "Additional time for chat actions",
 			twbl_settings_delay_for_chat_1 = "None",
 			twbl_settings_delay_for_chat_2 = "~5 seconds",
 			twbl_settings_delay_for_chat_3 = "~10 seconds",
 			twbl_settings_delay_for_chat_4 = "~15 seconds",
 			twbl_settings_delay_for_chat_5 = "~20 seconds",
+			twbl_settings_desc_delay_for_chat = {
+				"Game will wait after some actions",
+				"to give chat some time to interact",
+			},
 			twbl_settings_blind_pool_type = "Blinds pool type",
 			twbl_settings_blind_pool_type_1 = "Once per pool (Vanilla)",
 			twbl_settings_blind_pool_type_2 = "Once per vote",
 			twbl_settings_blind_pool_type_3 = "Random",
+			twbl_settings_desc_blind_pool_type = {
+				"Once per poll: like Vanilla, every blind is unique",
+				"Once per ante: blinds may repeat between antes",
+				"Random: same blind can appear multiple times",
+			},
 			twbl_settings_natural_chat_booster_sticker = "Enable Chat Booster sticker",
+			twbl_settings_desc_natural_chat_booster_sticker = {
+				"In Booster packs, new sticker can appear",
+				"which adds interactions for chat",
+			},
 			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",
+			twbl_settings_desc_natural_blinds = {
+				"Blinds added by mod can appear",
+				"in regular game, without voting",
+			},
 
 			twbl_argument_type_Number = "number",
 

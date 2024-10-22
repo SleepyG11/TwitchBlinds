@@ -100,6 +100,7 @@ local tw_sticker = SMODS.Sticker({
 	config = {},
 	rate = 0,
 	key = "twbl_chat_booster",
+	discovered = true,
 })
 
 -- Implementation in lovely/stickers_chat_booster.toml
@@ -196,28 +197,42 @@ function twbl_sticker_chat_booster_use_card()
 	end
 
 	if TW_BL.G.state_sticker_chat_booster == "Celestial" then
-		local planet = twbl_sticker_chat_booster_select_planet()
-		if not planet then
-			return false
-		end
+		TW_BL.EVENTS.request_delay(5)
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				local planet = twbl_sticker_chat_booster_select_planet()
+				if not planet then
+					return false
+				end
 
-		G.FUNCS.use_card({
-			config = {
-				ref_table = planet,
-			},
-		})
+				G.FUNCS.use_card({
+					config = {
+						ref_table = planet,
+					},
+				})
+				return true
+			end,
+		}))
+
 		return true
 	elseif TW_BL.G.state_sticker_chat_booster == "Arcana" or TW_BL.G.state_sticker_chat_booster == "Spectral" then
-		local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
-		if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
-			return false
-		end
+		TW_BL.EVENTS.request_delay(5)
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
+				if not card_to_use or not twbl_sticker_chat_booster_select_targets(card_to_use, true) then
+					return false
+				end
 
-		G.FUNCS.use_card({
-			config = {
-				ref_table = card_to_use,
-			},
-		})
+				G.FUNCS.use_card({
+					config = {
+						ref_table = card_to_use,
+					},
+				})
+				return true
+			end,
+		}))
+
 		return true
 	else
 		return false
@@ -294,7 +309,7 @@ function twbl_sticker_chat_booster_emplace_consumeable(kind)
 		discover = false,
 		bypass_back = G.GAME.selected_back.pos,
 	})
-	G.twbl_chat_booster_cards:emplace(chat_card)
+	area:emplace(chat_card)
 end
 
 --
@@ -305,43 +320,36 @@ function twbl_sticker_chat_booster_open(card)
 		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
 
+		G.twbl_chat_booster_cards =
+			CardArea(0, 0, G.CARD_W / 2, G.CARD_H / 2, { card_limit = 1, type = "title_2", highlight_limit = 0 })
+		twbl_sticker_chat_booster_emplace_consumeable(kind)
+		G.twbl_chat_booster_cards.states.visible = false
+
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-		TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
+		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
 		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_consumeable",
 		})
-
-		G.twbl_chat_booster_cards = CardArea(
-			-99,
-			-99,
-			1.02 * G.CARD_W / 2,
-			1.05 * G.CARD_H / 2,
-			{ card_limit = 1, type = "title_2", highlight_limit = 0 }
-		)
-		twbl_sticker_chat_booster_emplace_consumeable(kind)
 	elseif kind == "Celestial" then
 		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
 
+		G.twbl_chat_booster_planets =
+			CardArea(0, 0, 5 * G.CARD_W / 2, G.CARD_H / 2, { card_limit = 5, type = "title_2", highlight_limit = 0 })
+		twbl_sticker_chat_booster_emplace_planets(kind)
+		G.twbl_chat_booster_planets.states.visible = false
+
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
-		TW_BL.CHAT_COMMANDS.toggle_single_use("target", true, true)
+		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
 		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
 			command = "target",
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_celestial",
 		})
-
-		G.twbl_chat_booster_planets = CardArea(
-			-99,
-			-99,
-			5.02 * G.CARD_W / 2,
-			1.05 * G.CARD_H / 2,
-			{ card_limit = 5, type = "title_2", highlight_limit = 0 }
-		)
 	else
 		card.ability.twbl_chat_booster = nil
 		TW_BL.G.state_sticker_chat_booster = nil
@@ -351,10 +359,14 @@ end
 
 function twbl_sticker_chat_booster_exit()
 	if G.twbl_chat_booster_cards then
+		G.twbl_chat_booster_cards_UIBox:remove()
+		G.twbl_chat_booster_cards_UIBox = nil
 		G.twbl_chat_booster_cards:remove()
 		G.twbl_chat_booster_cards = nil
 	end
 	if G.twbl_chat_booster_planets then
+		G.twbl_chat_booster_planets_UIBox:remove()
+		G.twbl_chat_booster_planets_UIBox = nil
 		G.twbl_chat_booster_planets:remove()
 		G.twbl_chat_booster_planets = nil
 	end
@@ -363,7 +375,7 @@ function twbl_sticker_chat_booster_exit()
 		TW_BL.G.state_sticker_chat_booster_use = nil
 
 		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", false, true)
-		TW_BL.CHAT_COMMANDS.toggle_single_use("target", false, true)
+		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", nil, true)
 		TW_BL.CHAT_COMMANDS.reset(false, "target")
 		TW_BL.UI.remove_panel("booster_top", "command_info_1_short", true)
 
@@ -390,19 +402,31 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 			and G.twbl_chat_booster_planets.cards
 			and G.twbl_chat_booster_planets.cards[index]
 		then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			local card = G.twbl_chat_booster_planets.cards[index]
 			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
-			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.CHIPS })
-		else
-			TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
+			card_eval_status_text(
+				card,
+				"extra",
+				nil,
+				nil,
+				nil,
+				{ message = username, colour = G.C.CHIPS, instant = true }
+			)
 		end
 	elseif TW_BL.G.state_sticker_chat_booster == "Arcana" or TW_BL.G.state_sticker_chat_booster == "Spectral" then
 		if index and G.hand and G.hand.cards and G.hand.cards[index] then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			local card = G.hand.cards[index]
 			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
-			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, colour = G.C.CHIPS })
-		else
-			TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
+			card_eval_status_text(
+				card,
+				"extra",
+				nil,
+				nil,
+				nil,
+				{ message = username, colour = G.C.CHIPS, instant = true }
+			)
 		end
 	end
 end)

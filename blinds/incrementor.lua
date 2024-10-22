@@ -19,8 +19,10 @@ function tw_blind:in_pool()
 end
 
 function tw_blind:set_blind()
+	G.GAME.blind.twbl_blind_incrementor_count = 0
+	G.GAME.blind.twbl_blind_incrementor_strucks = 0
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("count", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("count", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "count")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "count",
@@ -32,7 +34,7 @@ end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("count", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("count", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "count")
 	TW_BL.UI.remove_panel("game_top", "command_info_1", true)
 end
@@ -49,6 +51,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("incrementor"),
 
 		local current_number = G.GAME.blind.twbl_blind_incrementor_count or 0
 		if number == current_number + 1 then
+			G.GAME.blind.twbl_blind_incrementor_strucks = 0
 			G.GAME.blind.twbl_blind_incrementor_count = number
 			G.GAME.blind.mult = G.GAME.blind.config.blind.mult + COUNT_MULTIPLIER * number
 
@@ -65,21 +68,38 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("incrementor"),
 				},
 			})
 		else
-			G.GAME.blind.twbl_blind_incrementor_count = 0
-			G.GAME.blind.mult = G.GAME.blind.config.blind.mult
+			G.GAME.blind.twbl_blind_incrementor_strucks = G.GAME.blind.twbl_blind_incrementor_strucks + 1
 
-			attention_text({
-				text = username .. ": " .. localize("k_twbl_nope_ex"),
-				scale = 0.4,
-				hold = 1,
-				backdrop_colour = G.C.SECONDARY_SET.Tarot,
-				align = "cmi",
-				major = G.GAME.blind,
-				offset = {
-					x = 0,
-					y = 0,
-				},
-			})
+			if G.GAME.blind.twbl_blind_incrementor_strucks >= 2 then
+				G.GAME.blind.twbl_blind_incrementor_count = 0
+				G.GAME.blind.mult = G.GAME.blind.config.blind.mult
+
+				attention_text({
+					text = username .. ": " .. localize("k_twbl_reset_ex"),
+					scale = 0.4,
+					hold = 1,
+					backdrop_colour = G.C.MULT,
+					align = "cmi",
+					major = G.GAME.blind,
+					offset = {
+						x = 0,
+						y = 0,
+					},
+				})
+			else
+				attention_text({
+					text = username .. ": " .. localize("k_twbl_nope_ex"),
+					scale = 0.4,
+					hold = 1,
+					backdrop_colour = G.C.SECONDARY_SET.Tarot,
+					align = "cmi",
+					major = G.GAME.blind,
+					offset = {
+						x = 0,
+						y = 0,
+					},
+				})
+			end
 		end
 
 		G.GAME.blind.chips = to_big(get_blind_amount(G.GAME.round_resets.ante))

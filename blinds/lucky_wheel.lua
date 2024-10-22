@@ -38,7 +38,6 @@ function tw_blind:set_blind(reset, silent)
 	for _, v in ipairs(G.jokers.cards) do
 		table.insert(jokers_list, v)
 	end
-	G.GAME.blind:wiggle()
 	for _, v in ipairs(jokers_list) do
 		local edition = poll_edition("twbl_lucky_wheel", nil, false, true)
 		v:set_edition(edition, true)

@@ -75,7 +75,7 @@ end
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_misstock_pool", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 	TW_BL.CHAT_COMMANDS.reset("blind_misstock_pool", "vote")
 
 	local pools_to_pick = table_copy(POOLS_TO_PICK)
@@ -101,7 +101,7 @@ end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", nil, true)
 
 	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 
@@ -119,10 +119,9 @@ TW_BL.EVENTS.add_listener("twitch_command", "blind_misstock", function(command, 
 	end
 
 	if TW_BL.CHAT_COMMANDS.can_vote_for_variant("blind_misstock_pool", variant) then
+		TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 		TW_BL.CHAT_COMMANDS.increment_vote_score("blind_misstock_pool", variant)
 		TW_BL.UI.update_panel("game_top", nil, false)
 		TW_BL.UI.create_panel_notify("game_top", nil, username)
-	else
-		TW_BL.CHAT_COMMANDS.decrement_command_use(command, username)
 	end
 end)

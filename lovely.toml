@@ -26,30 +26,6 @@ if self.ability and self.ability.twbl_state_prevent_action then return end
 match_indent = true
 overwrite = false
 
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.skip_booster = function(e)'
-position = "after"
-payload = """
--- if TW_BL.G.state_sticker_chat_booster_use and TW_BL.EVENTS.request_delay(5, function() G.FUNCS.skip_booster(e) end) then
---     return
--- end
-"""
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
-position = "after"
-payload = """
--- if TW_BL.G.state_sticker_chat_booster_use and TW_BL.EVENTS.request_delay(5, function() G.FUNCS.end_consumeable(e, delayfac) end) then
---     return
--- end
-"""
-match_indent = true
-
 # WIP
 # [[patches]]
 # [patches.pattern]

@@ -157,7 +157,7 @@ function TwitchBlinds:init()
 				)
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-				TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
+				TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 				TW_BL.CHAT_COMMANDS.reset("voting_blind", "vote")
 				TW_BL.UI.set_panel("game_top", "blind_voting_process", true, true)
 			else
@@ -172,39 +172,40 @@ function TwitchBlinds:init()
 	function G.FUNCS.select_blind(...)
 		local args = { ... }
 		TW_BL.G = TW_BL.G or {}
-		-- Replace with blind selected by chat (or use first if no votes)
 		if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] then
 			local current_blind = G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck]
+			-- Replace with blind selected by chat (or use first if no votes)
 			if current_blind == TW_BL.BLINDS.chat_blind then
 				if G.GAME.blind_on_deck ~= "Boss" then
 					-- If somehow chat is in non-boss position, then insert random boss here
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
 					return
 				end
+				TW_BL.EVENTS.request_delay(2.5)
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						local blinds_to_choose =
+							TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
+						if not blinds_to_choose then
+							return select_blind_ref(unpack(args))
+						end
+						local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner("voting_blind")
+						local picked_blind = (
+							TW_BL.__DEV_MODE
+							and TW_BL.SETTINGS.current.forced_blind
+							and TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]
+						) or blinds_to_choose[tonumber(win_variant or "1")]
 
-				if TW_BL.EVENTS.request_delay(5, function()
-					G.FUNCS.select_blind(unpack(args))
-				end) then
-					return
-				end
+						TW_BL.BLINDS.set_voting_blinds_to_game(nil)
+						TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
+						TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
+						TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
+						TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
+						TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
+						return true
+					end,
+				}))
 
-				local blinds_to_choose =
-					TW_BL.BLINDS.get_voting_blinds_from_game(TW_BL.SETTINGS.current.pool_type, true)
-				if not blinds_to_choose then
-					return select_blind_ref(...)
-				end
-				local win_variant, win_score, win_percent = TW_BL.CHAT_COMMANDS.get_vote_winner("voting_blind")
-				local picked_blind = (
-					TW_BL.__DEV_MODE
-					and TW_BL.SETTINGS.current.forced_blind
-					and TW_BL.BLINDS.loaded[TW_BL.SETTINGS.current.forced_blind]
-				) or blinds_to_choose[tonumber(win_variant or "1")]
-
-				TW_BL.BLINDS.set_voting_blinds_to_game(nil)
-				TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
-				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-				TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
-				TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 				return
 			elseif current_blind == TW_BL.BLINDS.get_key("lucky_wheel") then
 				if
@@ -226,12 +227,12 @@ function TwitchBlinds:start_run()
 	TW_BL.CHAT_COMMANDS.reset(true)
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
 	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
-	TW_BL.CHAT_COMMANDS.get_single_use_from_game({
-		vote = not TW_BL.__DEV_MODE,
-	})
+	TW_BL.CHAT_COMMANDS.get_max_uses_from_game({})
 
 	TW_BL.UI.reset()
 	TW_BL.UI.get_panels_from_game()
+
+	TW_BL.EVENTS.clear_delay()
 
 	TW_BL.CHAT_COMMANDS.set_enabled(true)
 end
@@ -239,4 +240,6 @@ end
 function TwitchBlinds:main_menu()
 	TW_BL.CHAT_COMMANDS.set_enabled(false)
 	TW_BL.CHAT_COMMANDS.reset(true)
+
+	TW_BL.EVENTS.clear_delay()
 end

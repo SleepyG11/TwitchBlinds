@@ -24,13 +24,13 @@ end
 
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("roll", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("roll", true, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("roll", 1, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "roll")
 end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("roll", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("roll", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("roll", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "roll")
 end
 

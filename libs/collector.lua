@@ -104,7 +104,7 @@ function TwitchCollector:connect(channel_name, silent)
 		socket:send("PASS SCHMOOPIIE")
 		socket:send("NICK justinfan13847")
 		socket:send("USER justinfan13847 8 * :justinfan13847")
-		socket:send("JOIN #" .. channel_name)
+		socket:send("JOIN #" .. string.lower(channel_name))
 	end
 
 	function socket:onclose(code, reason)

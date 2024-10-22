@@ -25,7 +25,6 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-	G.GAME.blind:wiggle()
 	local card = create_card("Joker", G.jokers, false, nil, nil, nil, "j_joker", nil)
 	card:set_eternal(true)
 	card:add_to_deck()

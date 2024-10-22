@@ -45,7 +45,7 @@ function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_spiral_ante", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.reset("blind_spiral_ante", "vote")
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", true, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 
 	local dx_to_pick = get_ante_dx()
 	TW_BL.G.blind_spiral_dx_variants = dx_to_pick
@@ -65,7 +65,7 @@ end
 
 function tw_blind:defeat()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
-	TW_BL.CHAT_COMMANDS.toggle_single_use("vote", false, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", nil, true)
 	TW_BL.UI.remove_panel("game_top", "voting_process_3", true)
 
 	local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner("blind_spiral_ante")
@@ -86,10 +86,9 @@ TW_BL.EVENTS.add_listener("twitch_command", "blind_spiral", function(command, us
 	end
 
 	if TW_BL.CHAT_COMMANDS.can_vote_for_variant("blind_spiral_ante", variant) then
+		TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 		TW_BL.CHAT_COMMANDS.increment_vote_score("blind_spiral_ante", variant)
 		TW_BL.UI.update_panel("game_top", nil, false)
 		TW_BL.UI.create_panel_notify("game_top", nil, username)
-	else
-		TW_BL.CHAT_COMMANDS.decrement_command_use(command, username)
 	end
 end)

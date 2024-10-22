@@ -20,7 +20,6 @@ function tw_blind:set_blind(reset, silent)
 		return
 	end
 	for k, v in ipairs(G.jokers.cards) do
-		G.GAME.blind:wiggle()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				v:juice_up(0.3, 0.4)

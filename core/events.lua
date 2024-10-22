@@ -5,7 +5,6 @@ function twbl_init_events()
 
 		delay_dt = 0,
 		delay_requested = false,
-		delay_callback = nil,
 	}
 
 	TW_BL.EVENTS = EVENTS
@@ -48,43 +47,40 @@ function twbl_init_events()
 		end
 	end
 
-	function EVENTS.request_delay(time, callback)
-		if
-			EVENTS.delay_requested
-			or not TW_BL.SETTINGS.current.delay_for_chat
-			or TW_BL.SETTINGS.current.delay_for_chat == 1
-		then
+	function EVENTS.request_delay(time)
+		if EVENTS.delay_requested then
 			return false
 		end
 		time = time or 1
-		if TW_BL.SETTINGS.current.delay_for_chat == 3 then
-			time = time * 1.5
+		time = time * ((TW_BL.SETTINGS.current.delay_for_chat or 1) - 1)
+		if time == 0 then
+			return false
 		end
 		EVENTS.delay_dt = time
 		EVENTS.delay_requested = true
-		EVENTS.delay_callback = callback
-		attention_text({
-			scale = 1.0,
-			text = "Waiting for chat...",
-			hold = time,
-			align = "cm",
-			offset = { x = 0, y = 2 },
-			major = G.play,
-		})
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				return not EVENTS.delay_requested
+			end,
+		}))
 		return true
 	end
 
+	function EVENTS.clear_delay()
+		EVENTS.delay_dt = 0
+		EVENTS.delay_requested = false
+	end
+
 	function EVENTS.process_dt(dt)
+		if G.SETTINGS.paused then
+			return
+		end
 		EVENTS.delay_dt = math.max(0, EVENTS.delay_dt - dt)
 		EVENTS.emit("game_update", dt)
 		if EVENTS.delay_dt > 0 and (not G.GAME.STOP_USE or G.GAME.STOP_USE == 0) then
 			G.GAME.STOP_USE = 1
 		end
 		if EVENTS.delay_dt == 0 and EVENTS.delay_requested then
-			if type(EVENTS.delay_callback) == "function" then
-				EVENTS.delay_callback()
-			end
-			EVENTS.delay_callback = nil
 			EVENTS.delay_requested = false
 		end
 	end

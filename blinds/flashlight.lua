@@ -40,17 +40,15 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("flashlight"), 
 		return
 	end
 	if G.STATE ~= G.STATES.SELECTING_HAND then
-		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 		return
 	end
 	local index = tonumber(raw_index)
 	if index and G.hand and G.hand.cards and G.hand.cards[index] then
+		TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 		G.GAME.blind:wiggle()
 		local card = G.hand.cards[index]
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
 		card:flip()
-	else
-		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 	end
 end)
 

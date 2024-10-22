@@ -119,10 +119,9 @@ TW_BL.EVENTS.add_listener("twitch_command", "blind_misstock", function(command, 
 	end
 
 	if TW_BL.CHAT_COMMANDS.can_vote_for_variant("blind_misstock_pool", variant) then
+		TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 		TW_BL.CHAT_COMMANDS.increment_vote_score("blind_misstock_pool", variant)
 		TW_BL.UI.update_panel("game_top", nil, false)
 		TW_BL.UI.create_panel_notify("game_top", nil, username)
-	else
-		TW_BL.CHAT_COMMANDS.decrement_command_use(command, username)
 	end
 end)

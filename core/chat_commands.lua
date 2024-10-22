@@ -17,7 +17,6 @@ function twbl_init_chat_commands()
 		},
 
 		collector = collector,
-		socket = collector.socket,
 		enabled = false,
 
 		can_collect = {},
@@ -58,7 +57,6 @@ function twbl_init_chat_commands()
 		end
 
 		if CHAT_COMMANDS.can_use_command(command, username) then
-			CHAT_COMMANDS.increment_command_use(command, username)
 			TW_BL.EVENTS.emit("twitch_command", command, username, unpack(words))
 		end
 	end
@@ -75,6 +73,9 @@ function twbl_init_chat_commands()
 		end
 		if not CHAT_COMMANDS.users[command] then
 			CHAT_COMMANDS.users[command] = {}
+		end
+		if TW_BL.__DEV_MODE then
+			return true
 		end
 		if
 			CHAT_COMMANDS.max_uses[command]
@@ -224,7 +225,7 @@ function twbl_init_chat_commands()
 	end
 
 	--- Get can each command can be used one time only from game object
-	--- @param default_values table<string, boolean> Values if data in game object not found
+	--- @param default_values table<string, integer | nil> Values if data in game object not found
 	function CHAT_COMMANDS.get_max_uses_from_game(default_values)
 		for command, _ in pairs(CHAT_COMMANDS.available_commands) do
 			local set_value = nil
@@ -341,7 +342,7 @@ function twbl_init_chat_commands()
 	end
 
 	function collector:onnewconnectionstatus(status)
-		if status == collector.STATUS.CONNECTEd then
+		if status == collector.STATUS.CONNECTED then
 			next_reconnect_timeout = 1
 		end
 		TW_BL.EVENTS.emit("new_connection_status", status, collector.channel_name)

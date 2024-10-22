@@ -40,7 +40,6 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), functi
 		return
 	end
 	if G.STATE ~= G.STATES.SELECTING_HAND then
-		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 		return
 	end
 	local index = tonumber(raw_index)
@@ -49,13 +48,10 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), functi
 		local initial_value = card.ability.eternal
 		card:set_eternal(not initial_value)
 		if card.ability.eternal ~= initial_value then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			G.GAME.blind:wiggle()
 			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
 			card:juice_up()
-		else
-			TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 		end
-	else
-		TW_BL.CHAT_COMMANDS.decrement_command_use("toggle", username)
 	end
 end)

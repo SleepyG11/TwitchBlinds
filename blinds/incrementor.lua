@@ -19,6 +19,8 @@ function tw_blind:in_pool()
 end
 
 function tw_blind:set_blind()
+	G.GAME.blind.twbl_blind_incrementor_count = 0
+	G.GAME.blind.twbl_blind_incrementor_strucks = 0
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_max_uses("count", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "count")

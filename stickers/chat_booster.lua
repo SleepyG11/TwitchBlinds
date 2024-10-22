@@ -401,6 +401,7 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 			and G.twbl_chat_booster_planets.cards
 			and G.twbl_chat_booster_planets.cards[index]
 		then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			local card = G.twbl_chat_booster_planets.cards[index]
 			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
 			card_eval_status_text(
@@ -411,11 +412,10 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 				nil,
 				{ message = username, colour = G.C.CHIPS, instant = true }
 			)
-		else
-			TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
 		end
 	elseif TW_BL.G.state_sticker_chat_booster == "Arcana" or TW_BL.G.state_sticker_chat_booster == "Spectral" then
 		if index and G.hand and G.hand.cards and G.hand.cards[index] then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			local card = G.hand.cards[index]
 			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
 			card_eval_status_text(
@@ -426,8 +426,6 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 				nil,
 				{ message = username, colour = G.C.CHIPS, instant = true }
 			)
-		else
-			TW_BL.CHAT_COMMANDS.decrement_command_use("target", username)
 		end
 	end
 end)

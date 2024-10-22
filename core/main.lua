@@ -172,9 +172,9 @@ function TwitchBlinds:init()
 	function G.FUNCS.select_blind(...)
 		local args = { ... }
 		TW_BL.G = TW_BL.G or {}
-		-- Replace with blind selected by chat (or use first if no votes)
 		if G.GAME.blind_on_deck and G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck] then
 			local current_blind = G.GAME.round_resets.blind_choices[G.GAME.blind_on_deck]
+			-- Replace with blind selected by chat (or use first if no votes)
 			if current_blind == TW_BL.BLINDS.chat_blind then
 				if G.GAME.blind_on_deck ~= "Boss" then
 					-- If somehow chat is in non-boss position, then insert random boss here
@@ -198,6 +198,7 @@ function TwitchBlinds:init()
 
 						TW_BL.BLINDS.set_voting_blinds_to_game(nil)
 						TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
+						TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 						TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 						TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
 						TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
@@ -226,9 +227,7 @@ function TwitchBlinds:start_run()
 	TW_BL.CHAT_COMMANDS.reset(true)
 	TW_BL.CHAT_COMMANDS.get_vote_variants_from_game({})
 	TW_BL.CHAT_COMMANDS.get_can_collect_from_game({})
-	TW_BL.CHAT_COMMANDS.get_max_uses_from_game({
-		vote = not TW_BL.__DEV_MODE,
-	})
+	TW_BL.CHAT_COMMANDS.get_max_uses_from_game({})
 
 	TW_BL.UI.reset()
 	TW_BL.UI.get_panels_from_game()

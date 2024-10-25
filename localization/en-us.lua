@@ -81,7 +81,7 @@ return {
 			},
 			bl_twbl_taxes = {
 				name = "The Taxes",
-				text = { "Current Jokers", "became Rental" },
+				text = { "#1# in #2# chance to", "Joker became Rental" },
 			},
 			bl_twbl_trash_can = {
 				name = "The Trash Can",

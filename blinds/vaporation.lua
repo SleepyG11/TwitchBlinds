@@ -2,12 +2,12 @@ local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("vaporation", false),
 	dollars = 5,
 	mult = 2,
-	boss = { min = 2, max = 10 },
+	boss = { min = 3, max = 10 },
 	pos = { x = 0, y = 5 },
 	config = {
 		tw_bl = {
 			twitch_blind = true,
-			min = 2,
+			min = 3,
 		},
 	},
 	atlas = "twbl_blind_chips",

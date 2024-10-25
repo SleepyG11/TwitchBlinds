@@ -35,7 +35,7 @@ local function increment_clock_chips(current_chips, base_chips)
 end
 
 TW_BL.EVENTS.add_listener("game_update", TW_BL.BLINDS.get_key("clock"), function(dt)
-	if not G.GAME or G.SETTINGS.paused then
+	if not G.GAME or G.SETTINGS.paused or TW_BL.G.clock_block then
 		return
 	end
 	timeout = timeout - dt
@@ -62,7 +62,10 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+	TW_BL.G.clock_block = nil
 	timeout = TIME_DELAY * 2 -- reset + preparation time + animations time
 end
 
-function tw_blind:defeat() end
+function tw_blind:defeat()
+	TW_BL.G.clock_block = nil
+end

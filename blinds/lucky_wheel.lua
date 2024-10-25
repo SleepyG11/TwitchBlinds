@@ -11,6 +11,7 @@ local tw_blind = SMODS.Blind({
 			twitch_blind = true,
 		},
 	},
+	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. NOPE_ODDS },
 	pos = { x = 0, y = 27 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("00d231"),

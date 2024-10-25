@@ -2,14 +2,18 @@ local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("chisel", false),
 	dollars = 5,
 	mult = 2,
-	boss = { min = 1, max = 10 },
+	boss = { min = 2, max = 10 },
 	pos = { x = 0, y = 11 },
 	config = {
-		tw_bl = { twitch_blind = true },
+		tw_bl = { twitch_blind = true, min = 2 },
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("ce512b"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+end
 
 function tw_blind:in_pool()
 	return TW_BL.BLINDS.can_natural_appear(tw_blind)

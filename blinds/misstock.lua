@@ -23,19 +23,17 @@ local tw_blind = SMODS.Blind({
 	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 25 },
 	config = {
-		tw_bl = {
-			twitch_blind = true,
-			in_pool = function()
-				-- Incompatible with Cryptid's equilibrium deck (wait for Steamodded update)
-				return not G.GAME.modifiers.cry_equilibrium
-			end,
-		},
+		tw_bl = { twitch_blind = true },
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("cf2f3f"),
 })
 
 -- Implementation in lovely/blinds_misstock.toml
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and not G.GAME.modifiers.cry_equilibrium
+end
 
 function tw_blind:in_pool()
 	-- Twitch interaction required

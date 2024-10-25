@@ -6,15 +6,17 @@ local tw_blind = SMODS.Blind({
 	config = {
 		tw_bl = {
 			twitch_blind = true,
-			in_pool = function()
-				return not G.GAME.used_vouchers["v_planet_merchant"] or not G.GAME.used_vouchers["v_planet_tycoon"]
-			end,
 		},
 	},
 	pos = { x = 0, y = 7 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("00d4d4"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+		and (not G.GAME.used_vouchers["v_planet_merchant"] or not G.GAME.used_vouchers["v_planet_tycoon"])
+end
 
 function tw_blind:in_pool()
 	-- Not suitable for default gameplay
@@ -25,13 +27,38 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-	play_sound("card1")
 	if not G.GAME.used_vouchers["v_planet_merchant"] then
-		G.GAME.used_vouchers["v_planet_merchant"] = true
-		Card:apply_to_run(G.P_CENTERS["v_planet_merchant"])
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
+				card.cost = 0
+				G.play:emplace(card)
+				card:redeem()
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card:start_dissolve()
+						return true
+					end,
+				}))
+				return true
+			end,
+		}))
 	end
 	if not G.GAME.used_vouchers["v_planet_tycoon"] then
-		G.GAME.used_vouchers["v_planet_tycoon"] = true
-		Card:apply_to_run(G.P_CENTERS["v_planet_tycoon"])
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_tycoon", nil)
+				card.cost = 0
+				G.play:emplace(card)
+				card:redeem()
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card:start_dissolve()
+						return true
+					end,
+				}))
+				return true
+			end,
+		}))
 	end
 end

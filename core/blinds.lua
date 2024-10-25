@@ -88,7 +88,16 @@ function twbl_init_blinds()
 		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
 			return false
 		end
-		return math.max(G.GAME.round_resets.ante, 0) >= math.max(blind.boss.min or 0, 0)
+		return math.max(G.GAME.round_resets.ante, 1) >= (blind.boss.min or 1)
+	end
+
+	function BLINDS.can_appear_in_voting(blind)
+		if not blind.boss or not blind.config or not blind.config.tw_bl then
+			return false
+		end
+		local range_to_check = blind.config.tw_bl
+		return (not range_to_check.min or range_to_check.min <= math.max(0, G.GAME.round_resets.ante))
+			and (not range_to_check.max or range_to_check.max >= math.max(0, G.GAME.round_resets.ante))
 	end
 
 	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()

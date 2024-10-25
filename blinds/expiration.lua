@@ -73,16 +73,15 @@ local tw_blind = SMODS.Blind({
 	boss = { min = 1, max = 10 },
 	pos = { x = 0, y = 9 },
 	config = {
-		tw_bl = {
-			twitch_blind = true,
-			in_pool = function()
-				return check_is_food_jokers()
-			end,
-		},
+		tw_bl = { twitch_blind = true },
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("b35216"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and check_is_food_jokers()
+end
 
 function tw_blind:in_pool()
 	return TW_BL.BLINDS.can_natural_appear(tw_blind) and check_is_food_jokers()

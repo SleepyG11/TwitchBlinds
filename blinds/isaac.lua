@@ -8,18 +8,16 @@ local tw_blind = SMODS.Blind({
 		tw_bl = {
 			twitch_blind = true,
 			min = 4,
-			max = 5,
-			in_pool = function()
-				return pseudorandom(pseudoseed("twbl_blind_isaac_in_pool")) > 4 / 5
-					and G.GAME
-					and G.GAME.round_resets.ante >= 4
-					and G.GAME.round_resets.ante <= 5
-			end,
+			max = 6,
 		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("d82727"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and pseudorandom(pseudoseed("twbl_blind_isaac_in_pool")) > 4 / 5
+end
 
 function tw_blind:in_pool()
 	-- Not suitable for default gameplay

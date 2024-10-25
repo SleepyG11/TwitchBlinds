@@ -73,7 +73,7 @@ return {
 			},
 			bl_twbl_precision = {
 				name = "The Precision",
-				text = { "Only 5 cards", "can be discarded" },
+				text = { "Must select 5 cards", "to discard" },
 			},
 			bl_twbl_sparkle = {
 				name = "The Sparkle",
@@ -81,7 +81,7 @@ return {
 			},
 			bl_twbl_taxes = {
 				name = "The Taxes",
-				text = { "Current Jokers", "became Rental" },
+				text = { "#1# in #2# chance to", "Joker became Rental" },
 			},
 			bl_twbl_trash_can = {
 				name = "The Trash Can",

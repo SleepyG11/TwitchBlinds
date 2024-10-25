@@ -13,26 +13,24 @@ local tw_blind = SMODS.Blind({
 	dollars = 5,
 	mult = 2,
 	boss = {
-		min = 999,
-		max = 999,
+		min = -1,
+		max = -1,
 	},
 	pos = { x = 0, y = 28 },
 	config = {
 		tw_bl = {
 			twitch_blind = true,
-			in_pool = function()
-				return G.GAME
-					and not G.GAME.pool_flags.twbl_spiral_used
-					-- min = 5
-					and G.GAME.round_resets.ante >= 5
-					-- max - 7
-					and G.GAME.round_resets.ante <= 7
-			end,
+			min = 4,
+			max = 5,
 		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("a17040"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and not G.GAME.pool_flags.twbl_spiral_used
+end
 
 function tw_blind:in_pool()
 	-- Twitch interaction required

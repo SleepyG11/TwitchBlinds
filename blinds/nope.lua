@@ -1,5 +1,5 @@
-local MIN_MULT = 2
-local MAX_MULT = 8
+local MIN_MULT = 1.5
+local MAX_MULT = 6
 
 local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("nope", false),
@@ -13,6 +13,10 @@ local tw_blind = SMODS.Blind({
 	atlas = "twbl_blind_chips",
 	boss_colour = G.C.SECONDARY_SET.Tarot,
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return false
+end
 
 function tw_blind:in_pool()
 	-- Nope!
@@ -46,6 +50,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), functi
 	for i = 1, 3 do
 		G.E_MANAGER:add_event(Event({
 			blocking = false,
+			blockable = false,
 			trigger = "after",
 			delay = math.random(5, 15) / 10 * i,
 			func = function()
@@ -69,13 +74,6 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), functi
 
 	G.GAME.blind:wiggle()
 
-	G.GAME.blind.mult = math.random(MIN_MULT * 100, MAX_MULT * 100) / 100
-	G.GAME.blind.chips = to_big(get_blind_amount(G.GAME.round_resets.ante))
-		* to_big(G.GAME.starting_params.ante_scaling)
-		* to_big(G.GAME.blind.mult)
-	G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-	G.GAME.blind:set_text()
-
 	attention_text({
 		text = localize("k_twbl_nope_ex"),
 		scale = 1,
@@ -90,6 +88,13 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("nope"), functi
 	})
 
 	if G.STATE == G.STATES.SELECTING_HAND then
+		G.GAME.blind.mult = math.random(MIN_MULT * 100, MAX_MULT * 100) / 100
+		G.GAME.blind.chips = to_big(get_blind_amount(G.GAME.round_resets.ante))
+			* to_big(G.GAME.starting_params.ante_scaling)
+			* to_big(G.GAME.blind.mult)
+		G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+		G.GAME.blind:set_text()
+
 		if G.hand and G.hand.cards and #G.hand.cards > 0 then
 			local card = G.hand.cards[math.random(1, #G.hand.cards)]
 			card_eval_status_text(

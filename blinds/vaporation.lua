@@ -5,14 +5,21 @@ local tw_blind = SMODS.Blind({
 	boss = { min = 2, max = 10 },
 	pos = { x = 0, y = 5 },
 	config = {
-		tw_bl = { twitch_blind = true, min = 2 },
+		tw_bl = {
+			twitch_blind = true,
+			min = 2,
+		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("a7d2ce"),
 })
 
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
+end
+
 function tw_blind:in_pool()
-	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+	return TW_BL.BLINDS.can_natural_appear(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
 end
 
 function tw_blind:set_blind(reset, silent)

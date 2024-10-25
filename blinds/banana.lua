@@ -14,8 +14,12 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("e2ce00"),
 })
 
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 10
+end
+
 function tw_blind:in_pool()
-	return TW_BL.BLINDS.can_natural_appear(tw_blind)
+	return TW_BL.BLINDS.can_natural_appear(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 10
 end
 
 function tw_blind:loc_vars()

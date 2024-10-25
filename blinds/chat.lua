@@ -13,6 +13,10 @@ local tw_blind = SMODS.Blind({
 	ignore_showdown_check = true,
 })
 
+function tw_blind.config.tw_bl:in_pool()
+	return false
+end
+
 function tw_blind:in_pool()
 	-- The Chat
 	return false

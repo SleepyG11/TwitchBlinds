@@ -1,7 +1,7 @@
-local MAX_SIZE = to_big(8)
-local MULT_INCREMENT = to_big(0.12)
+local MAX_SIZE = to_big(6)
+local MULT_INCREMENT = to_big(0.08)
 local TIME_DELAY = 1 -- In seconds
--- Total time to full grow: 1 / 0.12 * (8 - 2) = 50 seconds
+-- Total time to full grow: 1 / 0.08 * (6 - 2) = 50 seconds
 
 local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("clock", false),
@@ -15,6 +15,10 @@ local tw_blind = SMODS.Blind({
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("896665"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+end
 
 function tw_blind:in_pool()
 	return TW_BL.BLINDS.can_natural_appear(tw_blind)

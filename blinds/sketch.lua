@@ -7,14 +7,16 @@ local tw_blind = SMODS.Blind({
 	config = {
 		tw_bl = {
 			twitch_blind = true,
-			in_pool = function()
-				return G.jokers and G.jokers.cards and #G.jokers.cards > 1 and #G.jokers.cards < 20
-			end,
+			min = 2,
 		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("d2ccc7"),
 })
+
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
+end
 
 function tw_blind:in_pool()
 	-- Twitch interaction required

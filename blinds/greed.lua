@@ -11,6 +11,10 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("bcbcbc"),
 })
 
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+end
+
 function tw_blind:in_pool()
 	return TW_BL.BLINDS.can_natural_appear(tw_blind)
 end

@@ -9,9 +9,6 @@ local tw_blind = SMODS.Blind({
 		extra = { nope_odds = NOPE_ODDS },
 		tw_bl = {
 			twitch_blind = true,
-			in_pool = function()
-				return G.jokers and G.jokers.cards and #G.jokers.cards > 1
-			end,
 		},
 	},
 	pos = { x = 0, y = 27 },
@@ -19,8 +16,12 @@ local tw_blind = SMODS.Blind({
 	boss_colour = HEX("00d231"),
 })
 
+function tw_blind.config.tw_bl:in_pool()
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 1
+end
+
 function tw_blind:in_pool()
-	-- Nope!
+	-- Never lucky!
 	return false
 end
 

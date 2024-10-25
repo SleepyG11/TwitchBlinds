@@ -73,7 +73,7 @@ return {
 			},
 			bl_twbl_precision = {
 				name = "The Precision",
-				text = { "Only 5 cards can be", "discarded at a time" },
+				text = { "Must select 5 cards", "to discard" },
 			},
 			bl_twbl_sparkle = {
 				name = "The Sparkle",

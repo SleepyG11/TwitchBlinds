@@ -88,7 +88,7 @@ function twbl_init_blinds()
 		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
 			return false
 		end
-		return math.max(G.GAME.round_resets.ante, 1) >= blind.boss.min or 1
+		return math.max(G.GAME.round_resets.ante, 1) >= (blind.boss.min or 1)
 	end
 
 	function BLINDS.can_appear_in_voting(blind)

@@ -3,25 +3,25 @@ return {
     Other = {
       twbl_chat_booster = {
         name = "Chat Booster",
-        text = { "The Chat can interact", "inside this booster pack!" },
+        text = { "The Chat can interact", "inside this booster pack" },
       },
     },
     Blind = {
       bl_twbl_twitch_chat = {
         name = "The Chat",
-        text = { "Select to end voting and", "begin a challenge from the Chat!" },
+        text = { "Select to end voting and", "begin a challenge from the Chat" },
       },
       bl_twbl_banana = {
         name = "The Banana",
-        text = { "Each Joker has a", "#1# in #2# chance to be", "replaced with Gros Michel!" },
+        text = { "Each Joker has a", "#1# in #2# chance to be", "replaced with Gros Michel" },
       },
       bl_twbl_taxes = {
         name = "The Taxes",
-        text = { "Each Joker has a", "#1# in #2# chance to", "become Rental!" },
+        text = { "Each Joker has a", "#1# in #2# chance to", "become Rental" },
       },
       bl_twbl_lucky_wheel = {
         name = "The Lucky Wheel",
-        text = { "Each Joker has a", "#1# in #2# chance to", "change edition!" }
+        text = { "Each Joker has a", "#1# in #2# chance to", "change edition" }
       },
       bl_twbl_blank = {
         name = "The Blank",
@@ -29,11 +29,11 @@ return {
       },
       bl_twbl_chaos = {
         name = "The Chaos",
-        text = { "The Chat can select and", "deselect cards!" },
+        text = { "The Chat can select and", "deselect cards" },
       },
       bl_twbl_chisel = {
         name = "The Chisel",
-        text = { "The first #1#", "does not score!" },
+        text = { "The first #1#", "does not score" },
       },
       bl_twbl_circus = {
         name = "The Circus",
@@ -50,19 +50,19 @@ return {
       },
       bl_twbl_expiration = {
         name = "The Expiration Date",
-        text = { "All food Jokers are", "out-of-date!" },
+        text = { "All food Jokers are", "out-of-date" },
       },
       bl_twbl_flashlight = {
         name = "The Flashlight",
-        text = { "All cards start face down", "only the Chat can flip them!" },
+        text = { "All cards start face down", "only the Chat can flip them" },
       },
       bl_twbl_greed = {
         name = "The Greed",
-        text = { "Skip the next shop!" },
+        text = { "Skip the next shop" },
       },
       bl_twbl_isaac = {
         name = "The Voice of God",
-        text = { "To prove your love and devotion", "I require a sacrifice!" },
+        text = { "To prove your love and devotion", "I require a sacrifice" },
       },
       bl_twbl_jimbo = {
         name = "The Jimbo",
@@ -70,23 +70,23 @@ return {
       },
       bl_twbl_lock = {
         name = "The Lock",
-        text = { "The Chat can add and remove", "eternal stickers on Jokers!" },
+        text = { "The Chat can add and remove", "eternal stickers on Jokers" },
       },
       bl_twbl_moon = {
         name = "The Moon",
-        text = { "The Chat has bestowed", "the Planet vouchers unto you!" },
+        text = { "The Chat has bestowed", "the Planet vouchers unto you" },
       },
       bl_twbl_sparkle = {
         name = "The Sparkle",
-        text = { "The Chat has bestowed", "the Magic Trick and Illusion ", "vouchers unto you!" },
+        text = { "The Chat has bestowed", "the Magic Trick and Illusion ", "vouchers unto you" },
       },
       bl_twbl_pin = {
         name = "The Pin",
-        text = { "The Chat can pin and", "unpin Jokers!" },
+        text = { "The Chat can pin and", "unpin Jokers" },
       },
       bl_twbl_precision = {
         name = "The Precise",
-        text = { "Discards must contain", "5 cards!" },
+        text = { "Discards must contain", "5 cards" },
       },
       bl_twbl_trash_can = {
         name = "The Trash Can",
@@ -94,15 +94,15 @@ return {
       },
       bl_twbl_vaporation = {
         name = "The Vaporation",
-        text = { "Your current Jokers", "will become Perishable!" },
+        text = { "Your current Jokers", "will become Perishable" },
       },
       bl_twbl_eraser = {
         name = "The Eraser",
-        text = { "On Blind Win: a Joker", "chosen by the Chat", "will be destroyed!" },
+        text = { "On Blind Win: a Joker", "chosen by the Chat", "will be destroyed" },
       },
       bl_twbl_sketch = {
         name = "The Sketch",
-        text = { "On Blind Win: a Joker", "chosen by the Chat", "will be copied!" }
+        text = { "On Blind Win: a Joker", "chosen by the Chat", "will be copied" }
       },
       bl_twbl_nope = {
         name = "Nope!",
@@ -110,11 +110,11 @@ return {
       },
       bl_twbl_misstock = {
         name = "The Misstock",
-        text = { "The Chat can select which", "single card type will", "appear in next shop!" },
+        text = { "The Chat can select which", "single card type will", "appear in next shop" },
       },
       bl_twbl_incrementor = {
         name = "The Incrementor",
-        text = { "The Chat can start counting", "to increase the blind's' size!" },
+        text = { "The Chat can start counting", "to increase the blind's' size" },
       },
       bl_twbl_spiral = {
         name = "The Time Spiral",
@@ -123,7 +123,7 @@ return {
       -- Showdown
       bl_twbl_plum_hammer = {
         name = "Plum Hammer",
-        text = { "The Chat can add or remove", "debuff on Jokers!" },
+        text = { "The Chat can add or remove", "debuff on Jokers" },
       },
     },
   },
@@ -157,7 +157,7 @@ return {
       twbl_settings_delay_for_chat_5 = "~20 seconds",
       twbl_settings_desc_delay_for_chat = {
         "The Game will wait after some actions",
-        "to give chat some time to interact!",
+        "to give chat some time to interact",
       },
       twbl_settings_blind_pool_type = "Blinds pool type",
       twbl_settings_blind_pool_type_1 = "Once per pool (Vanilla)",

@@ -144,6 +144,7 @@ function TwitchBlinds:init()
 
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
+				TW_BL.EVENTS.set_delay_threshold("voting_blind", 15)
 				TW_BL.CHAT_COMMANDS.set_vote_variants(
 					"voting_blind",
 					TW_BL.CHAT_COMMANDS.get_vote_variants_for_blinds(),
@@ -181,7 +182,7 @@ function TwitchBlinds:init()
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, get_new_boss_ref())
 					return
 				end
-				TW_BL.EVENTS.request_delay(2.5)
+				TW_BL.EVENTS.request_delay(5, "voting_blind")
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						local blinds_to_choose =

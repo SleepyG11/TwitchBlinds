@@ -9,6 +9,7 @@ local tw_blind = SMODS.Blind({
 		extra = { odds = REPLACE_ODDS },
 		tw_bl = { twitch_blind = true, min = 2 },
 	},
+	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. REPLACE_ODDS },
 	pos = { x = 0, y = 4 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("e2ce00"),

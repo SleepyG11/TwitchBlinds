@@ -71,6 +71,7 @@ function get_pack(_key, _type)
 end
 
 function tw_blind:set_blind()
+	TW_BL.EVENTS.set_delay_threshold("voting_misstock", 5)
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_misstock_pool", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)

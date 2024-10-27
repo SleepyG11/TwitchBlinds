@@ -5,6 +5,7 @@ function twbl_init_events()
 
 		delay_dt = 0,
 		delay_requested = false,
+		delay_thresholds = {},
 	}
 
 	TW_BL.EVENTS = EVENTS
@@ -47,17 +48,21 @@ function twbl_init_events()
 		end
 	end
 
-	function EVENTS.request_delay(time)
+	function EVENTS.request_delay(time, threshold)
 		if EVENTS.delay_requested then
 			return false
 		end
 		time = time or 1
 		time = time * ((TW_BL.SETTINGS.current.delay_for_chat or 1) - 1)
+		if threshold and not EVENTS.delay_thresholds[threshold] then
+			time = 0
+		end
 		if time == 0 then
 			return false
 		end
 		EVENTS.delay_dt = time
 		EVENTS.delay_requested = true
+		stop_use()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				return not EVENTS.delay_requested
@@ -71,15 +76,20 @@ function twbl_init_events()
 		EVENTS.delay_requested = false
 	end
 
+	function EVENTS.set_delay_threshold(threshold, t)
+		EVENTS.delay_thresholds[threshold] = t * ((TW_BL.SETTINGS.current.delay_for_chat or 1) - 1)
+	end
+
 	function EVENTS.process_dt(dt)
 		if G.SETTINGS.paused then
 			return
 		end
 		EVENTS.delay_dt = math.max(0, EVENTS.delay_dt - dt)
-		EVENTS.emit("game_update", dt)
-		if EVENTS.delay_dt > 0 and (not G.GAME.STOP_USE or G.GAME.STOP_USE == 0) then
-			G.GAME.STOP_USE = 1
+		for k, v in pairs(EVENTS.delay_thresholds) do
+			local new_value = v - dt
+			EVENTS.delay_thresholds[k] = new_value > 0 and new_value or nil
 		end
+		EVENTS.emit("game_update", dt)
 		if EVENTS.delay_dt == 0 and EVENTS.delay_requested then
 			EVENTS.delay_requested = false
 		end

@@ -3,7 +3,7 @@ local panel = TWBLPanel("command_info_1", {
 	command = "",
 	status = "k_twbl_interact_ex",
 	position = "twbl_position_singular",
-	text = "k_twbl_panel_toggle_default",
+	text = "k_twbl_panel_toggle_DEFAULT",
 })
 
 function panel:localize_status(status)

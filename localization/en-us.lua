@@ -21,7 +21,7 @@ return {
 			},
 			bl_twbl_lucky_wheel = {
 				name = "The Lucky Wheel",
-				text = { "#1# in #2# chance to", "change edition on", "all Jokers" },
+				text = { "#1# in #2# chance to change", "edition on all Jokers" },
 			},
 			bl_twbl_blank = {
 				name = "The Blank",
@@ -29,7 +29,7 @@ return {
 			},
 			bl_twbl_chaos = {
 				name = "The Chaos",
-				text = { "The Chat can select and", "deselect cards" },
+				text = { "The Chat can select", "and deselect cards" },
 			},
 			bl_twbl_chisel = {
 				name = "The Chisel",
@@ -43,18 +43,17 @@ return {
 				name = "The Hourglass",
 				text = { "Hurry up!" },
 			},
-			-- Not used
-			bl_twbl_dice = {
-				name = "The Dice",
-				text = { "The Chat can roll to gain 1$", "#1# in #2# chance to lose 6$", "Single-Use: roll" },
-			},
+			-- bl_twbl_dice = {
+			-- 	name = "The Dice",
+			-- 	text = { "The Chat can roll to gain 1$", "#1# in #2# chance to lose 6$", "Single-Use: roll" },
+			-- },
 			bl_twbl_expiration = {
 				name = "The Expiration Date",
 				text = { "All food Jokers are", "out-of-date" },
 			},
 			bl_twbl_flashlight = {
 				name = "The Flashlight",
-				text = { "All cards start face down", "only the Chat can flip them" },
+				text = { "All cards drawn face down", "only the Chat can flip them" },
 			},
 			bl_twbl_greed = {
 				name = "The Greed",
@@ -82,11 +81,11 @@ return {
 			},
 			bl_twbl_pin = {
 				name = "The Pin",
-				text = { "The Chat can pin and", "unpin Jokers" },
+				text = { "The Chat can pin", "and unpin Jokers" },
 			},
 			bl_twbl_precision = {
-				name = "The Precise",
-				text = { "Discards must contain", "5 cards" },
+				name = "The Precision",
+				text = { "Discards must", "contain 5 cards" },
 			},
 			bl_twbl_trash_can = {
 				name = "The Trash Can",
@@ -136,10 +135,12 @@ return {
 			twbl_settings_enter_channel_name = "Enter channel name",
 			twbl_settings_paste_name_or_url_1 = "Paste name",
 			twbl_settings_paste_name_or_url_2 = "or url",
+
 			twbl_settings_blind_frequency = "Blind voting frequency",
 			twbl_settings_blind_frequency_1 = "None",
 			twbl_settings_blind_frequency_2 = "Every 2 antes",
 			twbl_settings_blind_frequency_3 = "Every ante",
+
 			twbl_settings_blind_pool = "Blinds available for voting",
 			twbl_settings_blind_pool_1 = "Twitch Blinds",
 			twbl_settings_blind_pool_2 = "Vanilla + Mods",
@@ -149,6 +150,7 @@ return {
 				"Vanilla + Mods: all except blinds added by mod",
 				"All: every blind added to a game",
 			},
+
 			twbl_settings_delay_for_chat = "Additional time for chat actions",
 			twbl_settings_delay_for_chat_1 = "None",
 			twbl_settings_delay_for_chat_2 = "~5 seconds",
@@ -159,6 +161,7 @@ return {
 				"The game will wait after some actions",
 				"to give chat some time to interact",
 			},
+
 			twbl_settings_blind_pool_type = "Blinds pool type",
 			twbl_settings_blind_pool_type_1 = "Once per pool (Vanilla)",
 			twbl_settings_blind_pool_type_2 = "Once per vote",
@@ -168,11 +171,13 @@ return {
 				"Once per ante: blinds may repeat between antes",
 				"Random: same blind can appear multiple times",
 			},
+
 			twbl_settings_natural_chat_booster_sticker = "Enable Chat Booster stickers",
 			twbl_settings_desc_natural_chat_booster_sticker = {
 				"On Booster packs, new stickers can appear",
 				"which adds interactions for chat",
 			},
+
 			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",
 			twbl_settings_desc_natural_blinds = {
 				"Blinds added by mod can appear",
@@ -219,15 +224,15 @@ return {
 			k_twbl_count_ex = "Count!",
 			k_twbl_reset_ex = "Reset!",
 
-			k_twbl_panel_toggle_default = "Trigger the boss blind's effect",
+			k_twbl_panel_toggle_DEFAULT = "Trigger the boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per chatter)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per chatter)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per chatter)",
-			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple chatter)",
+			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
 			k_twbl_panel_toggle_eraser = "Select a Joker for deletion (once per chatter)",
 			k_twbl_panel_toggle_sketch = "Select a Joker for copying (once per chatter)",
 			k_twbl_panel_toggle_nope = "Nope! (multiple Nope!)",
-			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple chatter)",
+			k_twbl_panel_toggle_incrementor = "Keep counting! (multiple use)",
 			k_twbl_panel_toggle_plum_hammer = "Add/remove debuff on Joker (once per chatter)",
 
 			k_twbl_panel_toggle_chat_booster_consumeable = "Select a target for consumable (once per chatter)",

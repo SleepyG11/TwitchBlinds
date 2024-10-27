@@ -197,7 +197,7 @@ function twbl_sticker_chat_booster_use_card()
 	end
 
 	if TW_BL.G.state_sticker_chat_booster == "Celestial" then
-		TW_BL.EVENTS.request_delay(5)
+		TW_BL.EVENTS.request_delay(5, "chat_booster")
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local planet = twbl_sticker_chat_booster_select_planet()
@@ -216,7 +216,7 @@ function twbl_sticker_chat_booster_use_card()
 
 		return true
 	elseif TW_BL.G.state_sticker_chat_booster == "Arcana" or TW_BL.G.state_sticker_chat_booster == "Spectral" then
-		TW_BL.EVENTS.request_delay(5)
+		TW_BL.EVENTS.request_delay(5, "chat_booster")
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local card_to_use = G.twbl_chat_booster_cards and G.twbl_chat_booster_cards.cards[1]
@@ -333,6 +333,7 @@ function twbl_sticker_chat_booster_open(card)
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_consumeable",
 		})
+		TW_BL.EVENTS.set_delay_threshold("chat_booster", 5)
 	elseif kind == "Celestial" then
 		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
 		TW_BL.G.state_sticker_chat_booster_use = true
@@ -350,6 +351,7 @@ function twbl_sticker_chat_booster_open(card)
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_celestial",
 		})
+		TW_BL.EVENTS.set_delay_threshold("chat_booster", 5)
 	else
 		card.ability.twbl_chat_booster = nil
 		TW_BL.G.state_sticker_chat_booster = nil

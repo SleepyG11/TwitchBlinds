@@ -182,8 +182,11 @@ return {
 				"Random: same blind can appear multiple times",
 			},
 
-			twbl_settings_natural_chat_booster_sticker = "Enable Chat Booster stickers",
-			twbl_settings_desc_natural_chat_booster_sticker = {
+			twbl_settings_chat_booster_sticker_appearance = "Chat Booster sticker",
+			twbl_settings_chat_booster_sticker_appearance_1 = "Disabled",
+			twbl_settings_chat_booster_sticker_appearance_2 = "Sometimes",
+			twbl_settings_chat_booster_sticker_appearance_3 = "Always",
+			twbl_settings_desc_chat_booster_sticker_appearance = {
 				"On Booster packs, new stickers can appear",
 				"which adds interactions for chat",
 			},

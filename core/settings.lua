@@ -8,6 +8,7 @@ local DEFAULT_SETTINGS = {
 	delay_for_chat = 1,
 
 	natural_chat_booster_sticker = false,
+	chat_booster_sticker_appearance = 1,
 	natural_blinds = false,
 
 	mystic_variants = true,

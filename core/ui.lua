@@ -268,8 +268,8 @@ function twbl_init_ui()
 		TW_BL.SETTINGS.save()
 	end
 
-	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
-		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
+	function G.FUNCS.twbl_settings_change_chat_booster_sticker_appearance(args)
+		TW_BL.SETTINGS.temp.chat_booster_sticker_appearance = args.to_key
 		TW_BL.SETTINGS.save()
 	end
 

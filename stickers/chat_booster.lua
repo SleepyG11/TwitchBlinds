@@ -111,12 +111,16 @@ function tw_sticker:in_pool()
 end
 
 function tw_sticker:should_apply(card, center, area)
-	return TW_BL.SETTINGS.current.natural_chat_booster_sticker
+	return TW_BL.SETTINGS.current.chat_booster_sticker_appearance > 1
 		and card.ability.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
 		and (
 			card.from_tag
-			or STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
+			or TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
+			or (
+				TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 2
+				and STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
+			)
 		)
 end
 

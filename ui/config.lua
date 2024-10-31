@@ -430,14 +430,22 @@ function TW_BL.UI.settings.get_appearance_tab()
 			},
 		},
 		TW_BL.UI.PARTS.create_settings_section("Stickers", {
-			create_toggle({
-				callback = G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker,
-				label_scale = 0.35,
-				label = localize("twbl_settings_natural_chat_booster_sticker"),
-				ref_table = TW_BL.SETTINGS.temp,
-				ref_value = "natural_chat_booster_sticker",
+			create_option_cycle({
+				w = 4,
+				label = localize("twbl_settings_chat_booster_sticker_appearance"),
+				scale = 0.8,
+				options = {
+					localize("twbl_settings_chat_booster_sticker_appearance_1"),
+					localize("twbl_settings_chat_booster_sticker_appearance_2"),
+					localize("twbl_settings_chat_booster_sticker_appearance_3"),
+				},
+				opt_callback = "twbl_settings_change_chat_booster_sticker_appearance",
+				current_option = TW_BL.SETTINGS.temp.chat_booster_sticker_appearance,
 			}),
-			TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_natural_chat_booster_sticker"), true),
+			TW_BL.UI.PARTS.create_description_text(
+				localize("twbl_settings_desc_chat_booster_sticker_appearance"),
+				true
+			),
 		}),
 	}
 

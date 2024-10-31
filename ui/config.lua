@@ -197,33 +197,98 @@ function TW_BL.UI.settings.get_general_tab()
 			},
 		},
 		TW_BL.UI.PARTS.create_settings_section("Interactions", {
-			create_option_cycle({
-				w = 4,
-				label = localize("twbl_settings_blind_frequency"),
-				scale = 0.8,
-				options = {
-					localize("twbl_settings_blind_frequency_1"),
-					localize("twbl_settings_blind_frequency_2"),
-					localize("twbl_settings_blind_frequency_3"),
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
 				},
-				opt_callback = "twbl_settings_change_blind_frequency",
-				current_option = TW_BL.SETTINGS.temp.blind_frequency,
-			}),
-			create_option_cycle({
-				w = 4,
-				label = localize("twbl_settings_delay_for_chat"),
-				scale = 0.8,
-				options = {
-					localize("twbl_settings_delay_for_chat_1"),
-					localize("twbl_settings_delay_for_chat_2"),
-					localize("twbl_settings_delay_for_chat_3"),
-					localize("twbl_settings_delay_for_chat_4"),
-					localize("twbl_settings_delay_for_chat_5"),
+				nodes = {
+					{
+						n = G.UIT.C,
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = {
+									align = "cm",
+									padding = 0.05,
+								},
+								nodes = {
+									create_option_cycle({
+										w = 4,
+										label = localize("twbl_settings_blind_frequency"),
+										scale = 0.8,
+										options = {
+											localize("twbl_settings_blind_frequency_1"),
+											localize("twbl_settings_blind_frequency_2"),
+											localize("twbl_settings_blind_frequency_3"),
+										},
+										opt_callback = "twbl_settings_change_blind_frequency",
+										current_option = TW_BL.SETTINGS.temp.blind_frequency,
+									}),
+									TW_BL.UI.PARTS.create_description_text(
+										localize("twbl_settings_desc_blind_frequency"),
+										true
+									),
+								},
+							},
+						},
+					},
+					{
+						n = G.UIT.C,
+						config = { padding = 0.1 },
+					},
+					{
+						n = G.UIT.C,
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = {
+									align = "cm",
+									padding = 0.05,
+								},
+								nodes = {
+									create_option_cycle({
+										w = 4,
+										label = localize("twbl_settings_delay_for_chat"),
+										scale = 0.8,
+										options = {
+											localize("twbl_settings_delay_for_chat_1"),
+											localize("twbl_settings_delay_for_chat_2"),
+											localize("twbl_settings_delay_for_chat_3"),
+											localize("twbl_settings_delay_for_chat_4"),
+											localize("twbl_settings_delay_for_chat_5"),
+										},
+										opt_callback = "twbl_settings_change_delay_for_chat",
+										current_option = TW_BL.SETTINGS.temp.delay_for_chat,
+									}),
+									TW_BL.UI.PARTS.create_description_text(
+										localize("twbl_settings_desc_delay_for_chat"),
+										true
+									),
+								},
+							},
+						},
+					},
 				},
-				opt_callback = "twbl_settings_change_delay_for_chat",
-				current_option = TW_BL.SETTINGS.temp.delay_for_chat,
-			}),
-			TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_delay_for_chat"), true),
+			},
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+					padding = 0.05,
+				},
+				nodes = {
+					create_toggle({
+						callback = G.FUNCS.twbl_settings_toggle_mystic_variants,
+						label_scale = 0.35,
+						label = localize("twbl_settings_mystic_variants"),
+						ref_table = TW_BL.SETTINGS.temp,
+						ref_value = "mysti_variants",
+					}),
+					TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_mystic_variants"), true),
+				},
+			},
 		}),
 	}
 	if TW_BL.__DEV_MODE then

@@ -140,6 +140,10 @@ return {
 			twbl_settings_blind_frequency_1 = "None",
 			twbl_settings_blind_frequency_2 = "Every 2 antes",
 			twbl_settings_blind_frequency_3 = "Every ante",
+			twbl_settings_desc_blind_frequency = {
+				"Determines how often chat",
+				"can vote for a new blind",
+			},
 
 			twbl_settings_blind_pool = "Blinds available for voting",
 			twbl_settings_blind_pool_1 = "Twitch Blinds",
@@ -160,6 +164,12 @@ return {
 			twbl_settings_desc_delay_for_chat = {
 				"The game will wait after some actions",
 				"to give chat some time to interact",
+			},
+
+			twbl_settings_mystic_variants = "Mystic voting variants",
+			twbl_settings_desc_mystic_variants = {
+				"In voting, some variants will be hidden",
+				"to make results more unpredictable",
 			},
 
 			twbl_settings_blind_pool_type = "Blinds pool type",

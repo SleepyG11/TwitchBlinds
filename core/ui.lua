@@ -314,6 +314,11 @@ function twbl_init_ui()
 		TW_BL.SETTINGS.save()
 	end
 
+	function G.FUNCS.twbl_settings_toggle_mystic_variants(args)
+		TW_BL.SETTINGS.temp.mystic_variants = args
+		TW_BL.SETTINGS.save()
+	end
+
 	-- Functions
 	------------------------------
 

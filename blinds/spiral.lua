@@ -58,6 +58,7 @@ function tw_blind:set_blind()
 		status = "k_twbl_vote_ex",
 		id = "blind_spiral_ante",
 		variants = result_variants,
+		mystic_variants = { [3] = true },
 	})
 end
 

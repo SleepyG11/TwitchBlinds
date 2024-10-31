@@ -9,6 +9,8 @@ local DEFAULT_SETTINGS = {
 
 	natural_chat_booster_sticker = false,
 	natural_blinds = false,
+
+	mystic_variants = true,
 }
 
 function twbl_init_settings()

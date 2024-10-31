@@ -122,7 +122,7 @@ return {
 			-- Showdown
 			bl_twbl_plum_hammer = {
 				name = "Plum Hammer",
-				text = { "The Chat can add or remove", "debuff on Jokers" },
+				text = { "The Chat can add or remove", "up to #1# debuffs on Jokers" },
 			},
 		},
 	},

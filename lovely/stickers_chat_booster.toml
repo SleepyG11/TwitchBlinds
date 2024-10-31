@@ -75,3 +75,15 @@ twbl_sticker_chat_booster_naturally_apply(card, area)
 '''
 match_indent = true
 overwrite = false
+
+# Apply sticker on booster pack if created by skip tag
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''G.FUNCS.use_card = function(e, mute, nosave)'''
+position = "after"
+payload = '''
+twbl_sticker_chat_booster_naturally_apply(e.config.ref_table, e.config.ref_table.area, true)
+'''
+match_indent = true
+overwrite = false

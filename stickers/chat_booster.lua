@@ -114,12 +114,18 @@ function tw_sticker:should_apply(card, center, area)
 	return TW_BL.SETTINGS.current.natural_chat_booster_sticker
 		and card.ability.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
-		and STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
+		and (
+			card.from_tag
+			or STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
+		)
 end
 
 --
 
-function twbl_sticker_chat_booster_naturally_apply(card, area)
+function twbl_sticker_chat_booster_naturally_apply(card, area, check_for_tag)
+	if check_for_tag and not card.from_tag then
+		return
+	end
 	if tw_sticker:should_apply(card, card.config.center, area or card.area) then
 		tw_sticker:apply(card, true)
 	end

@@ -125,12 +125,28 @@ function TwitchBlinds:init()
 			end
 		else
 			if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
-				-- Can't reroll chat
-				result = TW_BL.BLINDS.chat_blind
+				if not TW_BL.G.nope_from_reroll then
+					-- Reroll to Nope! (once per game)
+					TW_BL.G.nope_from_reroll = true
+					TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
+					TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
+					result = TW_BL.BLINDS.get_key("nope")
+				else
+					-- Can't reroll chat
+					result = TW_BL.BLINDS.chat_blind
+				end
 			elseif TW_BL.G.blind_chat_antes == 0 then
-				-- Can't reroll blind selected by chat
-				-- Subject to change?
-				result = G.GAME.round_resets.blind_choices.Boss
+				if not TW_BL.G.nope_from_reroll then
+					-- Reroll to Nope! (once per game)
+					TW_BL.G.nope_from_reroll = true
+					TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
+					TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
+					result = TW_BL.BLINDS.get_key("nope")
+				else
+					-- Can't reroll blind selected by chat
+					-- Subject to change?
+					result = G.GAME.round_resets.blind_choices.Boss
+				end
 			else
 				-- Reroll vanilla boss as usual
 				result = get_new_boss_ref(...)
@@ -199,7 +215,6 @@ function TwitchBlinds:init()
 
 						TW_BL.BLINDS.set_voting_blinds_to_game(nil)
 						TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
-						TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)
 						TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 						TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, picked_blind)
 						TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)

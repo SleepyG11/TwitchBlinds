@@ -59,3 +59,18 @@ end)
 function tw_blind:stay_flipped()
 	return true
 end
+
+function tw_blind:press_play()
+	G.E_MANAGER:add_event(Event({
+		trigger = "after",
+		delay = 0.2,
+		func = function()
+			for i = 1, #G.play.cards do
+				if G.play.cards[i].facing == "back" then
+					G.play.cards[i]:flip()
+				end
+			end
+			return true
+		end,
+	}))
+end

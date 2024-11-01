@@ -250,6 +250,7 @@ return {
 
 			k_twbl_panel_toggle_chat_booster_consumeable = "Select a target for consumable (once per chatter)",
 			k_twbl_panel_toggle_chat_booster_celestial = "Select a poker hand to downgrade (once per chatter)",
+			k_twbl_panel_toggle_chat_booster_standard = "Select a card to add to deck (once per chatter)",
 
 			k_twbl_spiral_p_1 = "+1 Ante",
 			k_twbl_spiral_p_2 = "+2 Antes",

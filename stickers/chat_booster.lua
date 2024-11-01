@@ -2,12 +2,14 @@ local BOOSTERS_TO_APPLY = {
 	["Spectral"] = true,
 	["Arcana"] = true,
 	["Celestial"] = true,
+	["Standard"] = true,
 }
 
 local STICKER_RATE = {
-	["Spectral"] = 0.75,
+	["Spectral"] = 0.5,
 	["Arcana"] = 0.5,
 	["Celestial"] = 0.333,
+	["Standard"] = 0.5,
 }
 
 local function select_planet_in_pack()
@@ -244,6 +246,26 @@ function twbl_sticker_chat_booster_use_card()
 		}))
 
 		return true
+	elseif TW_BL.G.state_sticker_chat_booster == "Standard" then
+		TW_BL.EVENTS.request_delay(5, "chat_booster")
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				local card = twbl_sticker_chat_booster_select_planet()
+				if not card then
+					return false
+				end
+
+				card:hard_set_T(nil, nil, G.CARD_W, G.CARD_H)
+
+				G.FUNCS.use_card({
+					config = {
+						ref_table = card,
+					},
+				})
+				return true
+			end,
+		}))
+		return true
 	else
 		return false
 	end
@@ -322,6 +344,51 @@ function twbl_sticker_chat_booster_emplace_consumeable(kind)
 	area:emplace(chat_card)
 end
 
+function twbl_sticker_chat_booster_emplace_playing_cards(kind)
+	local area = G.twbl_chat_booster_planets
+	for i = 1, 4 do
+		local center
+		if pseudorandom(pseudoseed("twbl_stdset" .. G.GAME.round_resets.ante)) > 0.6 then
+			local _pool, _pool_key = get_current_pool("Enhanced", nil, nil, "sta")
+			center = pseudorandom_element(_pool, pseudoseed(_pool_key))
+			local it = 1
+			while center == "UNAVAILABLE" do
+				it = it + 1
+				center = pseudorandom_element(_pool, pseudoseed(_pool_key .. "_resample" .. it))
+			end
+
+			center = G.P_CENTERS[center]
+		else
+			center = G.P_CENTERS.c_base
+		end
+		local front = pseudorandom_element(G.P_CARDS, pseudoseed("twbl_frontsta" .. G.GAME.round_resets.ante))
+		local card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W / 2, G.CARD_H / 2, front, center, {
+			bypass_discovery_center = false,
+			bypass_discovery_ui = false,
+			discover = false,
+			bypass_back = G.GAME.selected_back.pos,
+		})
+		local edition_rate = 6
+		local edition = poll_edition("twbl_standard_edition" .. G.GAME.round_resets.ante, edition_rate, true)
+		card:set_edition(edition)
+		local seal_rate = 3
+		local seal_poll = pseudorandom(pseudoseed("twbl_stdseal" .. G.GAME.round_resets.ante))
+		if seal_poll > 1 - 0.02 * seal_rate then
+			local seal_type = pseudorandom(pseudoseed("twbl_stdsealtype" .. G.GAME.round_resets.ante))
+			if seal_type > 0.75 then
+				card:set_seal("Red")
+			elseif seal_type > 0.5 then
+				card:set_seal("Blue")
+			elseif seal_type > 0.25 then
+				card:set_seal("Gold")
+			else
+				card:set_seal("Purple")
+			end
+		end
+		area:emplace(card)
+	end
+end
+
 --
 
 function twbl_sticker_chat_booster_open(card)
@@ -360,6 +427,24 @@ function twbl_sticker_chat_booster_open(card)
 			command = "target",
 			position = "twbl_position_Card_singular",
 			text = "k_twbl_panel_toggle_chat_booster_celestial",
+		})
+		TW_BL.EVENTS.set_delay_threshold("chat_booster", 5)
+	elseif kind == "Standard" then
+		TW_BL.G.state_sticker_chat_booster = card.config.center.kind
+		TW_BL.G.state_sticker_chat_booster_use = true
+
+		G.twbl_chat_booster_planets =
+			CardArea(0, 0, 5 * G.CARD_W / 2, G.CARD_H / 2, { card_limit = 5, type = "title_2", highlight_limit = 0 })
+		twbl_sticker_chat_booster_emplace_playing_cards(kind)
+		G.twbl_chat_booster_planets.states.visible = false
+
+		TW_BL.CHAT_COMMANDS.toggle_can_collect("target", true, true)
+		TW_BL.CHAT_COMMANDS.toggle_max_uses("target", 1, true)
+		TW_BL.CHAT_COMMANDS.reset(false, "target")
+		TW_BL.UI.set_panel("booster_top", "command_info_1_short", true, true, {
+			command = "target",
+			position = "twbl_position_Card_singular",
+			text = "k_twbl_panel_toggle_chat_booster_standard",
 		})
 		TW_BL.EVENTS.set_delay_threshold("chat_booster", 5)
 	else
@@ -424,6 +509,25 @@ TW_BL.EVENTS.add_listener("twitch_command", "twbl_sticker_chat_booster", functio
 				nil,
 				nil,
 				{ message = username, colour = G.C.CHIPS, instant = true }
+			)
+		end
+	elseif TW_BL.G.state_sticker_chat_booster == "Standard" then
+		if
+			index
+			and G.twbl_chat_booster_planets
+			and G.twbl_chat_booster_planets.cards
+			and G.twbl_chat_booster_planets.cards[index]
+		then
+			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
+			local card = G.twbl_chat_booster_planets.cards[index]
+			card.ability.twbl_state_target_score = (card.ability.twbl_state_target_score or 0) + 1
+			card_eval_status_text(
+				card,
+				"extra",
+				nil,
+				nil,
+				nil,
+				{ message = username, colour = G.C.MONEY, instant = true }
 			)
 		end
 	elseif TW_BL.G.state_sticker_chat_booster == "Arcana" or TW_BL.G.state_sticker_chat_booster == "Spectral" then

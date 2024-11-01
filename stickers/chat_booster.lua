@@ -143,7 +143,6 @@ function tw_sticker:__highlight_targets(target_area, consumeable)
 	return false
 end
 function tw_sticker:__emplace_cards(kind)
-	print("Emplacing cards")
 	local area = G.twbl_chat_booster_area
 	if kind == "Spectral" or kind == "Arcana" then
 		local pool = tw_sticker:__get_pool(kind)
@@ -324,7 +323,6 @@ function tw_sticker:__use()
 	end
 end
 function tw_sticker:__on_booster_open(card)
-	print("Opening booster pack...")
 	local center = card.config.center
 	local kind = center.kind
 

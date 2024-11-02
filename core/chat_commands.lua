@@ -364,7 +364,7 @@ function twbl_init_chat_commands()
 				self.CHAT_COMMANDS.collector:reconnect()
 			end
 		end
-		CHAT_COMMANDS.collector:update()
+		CHAT_COMMANDS.collector:update(dt)
 	end)
 
 	return CHAT_COMMANDS

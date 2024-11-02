@@ -2,6 +2,10 @@ function string_starts(s, start)
 	return string.sub(s, 1, string.len(start)) == start
 end
 
+function string_capitalize(s)
+	return string.gsub(" " .. s, "%W%l", string.upper):sub(2)
+end
+
 --- Check is table contain a value
 --- @param t table
 --- @param value any

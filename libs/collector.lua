@@ -183,18 +183,20 @@ function TwitchCollector:update(dt)
 	end
 	local raw_chatters_data = self.https_chatter_output:pop()
 	if raw_chatters_data then
-		local chatters_data = json.decode(raw_chatters_data)[1].data.user.channel.chatters
-		local result = {}
-		for _, chatter in ipairs(chatters_data.moderators) do
-			result[#result + 1] = string_capitalize(chatter.login)
-		end
-		for _, chatter in ipairs(chatters_data.vips) do
-			result[#result + 1] = string_capitalize(chatter.login)
-		end
-		for _, chatter in ipairs(chatters_data.viewers) do
-			result[#result + 1] = string_capitalize(chatter.login)
-		end
-		self.chatters = result
+		pcall(function()
+			local chatters_data = json.decode(raw_chatters_data)[1].data.user.channel.chatters
+			local result = {}
+			for _, chatter in ipairs(chatters_data.moderators) do
+				result[#result + 1] = string_capitalize(chatter.login)
+			end
+			for _, chatter in ipairs(chatters_data.vips) do
+				result[#result + 1] = string_capitalize(chatter.login)
+			end
+			for _, chatter in ipairs(chatters_data.viewers) do
+				result[#result + 1] = string_capitalize(chatter.login)
+			end
+			self.chatters = result
+		end)
 	end
 end
 

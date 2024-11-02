@@ -128,6 +128,7 @@ function TwitchBlinds:init()
 				if not TW_BL.G.nope_from_reroll then
 					-- Reroll to Nope! (once per game)
 					TW_BL.G.nope_from_reroll = true
+					TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 					TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
 					TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 					result = TW_BL.BLINDS.get_key("nope")
@@ -139,6 +140,7 @@ function TwitchBlinds:init()
 				if not TW_BL.G.nope_from_reroll then
 					-- Reroll to Nope! (once per game)
 					TW_BL.G.nope_from_reroll = true
+					TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
 					TW_BL.CHAT_COMMANDS.set_vote_variants("voting_blind", {}, true)
 					TW_BL.UI.remove_panel("game_top", "blind_voting_process", true)
 					result = TW_BL.BLINDS.get_key("nope")

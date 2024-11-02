@@ -254,27 +254,27 @@ function twbl_init_ui()
 	------------------------------
 
 	function G.FUNCS.twbl_settings_change_blind_frequency(args)
-		TW_BL.SETTINGS.temp.blind_frequency = args.to_key
+		TW_BL.SETTINGS.current.blind_frequency = args.to_key
 		TW_BL.SETTINGS.save()
 	end
 
 	function G.FUNCS.twbl_settings_change_pool_type(args)
-		TW_BL.SETTINGS.temp.pool_type = args.to_key
+		TW_BL.SETTINGS.current.pool_type = args.to_key
 		TW_BL.SETTINGS.save()
 	end
 
 	function G.FUNCS.twbl_settings_change_forced_blind(args)
-		TW_BL.SETTINGS.temp.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
+		TW_BL.SETTINGS.current.forced_blind = args.to_key > 1 and args.to_key - 1 or nil
 		TW_BL.SETTINGS.save()
 	end
 
-	function G.FUNCS.twbl_settings_toggle_natural_chat_booster_sticker(args)
-		TW_BL.SETTINGS.temp.natural_chat_booster_sticker = args
+	function G.FUNCS.twbl_settings_change_chat_booster_sticker_appearance(args)
+		TW_BL.SETTINGS.current.chat_booster_sticker_appearance = args.to_key
 		TW_BL.SETTINGS.save()
 	end
 
 	function G.FUNCS.twbl_settings_toggle_natural_blinds(args)
-		TW_BL.SETTINGS.temp.natural_blinds = args
+		TW_BL.SETTINGS.current.natural_blinds = args
 		TW_BL.SETTINGS.save()
 	end
 
@@ -300,17 +300,23 @@ function twbl_init_ui()
 	end
 
 	function G.FUNCS.twbl_settings_save_channel_name()
+		TW_BL.SETTINGS.current.channel_name = TW_BL.SETTINGS.temp.channel_name
 		TW_BL.SETTINGS.save()
 		TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
 	end
 
 	function G.FUNCS.twbl_settings_change_delay_for_chat(args)
-		TW_BL.SETTINGS.temp.delay_for_chat = args.to_key
+		TW_BL.SETTINGS.current.delay_for_chat = args.to_key
 		TW_BL.SETTINGS.save()
 	end
 
 	function G.FUNCS.twbl_settings_change_blind_pool_type(args)
-		TW_BL.SETTINGS.temp.blind_pool_type = args.to_key
+		TW_BL.SETTINGS.current.blind_pool_type = args.to_key
+		TW_BL.SETTINGS.save()
+	end
+
+	function G.FUNCS.twbl_settings_toggle_mystic_variants(args)
+		TW_BL.SETTINGS.current.mystic_variants = args
 		TW_BL.SETTINGS.save()
 	end
 

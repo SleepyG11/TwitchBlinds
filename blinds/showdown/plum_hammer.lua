@@ -1,3 +1,5 @@
+local DEBUFFS_LIMIT = 3
+
 local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.register("plum_hammer", true),
 	dollars = 8,
@@ -7,6 +9,7 @@ local tw_blind = SMODS.Blind({
 	config = {
 		tw_bl = { twitch_blind = true },
 	},
+	vars = { "" .. DEBUFFS_LIMIT },
 	atlas = "twbl_showdown_blind_chips",
 	boss_colour = HEX("DDA0DD"),
 })
@@ -20,9 +23,16 @@ function tw_blind:in_pool()
 	return false
 end
 
+function tw_blind:loc_vars()
+	return {
+		vars = { "" .. DEBUFFS_LIMIT },
+	}
+end
+
 function tw_blind:set_blind(reset, silent)
+	G.GAME.blind.twbl_added_debuffs = 0
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", 1, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "toggle",
@@ -50,8 +60,12 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("plum_hammer"),
 	if index and G.jokers and G.jokers.cards and G.jokers.cards[index] then
 		local card = G.jokers.cards[index]
 		local initial_value = card.debuff
+		if not initial_value and G.GAME.blind.twbl_added_debuffs >= DEBUFFS_LIMIT then
+			return
+		end
 		card:set_debuff(not initial_value)
 		if card.debuff ~= initial_value then
+			G.GAME.blind.twbl_added_debuffs = G.GAME.blind.twbl_added_debuffs + (card.debuff and 1 or -1)
 			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			G.GAME.blind:wiggle()
 			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })

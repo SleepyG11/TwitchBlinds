@@ -81,6 +81,7 @@ function twbl_init_events()
 	end
 
 	function EVENTS.process_dt(dt)
+		EVENTS.emit("game_update", dt)
 		if G.SETTINGS.paused then
 			return
 		end
@@ -89,7 +90,6 @@ function twbl_init_events()
 			local new_value = v - dt
 			EVENTS.delay_thresholds[k] = new_value > 0 and new_value or nil
 		end
-		EVENTS.emit("game_update", dt)
 		if EVENTS.delay_dt == 0 and EVENTS.delay_requested then
 			EVENTS.delay_requested = false
 		end

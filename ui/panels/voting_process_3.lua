@@ -4,6 +4,7 @@ local panel = TWBLPanel("voting_process_3", {
 	command = "",
 	status = "k_twbl_vote_ex",
 	variants = { "", "", "" },
+	mystic_variants = {},
 })
 
 function panel:localize_status(status)
@@ -192,7 +193,10 @@ function panel:update(full_update, args)
 			if full_update then
 				local text_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_text")
 				if text_element then
-					text_element.config.text = localize(args_array.variants[i])
+					local is_mystic = TW_BL.SETTINGS.current.mystic_variants
+						and args_array.mystic_variants
+						and args_array.mystic_variants[i]
+					text_element.config.text = is_mystic and "???" or localize(args_array.variants[i])
 				end
 
 				local command_element = element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_command")

@@ -187,22 +187,34 @@ function panel:update(full_update, args)
 			if full_update then
 				local boss_element = self.element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_blind_name")
 				if boss_element then
-					boss_element.float = true
-					boss_element.states.hover.can = true
-					boss_element.states.collide.can = true
-					boss_element.hover = function()
-						boss_element.config.h_popup = create_UIBox_blind_popup(
-							G.P_BLINDS[blinds_to_vote[i]],
-							G.P_BLINDS[blinds_to_vote[i]].discovered
-						)
-						boss_element.config.h_popup_config =
-							{ align = "mb", offset = { x = 0, y = 0.2 }, parent = boss_element }
-						Node.hover(boss_element)
-					end
+					local is_mystic = TW_BL.SETTINGS.current.mystic_variants and i == TW_BL.BLINDS.blinds_to_vote
+					if not is_mystic then
+						boss_element.float = true
+						boss_element.states.hover.can = true
+						boss_element.states.collide.can = true
+						boss_element.hover = function()
+							boss_element.config.h_popup = create_UIBox_blind_popup(
+								G.P_BLINDS[blinds_to_vote[i]],
+								G.P_BLINDS[blinds_to_vote[i]].discovered
+							)
+							boss_element.config.h_popup_config =
+								{ align = "mb", offset = { x = 0, y = 0.2 }, parent = boss_element }
+							Node.hover(boss_element)
+						end
 
-					boss_element.config.text = blinds_to_vote[i]
-							and localize({ type = "name_text", key = blinds_to_vote[i], set = "Blind" })
-						or "-"
+						boss_element.config.text = blinds_to_vote[i]
+								and localize({ type = "name_text", key = blinds_to_vote[i], set = "Blind" })
+							or "-"
+					else
+						boss_element.float = false
+						boss_element.states.hover.can = false
+						boss_element.states.collide.can = false
+						boss_element.hover = function()
+							Node.hover(boss_element)
+						end
+
+						boss_element.config.text = "???"
+					end
 				end
 			end
 			local percent_element = self.element:get_UIE_by_ID("twbl_vote_" .. tostring(i) .. "_percent")

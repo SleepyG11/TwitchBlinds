@@ -8,7 +8,10 @@ local DEFAULT_SETTINGS = {
 	delay_for_chat = 1,
 
 	natural_chat_booster_sticker = false,
+	chat_booster_sticker_appearance = 1,
 	natural_blinds = false,
+
+	mystic_variants = true,
 }
 
 function twbl_init_settings()
@@ -16,24 +19,17 @@ function twbl_init_settings()
 
 	local SETTINGS = {
 		default = DEFAULT_SETTINGS,
-		temp = table_copy(init_settings),
+		temp = {},
 		current = table_copy(init_settings),
 	}
 
 	TW_BL.SETTINGS = SETTINGS
 
-	function SETTINGS.create_temp()
-		SETTINGS.temp = table_copy(SETTINGS.current)
-	end
-
 	function SETTINGS.save()
-		SETTINGS.current = SETTINGS.temp
+		SETTINGS.current = SETTINGS.current
 		TW_BL.current_mod.config = SETTINGS.current
-		SETTINGS.create_temp()
 		SMODS.save_mod_config(TW_BL.current_mod)
 	end
-
-	SETTINGS.create_temp()
 
 	return SETTINGS
 end

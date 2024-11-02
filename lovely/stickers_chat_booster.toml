@@ -11,7 +11,7 @@ pattern = 'if G.pack_cards then'
 position = "before"
 payload = """
 if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
-    twbl_sticker_chat_booster_open(self)
+    TW_BL.STICKERS.get('chat_booster'):__on_booster_open(self)
 end
 """
 match_indent = true
@@ -23,7 +23,7 @@ target = "functions/button_callbacks.lua"
 pattern = 'G.FUNCS.end_consumeable(e)'
 position = "before"
 payload = """
-if TW_BL.G.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then return end
+if TW_BL.G.state_sticker_chat_booster_use and TW_BL.STICKERS.get('chat_booster'):__use() then return end
 """
 match_indent = true
 
@@ -34,7 +34,7 @@ target = "functions/button_callbacks.lua"
 pattern = 'G.GAME.pack_choices = G.GAME.pack_choices - 1'
 position = "after"
 payload = """
-elseif TW_BL.G.state_sticker_chat_booster_use and twbl_sticker_chat_booster_use_card() then
+elseif TW_BL.G.state_sticker_chat_booster_use and TW_BL.STICKERS.get('chat_booster'):__use() then
 """
 match_indent = true
 
@@ -47,7 +47,7 @@ pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
 position = "after"
 payload = """
 if G.booster_pack and TW_BL.G.state_sticker_chat_booster then
-    twbl_sticker_chat_booster_exit()
+    TW_BL.STICKERS.get('chat_booster'):__on_booster_exit()
 end
 """
 match_indent = true
@@ -59,7 +59,7 @@ target = "game.lua"
 pattern = '''G.shop_booster:emplace(card)'''
 position = "after"
 payload = '''
-twbl_sticker_chat_booster_naturally_apply(card, G.shop_booster)
+TW_BL.STICKERS.get('chat_booster'):__naturally_apply(card, card.config.center, G.shop_booster)
 '''
 match_indent = true
 overwrite = false
@@ -71,7 +71,19 @@ target = "functions/common_events.lua"
 pattern = '''if card.ability.consumeable and not skip_materialize then card:start_materialize() end'''
 position = "after"
 payload = '''
-twbl_sticker_chat_booster_naturally_apply(card, area)
+TW_BL.STICKERS.get('chat_booster'):__naturally_apply(card, card.config.center, card.coarea)
+'''
+match_indent = true
+overwrite = false
+
+# Apply sticker on booster pack if created by skip tag
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''G.FUNCS.use_card = function(e, mute, nosave)'''
+position = "after"
+payload = '''
+TW_BL.STICKERS.get('chat_booster'):__naturally_apply(e.config.ref_table, e.config.ref_table.config.center, e.config.ref_table.area, true)
 '''
 match_indent = true
 overwrite = false

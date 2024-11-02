@@ -26,6 +26,64 @@ if self.ability and self.ability.twbl_state_prevent_action then return end
 match_indent = true
 overwrite = false
 
+# [[patches]]
+# [patches.pattern]
+# target = "card.lua"
+# pattern = '''function Card:hover()'''
+# position = "after"
+# payload = '''
+# if self.ability and self.ability.twbl_username == nil then
+#     if math.random() > 0.5 then
+#         self.ability.twbl_username = ''
+#     else
+#         local used_usernames = TW_BL.G.used_usernames or {}
+#         local result_usernames = {}
+#         for _, v in ipairs(TW_BL.CHAT_COMMANDS.collector.chatters) do
+#             result_usernames[v] = true
+#         end
+#         for _, v in ipairs(used_usernames) do
+#             result_usernames[v] = nil
+#         end
+#         local _, result_name = pseudorandom_element(result_usernames, pseudoseed("twbl_card_username"))
+#         if result_name ~= nil then
+#             self.ability.twbl_username = result_name
+#             table.insert(used_usernames, result_name)
+#             TW_BL.G.used_usernames = used_usernames
+#         else
+#             self.ability.twbl_username = ''
+#         end
+#     end
+# end
+# '''
+# match_indent = true
+# overwrite = false
+
+# [[patches]]
+# [patches.pattern]
+# target = "card.lua"
+# pattern = '''return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start, main_end)'''
+# position = "before"
+# payload = '''
+# if self.ability.twbl_username and self.ability.twbl_username ~= '' then
+#     loc_vars = loc_vars or {}
+#     loc_vars.twbl_username = self.ability.twbl_username
+# end
+# '''
+# match_indent = true
+# overwrite = false
+
+# [[patches]]
+# [patches.pattern]
+# target = "functions/common_events.lua"
+# pattern = '''full_UI_table.name = localize{type = 'name', set = _c.set, key = _c.key, nodes = full_UI_table.name}'''
+# position = "at"
+# payload = '''
+# full_UI_table.name = localize{type = 'name', set = _c.set, key = _c.key, nodes = full_UI_table.name, twbl_username = specific_vars.twbl_username}
+# '''
+# match_indent = true
+# overwrite = false
+
+
 # WIP
 # [[patches]]
 # [patches.pattern]

@@ -6,6 +6,10 @@ local stickers_to_load = {
 
 function twbl_init_stickers()
 	local STICKERS = {
+		loaded = {},
+
+		storage = {},
+
 		ATLAS = SMODS.Atlas({
 			key = "twbl_stickers",
 			px = 71,
@@ -16,6 +20,19 @@ function twbl_init_stickers()
 	}
 
 	TW_BL.STICKERS = STICKERS
+
+	function STICKERS.get_key(name)
+		return "twbl_" .. name
+	end
+	function STICKERS.get(name)
+		return STICKERS.storage[STICKERS.get_key(name)]
+	end
+
+	function STICKERS.register(sticker)
+		table.insert(STICKERS.loaded, sticker.key)
+		STICKERS.storage[sticker.key] = sticker
+		return sticker
+	end
 
 	for _, sticker_name in ipairs(stickers_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "stickers/" .. sticker_name .. ".lua")))()

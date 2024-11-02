@@ -95,6 +95,7 @@ function tw_blind:set_blind()
 		status = "k_twbl_vote_ex",
 		id = "blind_misstock_pool",
 		variants = result_variants,
+		mystic_variants = { [3] = true },
 	})
 end
 

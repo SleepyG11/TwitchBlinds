@@ -36,7 +36,7 @@ function TwitchCollector.new()
             local https_chatter_input = love.thread.getChannel("twbl_https_chatter_input")
             local https_chatter_output = love.thread.getChannel("twbl_https_chatter_output")
             while true do
-                local channel_name = https_chatter_input:pop()
+                local channel_name = https_chatter_input:demand()
                 if channel_name then
                     pcall(function()
                         local request_body = '[{"operationName":"CommunityTab","variables":{"login":"'

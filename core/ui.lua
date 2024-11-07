@@ -320,6 +320,11 @@ function twbl_init_ui()
 		TW_BL.SETTINGS.save()
 	end
 
+	function G.FUNCS.twbl_settings_toggle_discovery_bypass(args)
+		TW_BL.SETTINGS.current.discovery_bypass = args
+		TW_BL.SETTINGS.save()
+	end
+
 	-- Functions
 	------------------------------
 

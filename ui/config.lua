@@ -231,7 +231,7 @@ function TW_BL.UI.settings.get_general_tab()
 										current_option = TW_BL.SETTINGS.current.blind_frequency,
 									}),
 									TW_BL.UI.PARTS.create_description_text(
-										localize("twbl_settings_desc_blind_frequency"),
+										localize("twbl_settings_blind_frequency_desc"),
 										true
 									),
 								},
@@ -267,7 +267,7 @@ function TW_BL.UI.settings.get_general_tab()
 										current_option = TW_BL.SETTINGS.current.delay_for_chat,
 									}),
 									TW_BL.UI.PARTS.create_description_text(
-										localize("twbl_settings_desc_delay_for_chat"),
+										localize("twbl_settings_delay_for_chat_desc"),
 										true
 									),
 								},
@@ -283,14 +283,60 @@ function TW_BL.UI.settings.get_general_tab()
 					padding = 0.05,
 				},
 				nodes = {
-					create_toggle({
-						callback = G.FUNCS.twbl_settings_toggle_mystic_variants,
-						label_scale = 0.35,
-						label = localize("twbl_settings_mystic_variants"),
-						ref_table = TW_BL.SETTINGS.current,
-						ref_value = "mysti_variants",
-					}),
-					TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_mystic_variants"), true),
+					{
+						n = G.UIT.C,
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = {
+									align = "cm",
+									padding = 0.05,
+								},
+								nodes = {
+									create_toggle({
+										callback = G.FUNCS.twbl_settings_toggle_mystic_variants,
+										label_scale = 0.35,
+										label = localize("twbl_settings_mystic_variants"),
+										ref_table = TW_BL.SETTINGS.current,
+										ref_value = "mystic_variants",
+									}),
+									TW_BL.UI.PARTS.create_description_text(
+										localize("twbl_settings_mystic_variants_desc"),
+										true
+									),
+								},
+							},
+						},
+					},
+					{
+						n = G.UIT.C,
+						config = { padding = 0.1 },
+					},
+					{
+						n = G.UIT.C,
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = {
+									align = "cm",
+									padding = 0.05,
+								},
+								nodes = {
+									create_toggle({
+										callback = G.FUNCS.twbl_settings_toggle_discovery_bypass,
+										label_scale = 0.35,
+										label = localize("twbl_settings_discovery_bypass"),
+										ref_table = TW_BL.SETTINGS.current,
+										ref_value = "discovery_bypass",
+									}),
+									TW_BL.UI.PARTS.create_description_text(
+										localize("twbl_settings_discovery_bypass_desc"),
+										true
+									),
+								},
+							},
+						},
+					},
 				},
 			},
 		}),
@@ -368,7 +414,7 @@ function TW_BL.UI.settings.get_appearance_tab()
 										opt_callback = "twbl_settings_change_pool_type",
 										current_option = TW_BL.SETTINGS.current.pool_type,
 									}),
-									TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_blind_pool")),
+									TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_blind_pool_desc")),
 								},
 							},
 						},
@@ -400,7 +446,7 @@ function TW_BL.UI.settings.get_appearance_tab()
 										current_option = TW_BL.SETTINGS.current.blind_pool_type,
 									}),
 									TW_BL.UI.PARTS.create_description_text(
-										localize("twbl_settings_desc_blind_pool_type")
+										localize("twbl_settings_blind_pool_type_desc")
 									),
 								},
 							},
@@ -422,7 +468,7 @@ function TW_BL.UI.settings.get_appearance_tab()
 						ref_table = TW_BL.SETTINGS.current,
 						ref_value = "natural_blinds",
 					}),
-					TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_natural_blinds"), true),
+					TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_natural_blinds_desc"), true),
 				},
 			},
 		}),
@@ -447,7 +493,7 @@ function TW_BL.UI.settings.get_appearance_tab()
 				current_option = TW_BL.SETTINGS.current.chat_booster_sticker_appearance,
 			}),
 			TW_BL.UI.PARTS.create_description_text(
-				localize("twbl_settings_desc_chat_booster_sticker_appearance"),
+				localize("twbl_settings_chat_booster_sticker_appearance_desc"),
 				true
 			),
 		}),

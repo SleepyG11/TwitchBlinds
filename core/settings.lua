@@ -12,6 +12,7 @@ local DEFAULT_SETTINGS = {
 	natural_blinds = false,
 
 	mystic_variants = true,
+	discovery_bypass = false,
 }
 
 function twbl_init_settings()
@@ -26,7 +27,6 @@ function twbl_init_settings()
 	TW_BL.SETTINGS = SETTINGS
 
 	function SETTINGS.save()
-		SETTINGS.current = SETTINGS.current
 		TW_BL.current_mod.config = SETTINGS.current
 		SMODS.save_mod_config(TW_BL.current_mod)
 	end

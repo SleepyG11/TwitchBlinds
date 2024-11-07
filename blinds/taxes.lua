@@ -1,7 +1,7 @@
 local TRIGGER_ODDS = 2
 
-local tw_blind = SMODS.Blind({
-	key = TW_BL.BLINDS.register("taxes", false),
+local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
+	key = TW_BL.BLINDS.get_raw_key("taxes"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = 3, max = 10 },
@@ -13,7 +13,7 @@ local tw_blind = SMODS.Blind({
 	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. TRIGGER_ODDS },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("d9c200"),
-})
+}))
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 10
@@ -34,8 +34,8 @@ function tw_blind:set_blind(reset, silent)
 		return
 	end
 	for k, v in ipairs(G.jokers.cards) do
-		local is_triggered = pseudorandom(pseudoseed("twbl_taxes"))
-			> G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
+		local is_triggered = G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
+			> pseudorandom(pseudoseed("twbl_taxes"))
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				if is_triggered then

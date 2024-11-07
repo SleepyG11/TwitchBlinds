@@ -1,5 +1,5 @@
 local tw_blind = SMODS.Blind({
-	key = "twbl_twitch_chat",
+	key = TW_BL.BLINDS.get_raw_key("twitch_chat"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },

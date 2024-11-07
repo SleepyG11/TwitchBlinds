@@ -1,7 +1,7 @@
 -- Test
 
-local tw_blind = SMODS.Blind({
-	key = TW_BL.BLINDS.register("test", false),
+local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
+	key = TW_BL.BLINDS.get_raw_key("test"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -19,7 +19,7 @@ local tw_blind = SMODS.Blind({
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("d9c200"),
-})
+}))
 
 function tw_blind:in_pool()
 	-- Debug

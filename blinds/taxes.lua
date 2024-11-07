@@ -34,8 +34,8 @@ function tw_blind:set_blind(reset, silent)
 		return
 	end
 	for k, v in ipairs(G.jokers.cards) do
-		local is_triggered = pseudorandom(pseudoseed("twbl_taxes"))
-			> G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
+		local is_triggered = G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
+			> pseudorandom(pseudoseed("twbl_taxes"))
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				if is_triggered then

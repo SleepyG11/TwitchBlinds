@@ -39,9 +39,8 @@ function tw_blind:set_blind(reset, silent)
 	end
 	for _, v in ipairs(jokers_list) do
 		if
-			pseudorandom(pseudoseed("twbl_banana"))
-			< G.GAME.probabilities.normal
-				/ (G.GAME.blind.config.extra and G.GAME.blind.config.extra.odds or G.GAME.blind.config.blind.config.extra.odds)
+			G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
+			> pseudorandom(pseudoseed("twbl_banana"))
 		then
 			G.E_MANAGER:add_event(Event({
 				func = function()

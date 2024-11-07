@@ -288,7 +288,7 @@ function TW_BL.UI.settings.get_general_tab()
 						label_scale = 0.35,
 						label = localize("twbl_settings_mystic_variants"),
 						ref_table = TW_BL.SETTINGS.current,
-						ref_value = "mysti_variants",
+						ref_value = "mystic_variants",
 					}),
 					TW_BL.UI.PARTS.create_description_text(localize("twbl_settings_desc_mystic_variants"), true),
 				},

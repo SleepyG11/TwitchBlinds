@@ -11,13 +11,18 @@ local STICKER_RATE = {
 	["Standard"] = 0.5,
 }
 
+local BANNED_CONSUMEABLES = {
+	["c_ankh"] = true,
+	["c_hex"] = true,
+}
+
 local tw_sticker = TW_BL.STICKERS.register(SMODS.Sticker({
 	atlas = "twbl_stickers",
 	pos = { x = 0, y = 0 },
 	badge_colour = HEX("8e15ad"),
 	config = {},
 	rate = 0,
-	key = TW_BL.STICKERS.get_key("chat_booster"),
+	key = TW_BL.STICKERS.get_raw_key("chat_booster"),
 	discovered = true,
 }))
 
@@ -54,7 +59,7 @@ function tw_sticker:__is_valid_consumeable(kind, mode, card)
 	if card.config.hidden then
 		return false
 	end
-	if G.GAME.round_resets.ante > 2 and (card.config.center.key == "c_ankh" or card.config.center.key == "c_hex") then
+	if G.GAME.round_resets.ante > 2 and BANNED_CONSUMEABLES[card.config.center.key] then
 		return false
 	end
 	if mode == "single" then

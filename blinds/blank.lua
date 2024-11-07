@@ -1,5 +1,5 @@
-local tw_blind = SMODS.Blind({
-	key = TW_BL.BLINDS.register("blank", false),
+local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
+	key = TW_BL.BLINDS.get_raw_key("blank"),
 	dollars = 0,
 	mult = 0,
 	boss = { min = 1, max = 4 },
@@ -9,7 +9,7 @@ local tw_blind = SMODS.Blind({
 	pos = { x = 0, y = 16 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("636c81"),
-})
+}))
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)

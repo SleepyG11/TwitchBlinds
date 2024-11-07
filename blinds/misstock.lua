@@ -16,8 +16,8 @@ local POOLS_TO_PICK = {
 	["Spectral"] = "b_spectral_cards",
 }
 
-local tw_blind = SMODS.Blind({
-	key = TW_BL.BLINDS.register("misstock", false),
+local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
+	key = TW_BL.BLINDS.get_raw_key("misstock"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -27,7 +27,7 @@ local tw_blind = SMODS.Blind({
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("cf2f3f"),
-})
+}))
 
 -- Implementation in lovely/blinds_misstock.toml
 

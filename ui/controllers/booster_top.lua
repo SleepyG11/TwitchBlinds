@@ -41,6 +41,18 @@ function controller:after_set(panel, continue)
 						config = { align = "cr", offset = { x = 0, y = 0 }, major = panel.element },
 					})
 					G.twbl_chat_booster_area.states.visible = true
+				elseif position == "left-long" then
+					panel.element.config.offset.x = -0.6
+					G.twbl_chat_booster_area_UIBox = UIBox({
+						definition = {
+							n = G.UIT.O,
+							config = {
+								object = G.twbl_chat_booster_area,
+							},
+						},
+						config = { align = "cr", offset = { x = -0.5, y = 0 }, major = panel.element },
+					})
+					G.twbl_chat_booster_area.states.visible = true
 				end
 			end
 			continue()

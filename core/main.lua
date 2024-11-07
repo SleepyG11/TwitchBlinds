@@ -125,7 +125,7 @@ function TwitchBlinds:init()
 			end
 		else
 			if G.GAME.round_resets.blind_choices.Boss == TW_BL.BLINDS.chat_blind then
-				if not TW_BL.G.nope_from_reroll then
+				if not TW_BL.G.nope_from_reroll and G.GAME.round_resets.ante % G.GAME.win_ante ~= 0 then
 					-- Reroll to Nope! (once per game)
 					TW_BL.G.nope_from_reroll = true
 					TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
@@ -137,7 +137,7 @@ function TwitchBlinds:init()
 					result = TW_BL.BLINDS.chat_blind
 				end
 			elseif TW_BL.G.blind_chat_antes == 0 then
-				if not TW_BL.G.nope_from_reroll then
+				if not TW_BL.G.nope_from_reroll and G.GAME.round_resets.ante % G.GAME.win_ante ~= 0 then
 					-- Reroll to Nope! (once per game)
 					TW_BL.G.nope_from_reroll = true
 					TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", false, true)
@@ -227,9 +227,8 @@ function TwitchBlinds:init()
 				return
 			elseif current_blind == TW_BL.BLINDS.get_key("lucky_wheel") then
 				if
-					pseudorandom(pseudoseed("twbl_wheels_nope"))
-					> G.GAME.probabilities.normal
-						/ G.P_BLINDS[TW_BL.BLINDS.get_key("lucky_wheel")].config.extra.nope_odds
+					G.GAME.probabilities.normal / TW_BL.BLINDS.get("lucky_wheel").config.extra.nope_odds
+					> pseudorandom(pseudoseed("twbl_wheels_nope"))
 				then
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, TW_BL.BLINDS.get_key("nope"))
 					return

@@ -2,8 +2,8 @@
 
 local LOSE_ODDS = 6
 
-local tw_blind = SMODS.Blind({
-	key = TW_BL.BLINDS.register("dice", false),
+local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
+	key = TW_BL.BLINDS.get_raw_key("dice"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -15,7 +15,7 @@ local tw_blind = SMODS.Blind({
 	pos = { x = 0, y = 18 },
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("00d400"),
-})
+}))
 
 function tw_blind:in_pool()
 	-- Twitch interaction required

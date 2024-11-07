@@ -140,7 +140,7 @@ return {
 			twbl_settings_blind_frequency_1 = "None",
 			twbl_settings_blind_frequency_2 = "Every 2 antes",
 			twbl_settings_blind_frequency_3 = "Every ante",
-			twbl_settings_desc_blind_frequency = {
+			twbl_settings_blind_frequency_desc = {
 				"Determines how often chat",
 				"can vote for a new blind",
 			},
@@ -149,7 +149,7 @@ return {
 			twbl_settings_blind_pool_1 = "Twitch Blinds",
 			twbl_settings_blind_pool_2 = "Vanilla + Mods",
 			twbl_settings_blind_pool_3 = "All",
-			twbl_settings_desc_blind_pool = {
+			twbl_settings_blind_pool_desc = {
 				"Twitch Blinds: all blinds added by this mod",
 				"Vanilla + Mods: all except blinds added by mod",
 				"All: every blind added to a game",
@@ -161,22 +161,28 @@ return {
 			twbl_settings_delay_for_chat_3 = "~10 seconds",
 			twbl_settings_delay_for_chat_4 = "~15 seconds",
 			twbl_settings_delay_for_chat_5 = "~20 seconds",
-			twbl_settings_desc_delay_for_chat = {
+			twbl_settings_delay_for_chat_desc = {
 				"The game will wait after some actions",
 				"to give chat some time to interact",
 			},
 
 			twbl_settings_mystic_variants = "Mystic voting variants",
-			twbl_settings_desc_mystic_variants = {
+			twbl_settings_mystic_variants_desc = {
 				"In voting, some variants will be hidden",
 				"to make results more unpredictable",
+			},
+
+			twbl_settings_discovery_bypass = "Bypass discovery checks",
+			twbl_settings_discovery_bypass_desc = {
+				"In voting, show blind's description",
+				"even if it hasn't been discovered yet",
 			},
 
 			twbl_settings_blind_pool_type = "Blinds pool type",
 			twbl_settings_blind_pool_type_1 = "Once per pool (Vanilla)",
 			twbl_settings_blind_pool_type_2 = "Once per vote",
 			twbl_settings_blind_pool_type_3 = "Random",
-			twbl_settings_desc_blind_pool_type = {
+			twbl_settings_blind_pool_type_desc = {
 				"Once per pool: like Vanilla, every blind is unique",
 				"Once per ante: blinds may repeat between antes",
 				"Random: same blind can appear multiple times",
@@ -186,14 +192,14 @@ return {
 			twbl_settings_chat_booster_sticker_appearance_1 = "Disabled",
 			twbl_settings_chat_booster_sticker_appearance_2 = "Sometimes",
 			twbl_settings_chat_booster_sticker_appearance_3 = "Always",
-			twbl_settings_desc_chat_booster_sticker_appearance = {
+			twbl_settings_chat_booster_sticker_appearance_desc = {
 				"On Booster packs, new stickers can appear",
 				"which adds interactions for chat",
 				"Guaranteed on boosters from skip tags",
 			},
 
 			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",
-			twbl_settings_desc_natural_blinds = {
+			twbl_settings_natural_blinds_desc = {
 				"Blinds added by mod can appear",
 				"in the regular game, without voting",
 			},
@@ -252,6 +258,11 @@ return {
 			k_twbl_panel_toggle_chat_booster_consumeable = "Select a target for consumable (once per chatter)",
 			k_twbl_panel_toggle_chat_booster_celestial = "Select a poker hand to downgrade (once per chatter)",
 			k_twbl_panel_toggle_chat_booster_standard = "Select a card to add to deck (once per chatter)",
+
+			k_twbl_panel_toggle_chat_booster_consumeable_single = "Select a target for consumable (once per chatter)",
+			k_twbl_panel_toggle_chat_booster_consumeable_multiple = "Select a consumable to use (once per chatter)",
+			k_twbl_panel_toggle_chat_booster_celestial_single = "Select a poker hand to downgrade (once per chatter)",
+			k_twbl_panel_toggle_chat_booster_standard_single = "Select a card to add to deck (once per chatter)",
 
 			k_twbl_spiral_p_1 = "+1 Ante",
 			k_twbl_spiral_p_2 = "+2 Antes",

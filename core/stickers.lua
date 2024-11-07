@@ -21,6 +21,9 @@ function twbl_init_stickers()
 
 	TW_BL.STICKERS = STICKERS
 
+	function STICKERS.get_raw_key(name)
+		return "twbl_" .. name
+	end
 	function STICKERS.get_key(name)
 		return "twbl_" .. name
 	end

@@ -42,6 +42,8 @@ function twbl_init_blinds()
 		--- @type string[]
 		showdown = {},
 
+		storage = {},
+
 		--- @type string
 		chat_blind = nil,
 		--- @type number
@@ -68,20 +70,27 @@ function twbl_init_blinds()
 
 	TW_BL.BLINDS = BLINDS
 
+	function BLINDS.register(blind)
+		table.insert(blind.showdown and BLINDS.showdown or BLINDS.regular, blind.key)
+		table.insert(BLINDS.loaded, blind.key)
+		BLINDS.storage[blind.key] = blind
+		return blind
+	end
+
 	--- @param blind_name string
-	--- @param showdown boolean
 	--- @return string
-	function BLINDS.register(blind_name, showdown)
-		local full_key = BLINDS.get_key(blind_name)
-		table.insert(BLINDS.loaded, full_key)
-		table.insert((showdown and BLINDS.showdown) or BLINDS.regular, full_key)
+	function BLINDS.get_raw_key(blind_name)
 		return "twbl_" .. blind_name
 	end
 
 	--- @param blind_name string
 	--- @return string
 	function BLINDS.get_key(blind_name)
-		return "bl_twbl_" .. blind_name
+		return "bl_" .. BLINDS.get_raw_key(blind_name)
+	end
+
+	function BLINDS.get(name)
+		return BLINDS.storage[BLINDS.get_key(name)]
 	end
 
 	function BLINDS.can_natural_appear(blind)
@@ -107,7 +116,7 @@ function twbl_init_blinds()
 	for _, blind_name in ipairs(showdown_blinds_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/showdown/" .. blind_name .. ".lua")))()
 	end
-	BLINDS.chat_blind = "bl_twbl_twitch_chat"
+	BLINDS.chat_blind = BLINDS.get_key("twitch_chat")
 
 	--- Get one random boss blind from pool
 	--- @param pool { [string]: boolean } Pool to choose from

@@ -195,7 +195,7 @@ function panel:update(full_update, args)
 						boss_element.hover = function()
 							boss_element.config.h_popup = create_UIBox_blind_popup(
 								G.P_BLINDS[blinds_to_vote[i]],
-								G.P_BLINDS[blinds_to_vote[i]].discovered
+								TW_BL.SETTINGS.current.discovery_bypass or G.P_BLINDS[blinds_to_vote[i]].discovered
 							)
 							boss_element.config.h_popup_config =
 								{ align = "mb", offset = { x = 0, y = 0.2 }, parent = boss_element }

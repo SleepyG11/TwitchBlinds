@@ -36,12 +36,14 @@ function twbl_init_utilities()
 	--- Generate new list of blinds
 	--- @param ante_offset integer Difference between current ante and target ante
 	--- @param amount integer Amount of blinds to choose
+	--- @param tags table<string, boolean> Pool tags to use
 	--- @return string[]|nil
-	function UTILITIES.get_new_bosses(ante_offset, amount)
+	function UTILITIES.get_new_bosses(ante_offset, amount, tags)
 		return TW_BL.BLINDS.generate_new_voting_blinds(
 			TW_BL.SETTINGS.current.pool_type,
 			ante_offset or 0,
 			amount or 3,
+			tags or {},
 			false
 		)
 	end

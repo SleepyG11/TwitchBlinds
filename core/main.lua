@@ -158,10 +158,16 @@ function TwitchBlinds:init()
 		if is_first_boss or caused_by_boss_defeate then
 			-- Count how many antes ago was chat blind
 			TW_BL.G.blind_chat_antes = (result == TW_BL.BLINDS.chat_blind and 0) or (TW_BL.G.blind_chat_antes + 1)
+			-- Update which ante will be "run direction"
+			TW_BL.G.run_direction_ante = TW_BL.G.run_direction_ante
+				or (3 + math.floor(3 * pseudorandom(pseudoseed("twbl_run_direction_ante"))))
 		end
 
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
+				local is_run_direction_ante = TW_BL.G.run_direction_ante
+					== G.GAME.round_resets.ante + voting_ante_offset
+
 				TW_BL.EVENTS.set_delay_threshold("voting_blind", 15)
 				TW_BL.CHAT_COMMANDS.set_vote_variants(
 					"voting_blind",
@@ -172,8 +178,15 @@ function TwitchBlinds:init()
 					TW_BL.SETTINGS.current.pool_type,
 					voting_ante_offset,
 					TW_BL.BLINDS.blinds_to_vote,
+					{
+						["twbl_run_direction"] = (is_run_direction_ante and not TW_BL.G.run_direction_ante_seen) or nil,
+					},
 					true
 				)
+
+				if is_run_direction_ante then
+					TW_BL.G.run_direction_ante_seen = true
+				end
 
 				TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)
 				TW_BL.CHAT_COMMANDS.toggle_max_uses("vote", 1, true)

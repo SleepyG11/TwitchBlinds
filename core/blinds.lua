@@ -93,6 +93,29 @@ function twbl_init_blinds()
 		return BLINDS.storage[BLINDS.get_key(name)]
 	end
 
+	function BLINDS.is_active_pool_tags(game_tags, blind_tags)
+		game_tags = game_tags or {}
+		blind_tags = blind_tags or {}
+
+		local game_tags_size = 0
+		for k, v in pairs(game_tags) do
+			if v then
+				game_tags_size = game_tags_size + 1
+			end
+		end
+
+		if game_tags_size == 0 and #blind_tags == 0 then
+			return true
+		end
+
+		for _, tag in ipairs(blind_tags) do
+			if game_tags[tag] then
+				return true
+			end
+		end
+		return false
+	end
+
 	function BLINDS.can_natural_appear(blind)
 		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
 			return false
@@ -278,7 +301,7 @@ function twbl_init_blinds()
 			end
 
 			if generate_if_missing then
-				return BLINDS.generate_new_voting_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, true)
+				return BLINDS.generate_new_voting_blinds(pool_type, ante_offset, BLINDS.blinds_to_vote, {}, true)
 			end
 
 			return nil
@@ -291,7 +314,7 @@ function twbl_init_blinds()
 	--- @param pool_type integer Pool type to choose from
 	--- @param ante_offset integer Difference between current ante and target ante
 	--- @return string[]
-	function BLINDS.get_blinds_pool(pool_type, ante_offset)
+	function BLINDS.get_blinds_pool(pool_type, ante_offset, tags)
 		ante_offset = ante_offset or 0
 		local eligible_bosses = {}
 
@@ -334,6 +357,7 @@ function twbl_init_blinds()
 				-- Skip other blind if we don't need it
 			else
 				local is_correct_boss_type = (v.boss.showdown or false) == final_boss
+				local is_active_tags = extra.ignore_tags_check or BLINDS.is_active_pool_tags(tags, extra.tags)
 				local config_to_check = is_twitch_blind and extra or v
 				local range_to_check = is_twitch_blind and extra or v.boss
 				local can_appear = false
@@ -341,6 +365,7 @@ function twbl_init_blinds()
 				if
 					type(config_to_check.in_pool) == "function"
 					and (config_to_check.ignore_showdown_check or is_correct_boss_type)
+					and is_active_tags
 				then
 					-- Use in_pool function
 					-- Is this safe?
@@ -349,10 +374,11 @@ function twbl_init_blinds()
 					G.GAME.round_resets.ante = G.GAME.round_resets.ante - ante_offset
 				elseif final_boss then
 					-- Add final boss blind
-					can_appear = is_correct_boss_type
+					can_appear = is_correct_boss_type and is_active_tags
 				else
 					-- Add if mets range criteria
 					can_appear = is_correct_boss_type
+						and is_active_tags
 						and (not range_to_check.min or range_to_check.min <= target_ante)
 						and (not is_twitch_blind or (not range_to_check.max or range_to_check.max >= target_ante))
 				end
@@ -386,8 +412,8 @@ function twbl_init_blinds()
 	--- @param amount integer Amount of blinds to choose
 	--- @param write boolean Save result in game object
 	--- @return string[]|nil
-	function BLINDS.generate_new_voting_blinds(pool_type, ante_offset, amount, write)
-		local pool = BLINDS.get_blinds_pool(pool_type, ante_offset)
+	function BLINDS.generate_new_voting_blinds(pool_type, ante_offset, amount, tags, write)
+		local pool = BLINDS.get_blinds_pool(pool_type, ante_offset, tags)
 		local new_list = BLINDS.get_list_of_random_boss_blinds(pool, amount)
 		if not write or BLINDS.set_voting_blinds_to_game(new_list) then
 			return new_list

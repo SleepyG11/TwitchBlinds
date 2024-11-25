@@ -28,36 +28,26 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	ease_background_colour_blind()
+
 	if not G.GAME.used_vouchers["v_planet_merchant"] then
-		G.E_MANAGER:add_event(Event({
-			func = function()
-				local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
-				card.cost = 0
-				G.play:emplace(card)
-				card:redeem()
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card:start_dissolve()
-						return true
-					end,
-				}))
-				return true
-			end,
-		}))
+		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
+		card.cost = 0
+		G.play:emplace(card)
 	end
 	if not G.GAME.used_vouchers["v_planet_tycoon"] then
+		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_tycoon", nil)
+		card.cost = 0
+		G.play:emplace(card)
+	end
+
+	for _, card in ipairs(G.play.cards) do
+		card:start_materialize()
+		card:redeem()
 		G.E_MANAGER:add_event(Event({
 			func = function()
-				local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_tycoon", nil)
-				card.cost = 0
-				G.play:emplace(card)
-				card:redeem()
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card:start_dissolve()
-						return true
-					end,
-				}))
+				card:start_dissolve()
 				return true
 			end,
 		}))

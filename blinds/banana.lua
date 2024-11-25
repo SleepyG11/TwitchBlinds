@@ -33,6 +33,9 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	ease_background_colour_blind()
+
 	local jokers_list = {}
 	for _, v in ipairs(G.jokers.cards) do
 		table.insert(jokers_list, v)

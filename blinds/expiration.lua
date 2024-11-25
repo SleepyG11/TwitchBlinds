@@ -92,6 +92,8 @@ function tw_blind:set_blind(reset, silent)
 		return
 	end
 
+	ease_background_colour_blind()
+
 	if not next(FOOD_JOKERS_NAMES) then
 		create_food_jokers_table()
 	end

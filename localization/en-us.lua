@@ -119,6 +119,18 @@ return {
 				name = "The Time Spiral",
 				text = { "Chat can move in time..." },
 			},
+			bl_twbl_garden = {
+				name = "The Garden",
+				text = { "Do you like flowers?" },
+			},
+			bl_twbl_rocket = {
+				name = "The Rocket",
+				text = { "My beloved!" },
+			},
+			bl_twbl_university = {
+				name = "The University",
+				text = { "Time to learn how to", "play less bad!" },
+			},
 			-- Showdown
 			bl_twbl_plum_hammer = {
 				name = "Plum Hammer",
@@ -225,6 +237,7 @@ return {
 			k_twbl_erased_ex = "Erased!",
 			k_twbl_nope_ex = "Nope!",
 			k_twbl_replaced_ex = "Replaced!",
+			k_twbl_unbanned_ex = "Unbanned!",
 
 			k_twbl_status_connected = "Connected.",
 			k_twbl_status_connecting = "Connecting...",
@@ -243,6 +256,7 @@ return {
 			k_twbl_sketch_ex = "Sketch!",
 			k_twbl_count_ex = "Count!",
 			k_twbl_reset_ex = "Reset!",
+			k_twbl_trash_ex = "Trash!",
 
 			k_twbl_panel_toggle_DEFAULT = "Trigger the boss blind's effect",
 			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per chatter)",
@@ -270,6 +284,39 @@ return {
 			k_twbl_spiral_m_2 = "-2 Antes",
 
 			k_twbl_waiting_for_chat = "Waiting for chat...",
+		},
+		quips = {
+			twbl_blinds_university_1 = { "Alright, folks,", "welcome back!" },
+			twbl_blinds_university_2 = { "I have proposition." },
+			twbl_blinds_university_3 = { "Now we're cooking!" },
+			twbl_blinds_university_4 = { "Let's ship it!" },
+
+			twbl_blinds_garden_1 = { "Disgusting!" },
+			twbl_blinds_garden_2 = { "We can make it work!" },
+			twbl_blinds_garden_3 = { "Bummer!" },
+			twbl_blinds_garden_4 = { "Oh beans!" },
+
+			twbl_blinds_sparkle_1 = { "Here's a trick!" },
+
+			twbl_blinds_jimbo_1 = { "I'm doing my best!" },
+			twbl_blinds_jimbo_2 = { "Hey, look! It's Me!" },
+			twbl_blinds_jimbo_3 = {
+				"I'm literally",
+				"a fool, what's",
+				"your excuse?",
+			},
+			twbl_blinds_jimbo_4 = {
+				"Hello there! My name is",
+				"{C:attention}Jimbo{}, I'm here to help",
+				"you learn how to play!",
+			},
+			twbl_blinds_jimbo_5 = {
+				"Be picky, you can only",
+				"carry {C:attention}5 Joker{} cards",
+				"at a time!",
+			},
+
+			twbl_blinds_circus_1 = { "Hello there!" },
 		},
 	},
 }

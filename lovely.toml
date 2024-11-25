@@ -26,6 +26,20 @@ if self.ability and self.ability.twbl_state_prevent_action then return end
 match_indent = true
 overwrite = false
 
+# Force speedfactor (important for talking cards)
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''self.TIMERS.TOTAL = self.TIMERS.TOTAL + dt*(self.SPEEDFACTOR)'''
+position = "before"
+payload = '''
+if G.twbl_force_speedfactor then
+    self.SPEEDFACTOR = G.twbl_force_speedfactor
+end
+'''
+match_indent = true
+overwrite = false
+
 # [[patches]]
 # [patches.pattern]
 # target = "card.lua"

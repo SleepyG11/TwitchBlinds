@@ -1,23 +1,17 @@
 local nativefs = require("nativefs")
 
 local blinds_to_load = {
-	"blank",
 	"taxes",
 	"vaporation",
 	"trash_can",
 	"banana",
-	"moon",
-	"sparkle",
-	"jimbo",
 	"precision",
 	"clock",
 	"chaos",
-	"circus",
 	"flashlight",
 	"lock",
 	"chisel",
 	"expiration",
-	"isaac",
 	"pin",
 	"greed",
 	"eraser",
@@ -25,12 +19,21 @@ local blinds_to_load = {
 	"misstock",
 	"incrementor",
 	"lucky_wheel",
-	"nope",
-	"spiral",
-}
 
-local showdown_blinds_to_load = {
-	"plum_hammer",
+	"utilities/blank",
+	"utilities/nope",
+
+	"fillers/jimbo",
+	"fillers/sparkle",
+	"fillers/moon",
+	"fillers/circus",
+	"fillers/isaac",
+	"fillers/spiral",
+	"fillers/garden",
+	"fillers/rocket",
+	"fillers/university",
+
+	"showdown/plum_hammer",
 }
 
 function twbl_init_blinds()
@@ -135,9 +138,6 @@ function twbl_init_blinds()
 	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
 	for _, blind_name in ipairs(blinds_to_load) do
 		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
-	end
-	for _, blind_name in ipairs(showdown_blinds_to_load) do
-		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/showdown/" .. blind_name .. ".lua")))()
 	end
 	BLINDS.chat_blind = BLINDS.get_key("twitch_chat")
 

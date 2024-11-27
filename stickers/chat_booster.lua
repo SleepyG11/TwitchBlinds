@@ -351,6 +351,10 @@ function tw_sticker:__use()
 				local card = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
 				if card then
 					card:hard_set_T(nil, nil, G.CARD_W, G.CARD_H)
+					card.children.center.scale_mag = math.min(
+						card.children.center.atlas.px/G.CARD_W,
+						card.children.center.atlas.py/G.CARD_H
+					)
 					G.FUNCS.use_card({
 						config = {
 							ref_table = card,

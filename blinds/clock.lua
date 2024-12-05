@@ -1,12 +1,9 @@
-local MAX_SIZE = to_big(6)
-local MULT_INCREMENT = to_big(0.08)
-local TIME_DELAY = 1 -- In seconds
--- Total time to full grow: 1 / 0.08 * (6 - 2) = 50 seconds
+local TIME_DELAY = 1
 
 local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	key = TW_BL.BLINDS.get_raw_key("clock"),
 	dollars = 5,
-	mult = 2,
+	mult = 1,
 	boss = { min = 2, max = 10 },
 	pos = { x = 0, y = 13 },
 	config = {
@@ -28,10 +25,19 @@ local timeout = TIME_DELAY
 
 local function increment_clock_chips(current_chips, base_chips)
 	local mult = to_big(current_chips) / to_big(base_chips)
-	if to_big(mult) < to_big(MAX_SIZE) then
-		G.GAME.blind:wiggle()
+
+	local increment = to_big(0.2)
+	if mult >= to_big(2) then
+		increment = increment / 2
 	end
-	return to_big(base_chips) * to_big(math.min(MAX_SIZE, mult + MULT_INCREMENT))
+	if mult >= to_big(3) then
+		increment = increment / 2
+	end
+	if mult >= to_big(4) then
+		increment = increment / 2
+	end
+
+	return to_big(base_chips) * to_big(mult + increment)
 end
 
 TW_BL.EVENTS.add_listener("game_update", TW_BL.BLINDS.get_key("clock"), function(dt)
@@ -47,6 +53,7 @@ TW_BL.EVENTS.add_listener("game_update", TW_BL.BLINDS.get_key("clock"), function
 			and G.GAME.blind.name == TW_BL.BLINDS.get_key("clock")
 			and G.GAME.round_resets.blind_states.Boss == "Current"
 		then
+			G.GAME.blind:wiggle()
 			-- TODO: need to fix a problem with no chips saving
 			G.GAME.blind.chips = increment_clock_chips(
 				G.GAME.blind.chips,

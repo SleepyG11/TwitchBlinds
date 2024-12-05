@@ -1,4 +1,4 @@
-local DEBUFFS_LIMIT = 3
+local DEBUFFS_LIMIT = 2
 
 local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	key = TW_BL.BLINDS.get_raw_key("plum_hammer"),
@@ -29,10 +29,12 @@ function tw_blind:loc_vars()
 	}
 end
 
+local debuffed_list = {}
+
 function tw_blind:set_blind(reset, silent)
-	G.GAME.blind.twbl_added_debuffs = 0
+	debuffed_list = {}
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", nil, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", 1, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "toggle",
@@ -43,6 +45,7 @@ function tw_blind:set_blind(reset, silent)
 end
 
 function tw_blind:defeat()
+	debuffed_list = {}
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", false, true)
 	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
@@ -60,12 +63,31 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("plum_hammer"),
 	if index and G.jokers and G.jokers.cards and G.jokers.cards[index] then
 		local card = G.jokers.cards[index]
 		local initial_value = card.debuff
-		if not initial_value and G.GAME.blind.twbl_added_debuffs >= DEBUFFS_LIMIT then
-			return
-		end
 		card:set_debuff(not initial_value)
 		if card.debuff ~= initial_value then
-			G.GAME.blind.twbl_added_debuffs = G.GAME.blind.twbl_added_debuffs + (card.debuff and 1 or -1)
+			if card.debuff then
+				while DEBUFFS_LIMIT > 0 and #debuffed_list >= DEBUFFS_LIMIT do
+					local old_card = table.remove(debuffed_list, 1)
+					if old_card and not old_card.removed then
+						old_card:set_debuff(false)
+						card_eval_status_text(
+							old_card,
+							"extra",
+							nil,
+							nil,
+							nil,
+							{ message = localize("k_twbl_unbanned_ex"), instant = true }
+						)
+					end
+				end
+				table.insert(debuffed_list, card)
+			else
+				for i = 1, #debuffed_list do
+					if debuffed_list[i] == card then
+						table.remove(debuffed_list, i)
+					end
+				end
+			end
 			TW_BL.CHAT_COMMANDS.increment_command_use(command, username)
 			G.GAME.blind:wiggle()
 			card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })

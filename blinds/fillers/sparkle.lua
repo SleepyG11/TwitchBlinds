@@ -16,7 +16,6 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
-		and (not G.GAME.used_vouchers["v_magic_trick"] or not G.GAME.used_vouchers["v_illusion"])
 end
 
 function tw_blind:in_pool()

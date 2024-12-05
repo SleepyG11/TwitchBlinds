@@ -301,6 +301,7 @@ return {
 			twbl_blinds_garden_4 = { "Oh beans!" },
 
 			twbl_blinds_sparkle_1 = { "Here's a trick!" },
+			twbl_blinds_moon_1 = { "It's too much." },
 
 			twbl_blinds_jimbo_1 = { "I'm doing my best!" },
 			twbl_blinds_jimbo_2 = { "Hey, look! It's Me!" },

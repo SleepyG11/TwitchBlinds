@@ -65,6 +65,10 @@ function tw_sticker:__is_valid_consumeable(kind, mode, card)
 	if mode == "single" then
 		local min_select = card.config.center.config.min_highlighted or 0
 		local max_select = card.config.center.config.max_highlighted or 0
+		if card.ability and card.ability.name == "Aura" then
+			max_select = 1
+			min_select = 1
+		end
 		if (min_select > 0 or max_select > 0) and G.hand.config.card_limit >= min_select then
 			return true
 		else
@@ -146,7 +150,8 @@ function tw_sticker:__highlight_targets(target_area, consumeable)
 		local sorted_cards = tw_sticker:__sort_voting_cards(target_area.cards)
 		local result_amount_to_select = math.min(
 			#target_area.cards,
-			card.ability.consumeable.max_highlighted or card.ability.consumeable.min_highlighted
+			(card.ability and card.ability.name == "Aura" and 1)
+				or (card.ability.consumeable.max_highlighted or card.ability.consumeable.min_highlighted)
 		)
 
 		for i = 1, result_amount_to_select do
@@ -351,6 +356,8 @@ function tw_sticker:__use()
 				local card = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
 				if card then
 					card:hard_set_T(nil, nil, G.CARD_W, G.CARD_H)
+					card.children.center.scale_mag =
+						math.min(card.children.center.atlas.px / G.CARD_W, card.children.center.atlas.py / G.CARD_H)
 					G.FUNCS.use_card({
 						config = {
 							ref_table = card,

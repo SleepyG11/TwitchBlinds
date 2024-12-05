@@ -1,5 +1,5 @@
-local MIN_MULT = 1.5
-local MAX_MULT = 6
+local MIN_MULT = 1
+local MAX_MULT = 5
 
 local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	key = TW_BL.BLINDS.get_raw_key("nope"),

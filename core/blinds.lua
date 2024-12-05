@@ -20,6 +20,8 @@ local blinds_to_load = {
 	"incrementor",
 	"lucky_wheel",
 
+	-- "fee",
+
 	"utilities/blank",
 	"utilities/nope",
 

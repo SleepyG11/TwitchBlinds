@@ -119,6 +119,10 @@ return {
 				name = "The Time Spiral",
 				text = { "Chat can move in time..." },
 			},
+			bl_twbl_fee = {
+				name = "The Fee",
+				text = { "[DEV]" },
+			},
 			bl_twbl_garden = {
 				name = "The Garden",
 				text = { "Do you like flowers?" },

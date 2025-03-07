@@ -47,7 +47,7 @@ function tw_blind:set_blind(reset, silent)
 	local pseudo_card = talking_card.children.card
 	pseudo_card:set_eternal(true)
 
-	talking_card:add_speech_bubble("twbl_blinds_jimbo_" .. math.random(5), nil, { quip = true })
+	talking_card:add_speech_bubble("twbl_blinds_jimbo_" .. math.random(7), nil, { quip = true })
 	talking_card:say_stuff(5)
 
 	delay(2)

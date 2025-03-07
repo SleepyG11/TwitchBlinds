@@ -5,7 +5,7 @@ function twbl_init_utilities()
 
 	--- Get index of a voting blind
 	--- @param target "winner" | "loser" | integer | nil
-	--- @return string or nil
+	--- @return string|nil
 	function UTILITIES.get_vote_variant(target)
 		if not TW_BL.CHAT_COMMANDS.vote_variants then
 			return nil
@@ -14,13 +14,13 @@ function twbl_init_utilities()
 			return TW_BL.CHAT_COMMANDS.vote_variants[tonumber(target)]
 		end
 		if target == "winner" then
-			local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner()
+			local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner("voting_blind")
 			return win_index
 		elseif target == "loser" then
 			local result = nil
 			local score = math.huge
 
-			for k, v in pairs(TW_BL.CHAT_COMMANDS.get_vote_status()) do
+			for k, v in pairs(TW_BL.CHAT_COMMANDS.get_vote_status("voting_blind")) do
 				if not v.winner and v.score <= score then
 					result = k
 					score = v.score

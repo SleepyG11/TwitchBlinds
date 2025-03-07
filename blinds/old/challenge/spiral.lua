@@ -1,3 +1,5 @@
+-- TODO: make it more chaotic and interesting for chat
+
 local MEGA_FORWARD_ODDS = 3
 
 local function get_ante_dx()
@@ -22,7 +24,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 			twitch_blind = true,
 			min = 4,
 			max = 5,
-			tags = { "twbl_run_direction" },
+			tags = { "twbl_cruel_boss" },
 		},
 	},
 	atlas = "twbl_blind_chips",

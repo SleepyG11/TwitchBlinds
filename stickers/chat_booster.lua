@@ -35,7 +35,7 @@ function tw_sticker:should_apply(card, center, area, bypass_roll)
 		and card.ability.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
 		and (
-			card.from_tag
+			G.TWBL_BOOSTER_FROM_TAG
 			or TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
 			or (
 				TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 2
@@ -162,6 +162,9 @@ function tw_sticker:__highlight_targets(target_area, consumeable)
 end
 function tw_sticker:__emplace_cards(kind, mode)
 	local area = G.twbl_chat_booster_area
+	if #area.cards > 0 then
+		return
+	end
 	if kind == "Spectral" or kind == "Arcana" then
 		local amount = 1
 		if mode == "multiple" then
@@ -185,15 +188,12 @@ function tw_sticker:__emplace_cards(kind, mode)
 		end
 	elseif kind == "Standard" then
 		for i = 1, 5 do
-			local center
-			local _pool, _pool_key = get_current_pool("Enhanced", nil, nil, "sta")
-			center = pseudorandom_element(_pool, pseudoseed(_pool_key))
-			local it = 1
-			while center == "UNAVAILABLE" do
-				it = it + 1
-				center = pseudorandom_element(_pool, pseudoseed(_pool_key .. "_resample" .. it))
-			end
+			local center = SMODS.poll_enhancement({
+				guaranteed = true,
+			})
 			center = G.P_CENTERS[center]
+			local edition_rate = 6
+			local edition = poll_edition("twbl_standard_edition" .. G.GAME.round_resets.ante, edition_rate, true)
 
 			local front = pseudorandom_element(G.P_CARDS, pseudoseed("twbl_frontsta" .. G.GAME.round_resets.ante))
 			local card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W / 2, G.CARD_H / 2, front, center, {
@@ -202,22 +202,13 @@ function tw_sticker:__emplace_cards(kind, mode)
 				discover = false,
 				bypass_back = G.GAME.selected_back.pos,
 			})
-			local edition_rate = 6
-			local edition = poll_edition("twbl_standard_edition" .. G.GAME.round_resets.ante, edition_rate, true)
+
 			card:set_edition(edition)
-			local seal_rate = 3.333
-			local seal_poll = pseudorandom(pseudoseed("twbl_stdseal" .. G.GAME.round_resets.ante))
-			if seal_poll > 1 - 0.02 * seal_rate then
-				local seal_type = pseudorandom(pseudoseed("twbl_stdsealtype" .. G.GAME.round_resets.ante))
-				if seal_type > 0.75 then
-					card:set_seal("Red")
-				elseif seal_type > 0.5 then
-					card:set_seal("Blue")
-				elseif seal_type > 0.25 then
-					card:set_seal("Gold")
-				else
-					card:set_seal("Purple")
-				end
+			local seal = SMODS.poll_seal({
+				mod = 6.66,
+			})
+			if seal then
+				card:set_seal(seal)
 			end
 			area:emplace(card)
 		end

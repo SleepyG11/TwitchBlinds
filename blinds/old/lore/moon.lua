@@ -55,6 +55,7 @@ function tw_blind:set_blind(reset, silent)
 	delay(0.5)
 
 	G.E_MANAGER:add_event(Event({
+		trigger = "immediate",
 		func = function()
 			G.twbl_force_speedfactor = 1
 

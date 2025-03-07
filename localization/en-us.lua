@@ -57,7 +57,7 @@ return {
 			},
 			bl_twbl_greed = {
 				name = "The Greed",
-				text = { "Skip the next shop" },
+				text = { "One of the next", "shops is missing..." },
 			},
 			bl_twbl_isaac = {
 				name = "The Voice of God",
@@ -92,7 +92,7 @@ return {
 				text = { "All scored cards are", "removed from the deck" },
 			},
 			bl_twbl_vaporation = {
-				name = "The Vaporation",
+				name = "The Evaporation",
 				text = { "Current Jokers will", "become Perishable" },
 			},
 			bl_twbl_eraser = {
@@ -135,6 +135,12 @@ return {
 				name = "The University",
 				text = { "Time to learn how to", "play less bad!" },
 			},
+
+			bl_twbl_washer = {
+				name = "The Washer",
+				text = { "Chat can select how to", "clean up a deck" },
+			},
+
 			-- Showdown
 			bl_twbl_plum_hammer = {
 				name = "Plum Hammer",
@@ -287,6 +293,9 @@ return {
 			k_twbl_spiral_m_1 = "-1 Ante",
 			k_twbl_spiral_m_2 = "-2 Antes",
 
+			k_twbl_clock_count_up = "+0.5 seconds",
+			k_twbl_clock_count_down = "-1 second",
+
 			k_twbl_waiting_for_chat = "Waiting for chat...",
 		},
 		quips = {
@@ -303,8 +312,12 @@ return {
 			twbl_blinds_sparkle_1 = { "Here's a trick!" },
 			twbl_blinds_moon_1 = { "It's too much." },
 
-			twbl_blinds_jimbo_1 = { "I'm doing my best!" },
-			twbl_blinds_jimbo_2 = { "Hey, look! It's Me!" },
+			twbl_blinds_jimbo_1 = {
+				"I'm doing my best!",
+			},
+			twbl_blinds_jimbo_2 = {
+				"Hey, look! It's Me!",
+			},
 			twbl_blinds_jimbo_3 = {
 				"I'm literally",
 				"a fool, what's",
@@ -319,6 +332,16 @@ return {
 				"Be picky, you can only",
 				"carry {C:attention}5 Joker{} cards",
 				"at a time!",
+			},
+			twbl_blinds_jimbo_6 = {
+				"I'm one of the {C:attention}many",
+				"{C:attention}Jokers{} you can add to",
+				"your run. Every {C:attention}Joker",
+				"does something different",
+			},
+			twbl_blinds_jimbo_7 = {
+				"You wanna be my {C:attention}friend{}?",
+				"I have {C:attention}a lot{} of ... friends!",
 			},
 
 			twbl_blinds_circus_1 = { "Hello there!" },

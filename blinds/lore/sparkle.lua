@@ -1,17 +1,19 @@
+-- Remake it that chat can select some cards packs (flush set, straight set, stones set, gold set, steel set, glass set, etc.)
+
 local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("moon"),
+	key = TW_BL.BLINDS.get_raw_key("sparkle"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
+	pos = { x = 0, y = 6 },
 	config = {
 		tw_bl = {
 			twitch_blind = true,
-			tags = { "twbl_run_direction" },
+			-- tags = { "twbl_run_direction" },
 		},
 	},
-	pos = { x = 0, y = 7 },
 	atlas = "twbl_blind_chips",
-	boss_colour = HEX("00d4d4"),
+	boss_colour = HEX("be35b0"),
 }))
 
 function tw_blind.config.tw_bl:in_pool()
@@ -30,13 +32,13 @@ function tw_blind:set_blind(reset, silent)
 
 	ease_background_colour_blind()
 
-	if not G.GAME.used_vouchers["v_planet_merchant"] then
-		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
+	if not G.GAME.used_vouchers["v_magic_trick"] then
+		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_magic_trick", nil)
 		card.cost = 0
 		G.play:emplace(card)
 	end
-	if not G.GAME.used_vouchers["v_planet_tycoon"] then
-		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_tycoon", nil)
+	if not G.GAME.used_vouchers["v_illusion"] then
+		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_illusion", nil)
 		card.cost = 0
 		G.play:emplace(card)
 	end
@@ -55,12 +57,11 @@ function tw_blind:set_blind(reset, silent)
 	delay(0.5)
 
 	G.E_MANAGER:add_event(Event({
-		trigger = "immediate",
 		func = function()
 			G.twbl_force_speedfactor = 1
 
 			-- Voucher to redeem
-			local voucher_card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
+			local voucher_card = create_card("Voucher", G.play, false, nil, nil, nil, "v_magic_trick", nil)
 			voucher_card.cost = 0
 			G.play:emplace(voucher_card)
 			voucher_card:start_materialize()
@@ -88,7 +89,7 @@ function tw_blind:set_blind(reset, silent)
 			local pseudo_card = talking_card.children.card
 			G.play:emplace(pseudo_card)
 
-			talking_card:add_speech_bubble("twbl_blinds_moon_" .. math.random(1), nil, { quip = true })
+			talking_card:add_speech_bubble("twbl_blinds_sparkle_" .. math.random(4), nil, { quip = true })
 			talking_card:say_stuff(3)
 
 			delay(2)
@@ -108,11 +109,12 @@ function tw_blind:set_blind(reset, silent)
 						end,
 					}))
 
-					voucher_card:explode()
+					voucher_card:redeem()
 
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							G.GAME.planet_rate = G.GAME.planet_rate / 2
+							G.GAME.playing_card_rate = G.P_CENTERS.v_magic_trick.config.extra * 2
+							voucher_card:start_dissolve()
 							return true
 						end,
 					}))

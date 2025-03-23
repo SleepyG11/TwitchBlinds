@@ -23,6 +23,13 @@ local blinds_to_load = {
 	"round-modifiers/flashlight",
 	"round-modifiers/precision",
 	"round-modifiers/trash_can",
+	"round-modifiers/incrementor",
+
+	"lore/circus",
+	"lore/isaac",
+	"lore/jimbo",
+	"lore/moon",
+	"lore/sparkle",
 
 	"showdown/plum_hammer",
 }
@@ -348,7 +355,8 @@ function twbl_init_blinds()
 				-- Skip other blind if we don't need it
 			else
 				local is_correct_boss_type = (v.boss.showdown or false) == final_boss
-				local is_active_tags = extra.ignore_tags_check or BLINDS.is_active_pool_tags(tags, extra.tags)
+				-- TODO: finish tags idea
+				local is_active_tags = true or extra.ignore_tags_check or BLINDS.is_active_pool_tags(tags, extra.tags)
 				local config_to_check = is_twitch_blind and extra or v
 				local range_to_check = is_twitch_blind and extra or v.boss
 				local can_appear = false

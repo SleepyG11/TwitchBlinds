@@ -268,7 +268,7 @@ return {
 			k_twbl_trash_ex = "Trash!",
 
 			k_twbl_panel_toggle_DEFAULT = "Trigger the boss blind's effect",
-			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per chatter)",
+			k_twbl_panel_toggle_flashlight = "Flip a card in hand (3 times per chatter)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per chatter)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per chatter)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
@@ -309,7 +309,14 @@ return {
 			twbl_blinds_garden_4 = { "Oh beans!" },
 
 			twbl_blinds_sparkle_1 = { "Here's a trick!" },
+			twbl_blinds_sparkle_2 = { "What about even more cards?" },
+			twbl_blinds_sparkle_3 = { "I love shiny ones!" },
+			twbl_blinds_sparkle_4 = { "Let's find your", "{C:attention}One-of-a-Kind{} card!" },
+
 			twbl_blinds_moon_1 = { "It's too much." },
+			-- twbl_blinds_moon_2 = { "It's too much." },
+			-- twbl_blinds_moon_3 = { "It's too much." },
+			-- twbl_blinds_moon_4 = { "It's too much." },
 
 			twbl_blinds_jimbo_1 = {
 				"I'm doing my best!",
@@ -339,7 +346,7 @@ return {
 				"does something different",
 			},
 			twbl_blinds_jimbo_7 = {
-				"You wanna be my {C:attention}friend{}?",
+				"You wanna be {C:attention}my friend{}?",
 				"I have {C:attention}a lot{} of ... friends!",
 			},
 

@@ -9,7 +9,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 			twitch_blind = true,
 			min = 4,
 			max = 6,
-			tags = { "twbl_cruel_blind" },
+			-- tags = { "twbl_cruel_blind" },
 		},
 	},
 	atlas = "twbl_blind_chips",
@@ -35,6 +35,7 @@ function tw_blind:set_blind(reset, silent)
 	local card = create_card("Joker", G.jokers, false, nil, nil, nil, "j_ceremonial", nil)
 	card.pinned = true
 	card:set_eternal(true)
+	card:set_edition({ negative = true }, true)
 	card:add_to_deck()
 	G.jokers:emplace(card)
 end

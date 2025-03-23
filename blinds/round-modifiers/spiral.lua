@@ -24,7 +24,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 			twitch_blind = true,
 			min = 4,
 			max = 5,
-			tags = { "twbl_cruel_boss" },
+			-- tags = { "twbl_cruel_boss" },
 		},
 	},
 	atlas = "twbl_blind_chips",

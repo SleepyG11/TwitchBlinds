@@ -5,7 +5,10 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 10 },
 	config = {
-		tw_bl = { twitch_blind = true, tags = { "twbl_run_direction" } },
+		tw_bl = {
+			twitch_blind = true,
+			-- tags = { "twbl_run_direction" }
+		},
 	},
 	atlas = "twbl_blind_chips",
 	boss_colour = HEX("da2424"),
@@ -29,14 +32,14 @@ function tw_blind:set_blind(reset, silent)
 
 	G.twbl_force_speedfactor = 1
 
-	-- Real doc
+	-- Real showman
 	local jimbo_card = create_card("Joker", G.play, false, nil, nil, nil, "j_ring_master", nil)
 	jimbo_card.states.visible = false
+	jimbo_card:set_edition({ negative = true }, true)
 	jimbo_card:set_eternal(true)
 	G.play:emplace(jimbo_card)
 
-	-- Talking doc
-
+	-- Talking showman
 	local talking_card = Card_Character({
 		x = jimbo_card.T.x,
 		y = jimbo_card.T.y,
@@ -46,6 +49,7 @@ function tw_blind:set_blind(reset, silent)
 	})
 	local pseudo_card = talking_card.children.card
 	pseudo_card:set_eternal(true)
+	pseudo_card:set_edition({ negative = true }, true)
 
 	talking_card:add_speech_bubble("twbl_blinds_circus_" .. math.random(1), nil, { quip = true })
 	talking_card:say_stuff(5)

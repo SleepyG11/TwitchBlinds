@@ -179,7 +179,7 @@ function tw_sticker:__emplace_cards(kind, mode)
 		end
 		for i = 1, amount do
 			local card_pool = "Tarot"
-			if 1 / SPECTRALS_OVER_TAROTS_ODDS < pseudorandom(pseudoseed("twbl_chat_booster_card_pool")) then
+			if 1 / SPECTRALS_OVER_TAROTS_ODDS > pseudorandom(pseudoseed("twbl_chat_booster_card_pool")) then
 				card_pool = "Spectral"
 			end
 			local card = SMODS.create_card({

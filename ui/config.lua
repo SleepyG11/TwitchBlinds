@@ -528,6 +528,7 @@ function TW_BL.UI.settings.update_status(status)
 	end
 end
 
+TW_BL.current_mod.config_tab = true
 TW_BL.current_mod.extra_tabs = function()
 	return {
 		{

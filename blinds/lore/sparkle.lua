@@ -9,6 +9,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	config = {
 		tw_bl = {
 			twitch_blind = true,
+			min = 3,
 			-- tags = { "twbl_run_direction" },
 		},
 	},

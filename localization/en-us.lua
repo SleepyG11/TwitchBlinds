@@ -217,7 +217,6 @@ return {
 			twbl_settings_chat_booster_sticker_appearance_desc = {
 				"On Booster packs, new stickers can appear",
 				"which adds interactions for chat",
-				"Guaranteed on boosters from skip tags",
 			},
 
 			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",

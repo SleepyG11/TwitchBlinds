@@ -1,3 +1,5 @@
+local SPECTRALS_OVER_TAROTS_ODDS = 6.6667
+
 local BOOSTERS_TO_APPLY = {
 	["Spectral"] = true,
 	["Arcana"] = true,
@@ -35,8 +37,7 @@ function tw_sticker:should_apply(card, center, area, bypass_roll)
 		and card.ability.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
 		and (
-			G.TWBL_BOOSTER_FROM_TAG
-			or TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
+			TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
 			or (
 				TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 2
 				and STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))
@@ -55,6 +56,22 @@ end
 
 --
 
+local min_max_highlighted_override = {
+	["c_aura"] = { 1, 1 },
+}
+
+function tw_sticker:__get_select_cards_range(card, from_ability)
+	local table_override_value = min_max_highlighted_override[card.config.center.key]
+	if table_override_value then
+		return table_override_value[1], table_override_value[2]
+	elseif from_ability then
+		return card.ability.consumeable.min_highlighted or card.config.center.config.min_highlighted or 0,
+			card.ability.consumeable.min_highlighted or card.config.center.config.max_highlighted or 0
+	else
+		return card.config.center.config.min_highlighted or 0, card.config.center.config.max_highlighted or 0
+	end
+end
+
 function tw_sticker:__is_valid_consumeable(kind, mode, card)
 	if card.config.hidden then
 		return false
@@ -63,12 +80,7 @@ function tw_sticker:__is_valid_consumeable(kind, mode, card)
 		return false
 	end
 	if mode == "single" then
-		local min_select = card.config.center.config.min_highlighted or 0
-		local max_select = card.config.center.config.max_highlighted or 0
-		if card.ability and card.ability.name == "Aura" then
-			max_select = 1
-			min_select = 1
-		end
+		local min_select, max_select = tw_sticker:__get_select_cards_range(card)
 		if (min_select > 0 or max_select > 0) and G.hand.config.card_limit >= min_select then
 			return true
 		else
@@ -141,18 +153,13 @@ function tw_sticker:__highlight_targets(target_area, consumeable)
 		return false
 	end
 
-	local min_select = card.ability.consumeable.min_highlighted or 0
-	local max_select = card.ability.consumeable.max_highlighted or 0
+	local min_select, max_select = tw_sticker:__get_select_cards_range(card, true)
 	local need_to_select = (min_select > 0 or max_select > 0) and #target_area.cards >= min_select
 
 	target_area:unhighlight_all()
 	if need_to_select then
 		local sorted_cards = tw_sticker:__sort_voting_cards(target_area.cards)
-		local result_amount_to_select = math.min(
-			#target_area.cards,
-			(card.ability and card.ability.name == "Aura" and 1)
-				or (card.ability.consumeable.max_highlighted or card.ability.consumeable.min_highlighted)
-		)
+		local result_amount_to_select = math.min(#target_area.cards, math.max(min_select, max_select, 0))
 
 		for i = 1, result_amount_to_select do
 			target_area:add_to_highlighted(sorted_cards[i])
@@ -172,19 +179,32 @@ function tw_sticker:__emplace_cards(kind, mode)
 		end
 		for i = 1, amount do
 			local card_pool = "Tarot"
-			if pseudorandom(pseudoseed("twbl_chat_booster_card_pool")) > 0.85 then
+			if 1 / SPECTRALS_OVER_TAROTS_ODDS < pseudorandom(pseudoseed("twbl_chat_booster_card_pool")) then
 				card_pool = "Spectral"
 			end
-			local card = create_card(card_pool, area, nil, nil, true)
+			local card = SMODS.create_card({
+				set = card_pool,
+				area = area,
+				skip_materialize = true,
+			})
 			local anti_softlock = 30
 			while anti_softlock > 0 and not tw_sticker:__is_valid_consumeable(kind, mode, card) do
 				anti_softlock = anti_softlock - 1
 				area:remove_card(card)
 				card:remove()
-				card = create_card(card_pool, area, nil, nil, true)
+				card = SMODS.create_card({
+					set = card_pool,
+					area = area,
+					skip_materialize = true,
+				})
 			end
-			card:hard_set_T(nil, nil, G.CARD_W / 2, G.CARD_H / 2)
-			area:emplace(card)
+			-- Double check in case of anti-softlock trigger
+			if tw_sticker:__is_valid_consumeable(kind, mode, card) then
+				card:hard_set_T(nil, nil, G.CARD_W / 2, G.CARD_H / 2)
+				area:emplace(card)
+			else
+				card:remove()
+			end
 		end
 	elseif kind == "Standard" then
 		for i = 1, 5 do

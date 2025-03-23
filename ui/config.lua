@@ -106,9 +106,7 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 								ref_value = "channel_name",
 								extended_corpus = true,
 								keyboard_offset = 1,
-								callback = function()
-									print(TW_BL.SETTINGS.temp.channel_name)
-								end,
+								callback = function() end,
 							}),
 							{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
 							UIBox_button({

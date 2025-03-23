@@ -238,7 +238,7 @@ function TwitchBlinds:init()
 			elseif current_blind == TW_BL.BLINDS.get_key("lucky_wheel") then
 				if
 					G.GAME.probabilities.normal / TW_BL.BLINDS.get("lucky_wheel").config.extra.nope_odds
-					> pseudorandom(pseudoseed("twbl_wheels_nope"))
+					< pseudorandom(pseudoseed("twbl_wheels_nope"))
 				then
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, TW_BL.BLINDS.get_key("nope"))
 					return

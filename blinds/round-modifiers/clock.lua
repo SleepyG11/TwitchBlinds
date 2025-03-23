@@ -5,7 +5,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 	key = TW_BL.BLINDS.get_raw_key("clock"),
 	dollars = 5,
 	mult = 1,
-	boss = { min = 2, max = 10 },
+	boss = { min = -1, max = -1 },
 	pos = { x = 0, y = 13 },
 	config = {
 		tw_bl = { twitch_blind = true, min = 2 },

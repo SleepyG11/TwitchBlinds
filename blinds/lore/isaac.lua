@@ -9,6 +9,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 			twitch_blind = true,
 			min = 4,
 			max = 6,
+			-- tags = { "twbl_cruel_blind" },
 		},
 	},
 	atlas = "twbl_blind_chips",
@@ -16,7 +17,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 }))
 
 function tw_blind.config.tw_bl:in_pool()
-	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and pseudorandom(pseudoseed("twbl_blind_isaac_in_pool")) > 4 / 5
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()
@@ -28,10 +29,13 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	ease_background_colour_blind()
+
 	local card = create_card("Joker", G.jokers, false, nil, nil, nil, "j_ceremonial", nil)
 	card.pinned = true
-	card:set_edition({ negative = true })
 	card:set_eternal(true)
+	card:set_edition({ negative = true }, true)
 	card:add_to_deck()
 	G.jokers:emplace(card)
 end

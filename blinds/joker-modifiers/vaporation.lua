@@ -26,6 +26,9 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	ease_background_colour_blind()
+
 	for k, v in ipairs(G.jokers.cards) do
 		G.E_MANAGER:add_event(Event({
 			func = function()

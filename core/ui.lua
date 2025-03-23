@@ -8,6 +8,7 @@ local panels_to_load = {
 	"blind_voting_process",
 	"command_info_1",
 	"command_info_1_short",
+	"command_info_2",
 	"voting_process_3",
 }
 

@@ -5,7 +5,7 @@ function twbl_init_utilities()
 
 	--- Get index of a voting blind
 	--- @param target "winner" | "loser" | integer | nil
-	--- @return string or nil
+	--- @return string|nil
 	function UTILITIES.get_vote_variant(target)
 		if not TW_BL.CHAT_COMMANDS.vote_variants then
 			return nil
@@ -14,13 +14,13 @@ function twbl_init_utilities()
 			return TW_BL.CHAT_COMMANDS.vote_variants[tonumber(target)]
 		end
 		if target == "winner" then
-			local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner()
+			local win_index = TW_BL.CHAT_COMMANDS.get_vote_winner("voting_blind")
 			return win_index
 		elseif target == "loser" then
 			local result = nil
 			local score = math.huge
 
-			for k, v in pairs(TW_BL.CHAT_COMMANDS.get_vote_status()) do
+			for k, v in pairs(TW_BL.CHAT_COMMANDS.get_vote_status("voting_blind")) do
 				if not v.winner and v.score <= score then
 					result = k
 					score = v.score
@@ -36,12 +36,14 @@ function twbl_init_utilities()
 	--- Generate new list of blinds
 	--- @param ante_offset integer Difference between current ante and target ante
 	--- @param amount integer Amount of blinds to choose
+	--- @param tags table<string, boolean> Pool tags to use
 	--- @return string[]|nil
-	function UTILITIES.get_new_bosses(ante_offset, amount)
+	function UTILITIES.get_new_bosses(ante_offset, amount, tags)
 		return TW_BL.BLINDS.generate_new_voting_blinds(
 			TW_BL.SETTINGS.current.pool_type,
 			ante_offset or 0,
 			amount or 3,
+			tags or {},
 			false
 		)
 	end

@@ -57,7 +57,7 @@ return {
 			},
 			bl_twbl_greed = {
 				name = "The Greed",
-				text = { "Skip the next shop" },
+				text = { "One of the next", "shops is missing..." },
 			},
 			bl_twbl_isaac = {
 				name = "The Voice of God",
@@ -92,7 +92,7 @@ return {
 				text = { "All scored cards are", "removed from the deck" },
 			},
 			bl_twbl_vaporation = {
-				name = "The Vaporation",
+				name = "The Evaporation",
 				text = { "Current Jokers will", "become Perishable" },
 			},
 			bl_twbl_eraser = {
@@ -119,6 +119,28 @@ return {
 				name = "The Time Spiral",
 				text = { "Chat can move in time..." },
 			},
+			bl_twbl_fee = {
+				name = "The Fee",
+				text = { "[DEV]" },
+			},
+			bl_twbl_garden = {
+				name = "The Garden",
+				text = { "Do you like flowers?" },
+			},
+			bl_twbl_rocket = {
+				name = "The Rocket",
+				text = { "My beloved!" },
+			},
+			bl_twbl_university = {
+				name = "The University",
+				text = { "Time to learn how to", "play less bad!" },
+			},
+
+			bl_twbl_washer = {
+				name = "The Washer",
+				text = { "Chat can select how to", "clean up a deck" },
+			},
+
 			-- Showdown
 			bl_twbl_plum_hammer = {
 				name = "Plum Hammer",
@@ -195,7 +217,6 @@ return {
 			twbl_settings_chat_booster_sticker_appearance_desc = {
 				"On Booster packs, new stickers can appear",
 				"which adds interactions for chat",
-				"Guaranteed on boosters from skip tags",
 			},
 
 			twbl_settings_natural_blinds = "Add Twitch Blinds in regular pool",
@@ -244,9 +265,10 @@ return {
 			k_twbl_sketch_ex = "Sketch!",
 			k_twbl_count_ex = "Count!",
 			k_twbl_reset_ex = "Reset!",
+			k_twbl_trash_ex = "Trash!",
 
 			k_twbl_panel_toggle_DEFAULT = "Trigger the boss blind's effect",
-			k_twbl_panel_toggle_flashlight = "Flip a card in hand (twice per chatter)",
+			k_twbl_panel_toggle_flashlight = "Flip a card in hand (3 times per chatter)",
 			k_twbl_panel_toggle_pin = "(Un)pin Joker (once per chatter)",
 			k_twbl_panel_toggle_lock = "Add/remove Eternal sticker on Joker (once per chatter)",
 			k_twbl_panel_toggle_chaos = "(De)select card in hand (multiple use)",
@@ -270,7 +292,65 @@ return {
 			k_twbl_spiral_m_1 = "-1 Ante",
 			k_twbl_spiral_m_2 = "-2 Antes",
 
+			k_twbl_clock_count_up = "+0.5 seconds",
+			k_twbl_clock_count_down = "-1 second",
+
 			k_twbl_waiting_for_chat = "Waiting for chat...",
+		},
+		quips = {
+			twbl_blinds_university_1 = { "Alright, folks,", "welcome back!" },
+			twbl_blinds_university_2 = { "I have proposition." },
+			twbl_blinds_university_3 = { "Now we're cooking!" },
+			twbl_blinds_university_4 = { "Let's ship it!" },
+
+			twbl_blinds_garden_1 = { "Disgusting!" },
+			twbl_blinds_garden_2 = { "We can make it work!" },
+			twbl_blinds_garden_3 = { "Bummer!" },
+			twbl_blinds_garden_4 = { "Oh beans!" },
+
+			twbl_blinds_sparkle_1 = { "Here's a trick!" },
+			twbl_blinds_sparkle_2 = { "What about even more cards?" },
+			twbl_blinds_sparkle_3 = { "I love shiny ones!" },
+			twbl_blinds_sparkle_4 = { "Let's find your", "{C:attention}One-of-a-Kind{} card!" },
+
+			twbl_blinds_moon_1 = { "It's too much." },
+			-- twbl_blinds_moon_2 = { "It's too much." },
+			-- twbl_blinds_moon_3 = { "It's too much." },
+			-- twbl_blinds_moon_4 = { "It's too much." },
+
+			twbl_blinds_jimbo_1 = {
+				"I'm doing my best!",
+			},
+			twbl_blinds_jimbo_2 = {
+				"Hey, look! It's Me!",
+			},
+			twbl_blinds_jimbo_3 = {
+				"I'm literally",
+				"a fool, what's",
+				"your excuse?",
+			},
+			twbl_blinds_jimbo_4 = {
+				"Hello there! My name is",
+				"{C:attention}Jimbo{}, I'm here to help",
+				"you learn how to play!",
+			},
+			twbl_blinds_jimbo_5 = {
+				"Be picky, you can only",
+				"carry {C:attention}5 Joker{} cards",
+				"at a time!",
+			},
+			twbl_blinds_jimbo_6 = {
+				"I'm one of the {C:attention}many",
+				"{C:attention}Jokers{} you can add to",
+				"your run. Every {C:attention}Joker",
+				"does something different",
+			},
+			twbl_blinds_jimbo_7 = {
+				"You wanna be {C:attention}my friend{}?",
+				"I have {C:attention}a lot{} of ... friends!",
+			},
+
+			twbl_blinds_circus_1 = { "Hello there!" },
 		},
 	},
 }

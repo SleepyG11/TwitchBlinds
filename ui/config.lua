@@ -106,9 +106,7 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 								ref_value = "channel_name",
 								extended_corpus = true,
 								keyboard_offset = 1,
-								callback = function()
-									print(TW_BL.SETTINGS.temp.channel_name)
-								end,
+								callback = function() end,
 							}),
 							{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
 							UIBox_button({
@@ -530,6 +528,7 @@ function TW_BL.UI.settings.update_status(status)
 	end
 end
 
+TW_BL.current_mod.config_tab = true
 TW_BL.current_mod.extra_tabs = function()
 	return {
 		{

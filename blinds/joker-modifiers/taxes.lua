@@ -16,11 +16,11 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 }))
 
 function tw_blind.config.tw_bl:in_pool()
-	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 10
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
 end
 
 function tw_blind:in_pool()
-	return TW_BL.BLINDS.can_natural_appear(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 10
+	return TW_BL.BLINDS.can_natural_appear(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
 end
 
 function tw_blind:loc_vars()
@@ -33,6 +33,9 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	ease_background_colour_blind()
+
 	for k, v in ipairs(G.jokers.cards) do
 		local is_triggered = G.GAME.probabilities.normal / G.GAME.blind.config.blind.config.extra.odds
 			> pseudorandom(pseudoseed("twbl_taxes"))

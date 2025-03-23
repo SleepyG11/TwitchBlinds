@@ -27,7 +27,15 @@ function blind_trash_can_remove_scored_cards(scoring_hand)
 		trigger = "after",
 		delay = 0.2,
 		func = function()
-			play_sound("tarot1")
+			play_sound("cancel", 0.8, 1.7)
+			attention_text({
+				scale = 1.4,
+				text = localize("k_twbl_trash_ex"),
+				hold = 2,
+				align = "cm",
+				offset = { x = 0, y = -2.7 },
+				major = G.play,
+			})
 			for i = #scoring_hand, 1, -1 do
 				local card = scoring_hand[i]
 				if card.ability.name == "Glass Card" then

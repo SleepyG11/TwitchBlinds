@@ -7,14 +7,22 @@ priority = 0
 [[patches]]
 [patches.pattern]
 target = "card.lua"
-pattern = 'if G.pack_cards then'
-position = "before"
+pattern = """G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED), blockable = false, blocking = false, func = function()"""
+position = "after"
 payload = """
 if self.ability.set == "Booster" and self.ability.twbl_chat_booster then
-    TW_BL.STICKERS.get('chat_booster'):__on_booster_open(self)
+    G.E_MANAGER:add_event(Event({
+        trigger = "immediate",
+        blockable = false, blocking = false,
+        func = function()
+            TW_BL.STICKERS.get('chat_booster'):__on_booster_open(self)
+            return true
+        end,
+    }))
 end
 """
 match_indent = true
+times = 1
 
 # On booster pack skip
 [[patches]]

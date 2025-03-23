@@ -162,6 +162,12 @@ function TwitchBlinds:init()
 
 		if start_voting_process and not is_overriding then
 			if force_voting_process or not TW_BL.CHAT_COMMANDS.can_collect.vote then
+				local target_ante = G.GAME.round_resets.ante + voting_ante_offset
+
+				local is_showdown_boss = target_ante >= 2 and target_ante % G.GAME.win_ante == 0
+				local is_middle_boss = not is_showdown_boss and target_ante % 2 == 0 and target_ante > 2
+				local is_cruel_boss = not is_showdown_boss and not is_middle_boss and target_ante % 4 == 0
+
 				TW_BL.EVENTS.set_delay_threshold("voting_blind", 15)
 				TW_BL.CHAT_COMMANDS.set_vote_variants(
 					"voting_blind",
@@ -172,6 +178,10 @@ function TwitchBlinds:init()
 					TW_BL.SETTINGS.current.pool_type,
 					voting_ante_offset,
 					TW_BL.BLINDS.blinds_to_vote,
+					{
+						["twbl_middle_boss"] = is_middle_boss,
+						["twbl_cruel_boss"] = is_cruel_boss,
+					},
 					true
 				)
 
@@ -228,7 +238,7 @@ function TwitchBlinds:init()
 			elseif current_blind == TW_BL.BLINDS.get_key("lucky_wheel") then
 				if
 					G.GAME.probabilities.normal / TW_BL.BLINDS.get("lucky_wheel").config.extra.nope_odds
-					> pseudorandom(pseudoseed("twbl_wheels_nope"))
+					< pseudorandom(pseudoseed("twbl_wheels_nope"))
 				then
 					TW_BL.BLINDS.replace_blind(G.GAME.blind_on_deck, TW_BL.BLINDS.get_key("nope"))
 					return

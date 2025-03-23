@@ -1,0 +1,2 @@
+-- apply red seal on played cards, debuff them
+-- Middle boss

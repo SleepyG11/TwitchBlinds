@@ -1,5 +1,5 @@
 local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("flashlight"),
+	key = TW_BL.BLINDS.get_raw_key("fee"),
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -22,7 +22,7 @@ end
 
 function tw_blind:set_blind()
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
-	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", 2, true)
+	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "toggle")
 	TW_BL.UI.set_panel("game_top", "command_info_1", true, true, {
 		command = "toggle",
@@ -39,8 +39,8 @@ function tw_blind:defeat()
 	TW_BL.UI.remove_panel("game_top", "command_info_1", true)
 end
 
-TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("flashlight"), function(command, username, raw_index)
-	if command ~= "toggle" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("flashlight") then
+TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("fee"), function(command, username, raw_index)
+	if command ~= "toggle" or G.GAME.blind.name ~= TW_BL.BLINDS.get_key("fee") then
 		return
 	end
 	if G.STATE ~= G.STATES.SELECTING_HAND then
@@ -52,13 +52,19 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("flashlight"), 
 		G.GAME.blind:wiggle()
 		local card = G.hand.cards[index]
 		card_eval_status_text(card, "extra", nil, nil, nil, { message = username, instant = true })
-		card:flip()
+		if not card.ability.extra then
+			card.ability.extra = {}
+		end
+		if card.children.particles then
+			card.children.particles:fade(0.2, 1)
+		end
+		if card.ability.twbl_fee then
+			card.ability.twbl_fee = nil
+		else
+			card.ability.twbl_fee = true
+		end
 	end
 end)
-
-function tw_blind:stay_flipped()
-	return true
-end
 
 function tw_blind:press_play()
 	G.E_MANAGER:add_event(Event({

@@ -24,17 +24,6 @@ end
 match_indent = true
 times = 1
 
-# On booster pack skip
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.end_consumeable(e)'
-position = "before"
-payload = """
-if TW_BL.G.state_sticker_chat_booster and TW_BL.G.state_sticker_chat_booster.use and TW_BL.STICKERS.get('chat_booster'):__use() then return end
-"""
-match_indent = true
-
 # On usage of consumable on booster pack
 [[patches]]
 [patches.pattern]
@@ -43,20 +32,6 @@ pattern = 'G.GAME.pack_choices = G.GAME.pack_choices - 1'
 position = "after"
 payload = """
 elseif TW_BL.G.state_sticker_chat_booster and TW_BL.G.state_sticker_chat_booster.use and TW_BL.STICKERS.get('chat_booster'):__use() then
-"""
-match_indent = true
-
-
-# On booster pack exit
-[[patches]]
-[patches.pattern]
-target = "functions/button_callbacks.lua"
-pattern = 'G.FUNCS.end_consumeable = function(e, delayfac)'
-position = "after"
-payload = """
-if G.booster_pack and TW_BL.G.state_sticker_chat_booster then
-    TW_BL.STICKERS.get('chat_booster'):__on_booster_exit()
-end
 """
 match_indent = true
 

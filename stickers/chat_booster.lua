@@ -328,6 +328,7 @@ function tw_sticker:__use()
 
 	if kind == "Celestial" then
 		TW_BL.EVENTS.request_delay(5, "chat_booster")
+		delay(0.5)
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local planet = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
@@ -345,6 +346,7 @@ function tw_sticker:__use()
 		return true
 	elseif kind == "Arcana" or kind == "Spectral" then
 		TW_BL.EVENTS.request_delay(5, "chat_booster")
+		delay(0.5)
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local card_to_use = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
@@ -362,6 +364,7 @@ function tw_sticker:__use()
 		return true
 	elseif kind == "Standard" then
 		TW_BL.EVENTS.request_delay(5, "chat_booster")
+		delay(0.5)
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local card = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
@@ -507,6 +510,28 @@ function tw_sticker:__on_booster_exit()
 			v.ability.twbl_state_target_score = nil
 		end
 	end
+end
+
+--
+
+local skip_booster_ref = G.FUNCS.skip_booster
+function G.FUNCS.skip_booster(...)
+	if
+		TW_BL.G.state_sticker_chat_booster
+		and TW_BL.G.state_sticker_chat_booster.use
+		and TW_BL.STICKERS.get("chat_booster"):__use()
+	then
+		return
+	end
+	return skip_booster_ref(...)
+end
+
+local end_consumeable_ref = G.FUNCS.end_consumeable
+function G.FUNCS.end_consumeable(...)
+	if G.booster_pack and TW_BL.G.state_sticker_chat_booster then
+		TW_BL.STICKERS.get("chat_booster"):__on_booster_exit()
+	end
+	return end_consumeable_ref(...)
 end
 
 --

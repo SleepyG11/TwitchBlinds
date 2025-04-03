@@ -6,7 +6,7 @@
 	"description": "Let your Twitch chat decide which new boss will end your run ;)",
 	"prefix": "twbl",
 	"priority": -1,
-	"version": "1.3.0-pre",
+	"version": "1.3.0-pre-1",
 	"main_file": "index.lua",
 	"badge_colour": "8E15AD",
 	"dependencies": []

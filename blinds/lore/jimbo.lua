@@ -15,7 +15,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 }))
 
 function tw_blind.config.tw_bl:in_pool()
-	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+	return not TW_BL.G.blind_jimbo_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()
@@ -27,6 +27,8 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
+
+	TW_BL.G.blind_jimbo_encountered = true
 
 	ease_background_colour_blind()
 
@@ -64,7 +66,7 @@ function tw_blind:set_blind(reset, silent)
 			jimbo_card.states.visible = true
 			G.play:remove_card(jimbo_card)
 			G.jokers:emplace(jimbo_card)
-			jimbo_card:add_to_deck(true)
+			jimbo_card:add_to_deck()
 
 			G.E_MANAGER:add_event(Event({
 				trigger = "after",

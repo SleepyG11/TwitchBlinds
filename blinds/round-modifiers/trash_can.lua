@@ -23,31 +23,23 @@ end
 
 function blind_trash_can_remove_scored_cards(scoring_hand)
 	G.GAME.blind:wiggle()
-	G.E_MANAGER:add_event(Event({
-		trigger = "after",
-		delay = 0.2,
-		func = function()
-			play_sound("cancel", 0.8, 1.7)
-			attention_text({
-				scale = 1.4,
-				text = localize("k_twbl_trash_ex"),
-				hold = 2,
-				align = "cm",
-				offset = { x = 0, y = -2.7 },
-				major = G.play,
-			})
-			for i = #scoring_hand, 1, -1 do
-				local card = scoring_hand[i]
-				if card.ability.name == "Glass Card" then
-					card:shatter()
-				else
-					card:start_dissolve(nil, i == #scoring_hand)
-				end
-			end
-			for i = 1, #G.jokers.cards do
-				G.jokers.cards[i]:calculate_joker({ remove_playing_cards = true, removed = scoring_hand })
-			end
-			return true
-		end,
-	}))
+	play_sound("cancel", 0.8, 1.7)
+	attention_text({
+		scale = 1.4,
+		text = localize("k_twbl_trash_ex"),
+		hold = 2,
+		align = "cm",
+		offset = { x = 0, y = -2.7 },
+		major = G.play,
+	})
+	for i = #scoring_hand, 1, -1 do
+		local card = scoring_hand[i]
+		if card.ability.name == "Glass Card" then
+			card:shatter()
+		else
+			card:start_dissolve(nil, i == #scoring_hand)
+		end
+	end
+	SMODS.calculate_context({ remove_playing_cards = true, removed = scoring_hand })
+	delay(1)
 end

@@ -32,7 +32,7 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 }))
 
 function tw_blind.config.tw_bl:in_pool()
-	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+	return not TW_BL.G.blind_clock_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()
@@ -41,6 +41,8 @@ function tw_blind:in_pool()
 end
 
 function tw_blind:set_blind()
+	TW_BL.G.blind_clock_encountered = true
+
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_spiral_ante", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.reset("blind_spiral_ante", "vote")
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("vote", true, true)

@@ -1,15 +1,13 @@
-local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("lock"),
+local tw_blind = TW_BL.BLINDS.create({
+	key = "lock",
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
-	pos = { x = 0, y = 8 },
 	config = {
 		tw_bl = { twitch_blind = true, min = 2 },
 	},
-	atlas = "twbl_blind_chips",
 	boss_colour = HEX("c0c0c0"),
-}))
+})
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2 and #G.jokers.cards <= 15
@@ -59,3 +57,23 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), functi
 		end
 	end
 end)
+
+-- Add metallic
+local blind_draw_ref = Blind.draw
+function Blind:draw(...)
+	local result
+	blind_draw_ref(self, ...)
+	if self.name == TW_BL.BLINDS.get_key("lock") then
+		local _sprite = self.children.animatedSprite
+		_sprite.ARGS.send_to_shader = _sprite.ARGS.send_to_shader or {}
+		_sprite.ARGS.send_to_shader[1] = math.min(_sprite.VT.r * 3, 1)
+			+ G.TIMERS.REAL / 18
+			+ (_sprite.juice and _sprite.juice.r * 20 or 0)
+			+ 1
+		_sprite.ARGS.send_to_shader[2] = G.TIMERS.REAL
+
+		Sprite.draw_shader(_sprite, "dissolve")
+		Sprite.draw_shader(_sprite, "voucher", nil, _sprite.ARGS.send_to_shader)
+	end
+	return result
+end

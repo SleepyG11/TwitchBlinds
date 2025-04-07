@@ -1,7 +1,7 @@
 local NOPE_ODDS = 4
 
-local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("lucky_wheel"),
+local tw_blind = TW_BL.BLINDS.create({
+	key = "lucky_wheel",
 	dollars = 5,
 	mult = 2,
 	boss = { min = 2, max = 10 },
@@ -12,10 +12,8 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 		},
 	},
 	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. NOPE_ODDS },
-	pos = { x = 0, y = 27 },
-	atlas = "twbl_blind_chips",
 	boss_colour = HEX("00d231"),
-}))
+})
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 1

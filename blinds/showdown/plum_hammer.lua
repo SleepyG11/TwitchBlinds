@@ -1,18 +1,16 @@
 local DEBUFFS_LIMIT = 2
 
-local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("plum_hammer"),
+local tw_blind = TW_BL.BLINDS.create({
+	key = "plum_hammer",
 	dollars = 8,
 	mult = 2,
 	boss = { min = -1, max = -1, showdown = true },
-	pos = { x = 0, y = 0 },
 	config = {
 		tw_bl = { twitch_blind = true },
 	},
 	vars = { "" .. DEBUFFS_LIMIT },
-	atlas = "twbl_showdown_blind_chips",
 	boss_colour = HEX("DDA0DD"),
-}))
+})
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)

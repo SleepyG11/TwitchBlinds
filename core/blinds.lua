@@ -71,6 +71,22 @@ function twbl_init_blinds()
 
 	TW_BL.BLINDS = BLINDS
 
+	function BLINDS.create(blind_definition, atlas_definition)
+		local key = blind_definition.key
+		SMODS.Atlas(atlas_definition or {
+			key = "twbl_blind_atlas_" .. key,
+			px = 34,
+			py = 34,
+			path = "blinds/" .. key .. ".png",
+			atlas_table = "ANIMATION_ATLAS",
+			frames = 21,
+		})
+		blind_definition.key = TW_BL.BLINDS.get_raw_key(key)
+		blind_definition.atlas = "twbl_blind_atlas_" .. key
+		blind_definition.pos = { x = 0, y = 0 }
+		return TW_BL.BLINDS.register(SMODS.Blind(blind_definition))
+	end
+
 	function BLINDS.register(blind)
 		table.insert(blind.showdown and BLINDS.showdown or BLINDS.regular, blind.key)
 		table.insert(BLINDS.loaded, blind.key)

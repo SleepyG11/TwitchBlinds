@@ -1,7 +1,7 @@
 local REPLACE_ODDS = 6
 
-local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("banana"),
+local tw_blind = TW_BL.BLINDS.create({
+	key = "banana",
 	dollars = 5,
 	mult = 2,
 	boss = { min = 2, max = 10 },
@@ -10,10 +10,8 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 		tw_bl = { twitch_blind = true, min = 2 },
 	},
 	vars = { "" .. (G.GAME and G.GAME.probabilities.normal or 1), "" .. REPLACE_ODDS },
-	pos = { x = 0, y = 4 },
-	atlas = "twbl_blind_chips",
 	boss_colour = HEX("e2ce00"),
-}))
+})
 
 function tw_blind.config.tw_bl:in_pool()
 	return TW_BL.BLINDS.can_appear_in_voting(tw_blind) and G.jokers and #G.jokers.cards > 2

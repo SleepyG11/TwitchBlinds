@@ -1,7 +1,7 @@
 -- Remake it in a way that chat can select smth space-themed (telescope + observatory, planet vouchers, some jokers, pack of planets, etc.)
 
-local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
-	key = TW_BL.BLINDS.get_raw_key("moon"),
+local tw_blind = TW_BL.BLINDS.create({
+	key = "moon",
 	dollars = 5,
 	mult = 2,
 	boss = { min = -1, max = -1 },
@@ -12,10 +12,8 @@ local tw_blind = TW_BL.BLINDS.register(SMODS.Blind({
 			-- tags = { "twbl_run_direction" },
 		},
 	},
-	pos = { x = 0, y = 7 },
-	atlas = "twbl_blind_chips",
 	boss_colour = HEX("00d4d4"),
-}))
+})
 
 function tw_blind.config.tw_bl:in_pool()
 	return not TW_BL.G.blind_moon_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)

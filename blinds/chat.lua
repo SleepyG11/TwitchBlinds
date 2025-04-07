@@ -1,3 +1,12 @@
+SMODS.Atlas({
+	key = "twbl_blind_atlas_chat",
+	px = 34,
+	py = 34,
+	path = "blinds/chat.png",
+	atlas_table = "ANIMATION_ATLAS",
+	frames = 21,
+})
+
 local tw_blind = SMODS.Blind({
 	key = TW_BL.BLINDS.get_raw_key("twitch_chat"),
 	dollars = 5,
@@ -7,7 +16,7 @@ local tw_blind = SMODS.Blind({
 	config = {
 		tw_bl = { twitch_blind = true, ignore = true },
 	},
-	atlas = "twbl_blind_chips",
+	atlas = "twbl_blind_atlas_chat",
 	boss_colour = HEX("8e15ad"),
 	discovered = true,
 	ignore_showdown_check = true,

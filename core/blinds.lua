@@ -136,9 +136,9 @@ function twbl_init_blinds()
 			and (not range_to_check.max or range_to_check.max >= math.max(0, G.GAME.round_resets.ante))
 	end
 
-	assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/chat.lua")))()
+	assert(load(nativefs.read(TW_BL.current_mod.path .. "additions/blinds/twitch_chat.lua")))()
 	for _, blind_name in ipairs(blinds_to_load) do
-		assert(load(nativefs.read(TW_BL.current_mod.path .. "blinds/" .. blind_name .. ".lua")))()
+		assert(load(nativefs.read(TW_BL.current_mod.path .. "additions/blinds/" .. blind_name .. ".lua")))()
 	end
 	BLINDS.chat_blind = BLINDS.get_key("twitch_chat")
 

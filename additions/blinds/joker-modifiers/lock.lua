@@ -58,22 +58,21 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), functi
 	end
 end)
 
--- Add metallic
-local blind_draw_ref = Blind.draw
-function Blind:draw(...)
-	local result
-	blind_draw_ref(self, ...)
-	if self.name == TW_BL.BLINDS.get_key("lock") then
-		local _sprite = self.children.animatedSprite
-		_sprite.ARGS.send_to_shader = _sprite.ARGS.send_to_shader or {}
-		_sprite.ARGS.send_to_shader[1] = math.min(_sprite.VT.r * 3, 1)
-			+ G.TIMERS.REAL / 18
-			+ (_sprite.juice and _sprite.juice.r * 20 or 0)
-			+ 1
-		_sprite.ARGS.send_to_shader[2] = G.TIMERS.REAL
+-- -- Add metallic (probably doesn't work)
+-- local blind_draw_ref = Blind.draw
+-- function Blind:draw(...)
+-- 	local result = blind_draw_ref(self, ...)
+-- 	if self.name == TW_BL.BLINDS.get_key("lock") then
+-- 		local _sprite = self.children.animatedSprite
+-- 		_sprite.ARGS.send_to_shader = _sprite.ARGS.send_to_shader or {}
+-- 		_sprite.ARGS.send_to_shader[1] = math.min(_sprite.VT.r * 3, 1)
+-- 			+ G.TIMERS.REAL / 18
+-- 			+ (_sprite.juice and _sprite.juice.r * 20 or 0)
+-- 			+ 1
+-- 		_sprite.ARGS.send_to_shader[2] = G.TIMERS.REAL
 
-		Sprite.draw_shader(_sprite, "dissolve")
-		Sprite.draw_shader(_sprite, "voucher", nil, _sprite.ARGS.send_to_shader)
-	end
-	return result
-end
+-- 		Sprite.draw_shader(_sprite, "dissolve")
+-- 		Sprite.draw_shader(_sprite, "voucher", nil, _sprite.ARGS.send_to_shader)
+-- 	end
+-- 	return result
+-- end

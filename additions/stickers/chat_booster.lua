@@ -18,15 +18,13 @@ local BANNED_CONSUMEABLES = {
 	["c_hex"] = true,
 }
 
-local tw_sticker = TW_BL.STICKERS.register(SMODS.Sticker({
-	atlas = "twbl_stickers",
-	pos = { x = 0, y = 0 },
+local tw_sticker = TW_BL.STICKERS.create({
 	badge_colour = HEX("8e15ad"),
 	config = {},
 	rate = 0,
-	key = TW_BL.STICKERS.get_raw_key("chat_booster"),
+	key = "chat_booster",
 	discovered = true,
-}))
+})
 
 -- Implementation in lovely/stickers_chat_booster.toml
 
@@ -37,7 +35,8 @@ function tw_sticker:should_apply(card, center, area, bypass_roll)
 		and card.ability.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
 		and (
-			TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
+			bypass_roll
+			or TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 3
 			or (
 				TW_BL.SETTINGS.current.chat_booster_sticker_appearance == 2
 				and STICKER_RATE[center.kind] >= pseudorandom(pseudoseed("twbl_sticker_chat_booster_natural"))

@@ -119,27 +119,31 @@ return {
 				name = "The Time Spiral",
 				text = { "Chat can move in time..." },
 			},
-			bl_twbl_fee = {
-				name = "The Fee",
-				text = { "[DEV]" },
-			},
-			bl_twbl_garden = {
-				name = "The Garden",
-				text = { "Do you like flowers?" },
-			},
-			bl_twbl_rocket = {
-				name = "The Rocket",
-				text = { "My beloved!" },
-			},
+			-- bl_twbl_fee = {
+			-- 	name = "The Fee",
+			-- 	text = { "[DEV]" },
+			-- },
+			-- bl_twbl_garden = {
+			-- 	name = "The Garden",
+			-- 	text = { "Do you like flowers?" },
+			-- },
+			-- bl_twbl_rocket = {
+			-- 	name = "The Rocket",
+			-- 	text = { "My beloved!" },
+			-- },
 			bl_twbl_university = {
 				name = "The University",
 				text = { "Time to learn how to", "play less bad!" },
 			},
-
-			bl_twbl_washer = {
-				name = "The Washer",
-				text = { "Chat can select how to", "clean up a deck" },
+			bl_twbl_vacation = {
+				name = "The Vacation",
+				text = { "Finally, a vacation!", "Chat, what we gonna", "do today?" },
 			},
+
+			-- bl_twbl_washer = {
+			-- 	name = "The Washer",
+			-- 	text = { "Chat can select how to", "clean up a deck" },
+			-- },
 
 			-- Showdown
 			bl_twbl_plum_hammer = {
@@ -291,6 +295,29 @@ return {
 			k_twbl_spiral_p_2 = "+2 Antes",
 			k_twbl_spiral_m_1 = "-1 Ante",
 			k_twbl_spiral_m_2 = "-2 Antes",
+
+			k_twbl_vacation_touch_grass = "Touch grass",
+			k_twbl_vacation_touch_grass_description_1 = "First time ever we gonna do it!",
+			k_twbl_vacation_buy_flowers = "Buy flowers",
+			k_twbl_vacation_buy_flowers_description_1 = "They're so cute!",
+			k_twbl_vacation_visit_circus = "Visit circus",
+			k_twbl_vacation_visit_circus_description_1 = "I'm so excited! Let's show begins!",
+			k_twbl_vacation_go_camping = "Go camping",
+			k_twbl_vacation_go_camping_description_1 = "I very like camping!",
+			k_twbl_vacation_go_mining = "Go mining",
+			k_twbl_vacation_go_mining_description_1 = "Let's found some gold!",
+			k_twbl_vacation_worldwide_trip = "Worldwide trip",
+			k_twbl_vacation_worldwide_trip_description_1 = "Is this a crazy trip? Absolutely!",
+			k_twbl_vacation_be_creative = "Be creative",
+			k_twbl_vacation_be_creative_description_1 = "Use all your imagination!",
+			k_twbl_vacation_explore_space = "Explore space",
+			k_twbl_vacation_explore_space_description_1 = "So much secrets in endless space!",
+			k_twbl_vacation_predict_future = "Predict future",
+			k_twbl_vacation_predict_future_description_1 = "Feels lucky?",
+			k_twbl_vacation_be_successful = "Be successful",
+			k_twbl_vacation_be_successful_description_1 = "It's so easy, just make more money!",
+			k_twbl_vacation_play_balatro = "Play Balatro",
+			k_twbl_vacation_play_balatro_description_1 = "Play now! Or else...",
 
 			k_twbl_clock_count_up = "+0.5 seconds",
 			k_twbl_clock_count_down = "-1 second",

@@ -30,6 +30,10 @@ local blinds_to_load = {
 	"lore/jimbo",
 	"lore/moon",
 	"lore/sparkle",
+	"lore/university",
+
+	-- "card-packs/garden",
+	"card-packs/vacation",
 
 	"showdown/plum_hammer",
 }

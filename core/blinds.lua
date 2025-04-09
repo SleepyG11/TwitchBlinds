@@ -128,6 +128,12 @@ function twbl_init_blinds()
 		if not TW_BL.SETTINGS.current.natural_blinds or not blind.boss then
 			return false
 		end
+		if blind.config and blind.config.tw_bl and blind.config.tw_bl.one_time then
+			local key = "blind_encountered_" .. blind.key
+			if TW_BL.G[key] then
+				return false
+			end
+		end
 		return math.max(G.GAME.round_resets.ante, 1) >= (blind.boss.min or 1)
 	end
 

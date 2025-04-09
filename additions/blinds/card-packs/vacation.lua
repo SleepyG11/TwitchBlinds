@@ -184,19 +184,22 @@ local tw_blind = TW_BL.BLINDS.create({
 	dollars = 1,
 	mult = 2,
 	boss = {
-		min = 4,
-		max = 6,
+		min = -1,
+		max = -1,
 	},
 	config = {
 		tw_bl = {
 			twitch_blind = true,
+			min = 4,
+			max = 6,
+			one_time = true,
 		},
 	},
 	boss_colour = HEX("ff7f50"),
 })
 
 function tw_blind.config.tw_bl:in_pool()
-	return not TW_BL.G.blind_vacation_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()
@@ -204,8 +207,10 @@ function tw_blind:in_pool()
 	return false
 end
 
-function tw_blind:set_blind()
-	TW_BL.G.blind_vacation_encountered = true
+function tw_blind:set_blind(reset, silent)
+	if reset then
+		return
+	end
 
 	TW_BL.CHAT_COMMANDS.set_vote_variants("blind_vacation_variant", { "1", "2", "3" }, true)
 	TW_BL.CHAT_COMMANDS.reset("blind_vacation_variant", "vote")
@@ -240,19 +245,17 @@ function tw_blind:defeat()
 	local variant_config = variants[win_variant]
 	local callbacks = {}
 
-	local _, jokers_eternal_index =
-		pseudorandom_element(variant_config.jokers or {}, pseudoseed("twbl_vacation_eternal"))
-	for index, joker in ipairs(variant_config.jokers or {}) do
+	for _, joker in ipairs(variant_config.jokers or {}) do
 		local center = G.P_CENTERS[joker]
 		if center then
 			table.insert(callbacks, function()
 				G.E_MANAGER:add_event(Event({
-					func = function()
+					func = function(first)
 						local card = SMODS.create_card({
 							set = "Joker",
 							key = joker,
 						})
-						if jokers_eternal_index == index then
+						if first then
 							card:set_eternal(true)
 						end
 						G.jokers:emplace(card)
@@ -302,8 +305,8 @@ function tw_blind:defeat()
 		-- delay(4)
 	end
 
-	for _, callback in ipairs(result_callbacks) do
-		callback()
+	for index, callback in ipairs(result_callbacks) do
+		callback(index == 1)
 	end
 	TW_BL.G.blind_vacation_variants = nil
 

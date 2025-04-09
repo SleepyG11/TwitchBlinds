@@ -30,6 +30,9 @@ end
 local debuffed_list = {}
 
 function tw_blind:set_blind(reset, silent)
+	if reset then
+		return
+	end
 	debuffed_list = {}
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("toggle", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_max_uses("toggle", 1, true)

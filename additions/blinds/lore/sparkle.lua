@@ -9,6 +9,7 @@ local tw_blind = TW_BL.BLINDS.create({
 		tw_bl = {
 			twitch_blind = true,
 			min = 3,
+			one_time = true,
 			-- tags = { "twbl_run_direction" },
 		},
 	},
@@ -16,7 +17,7 @@ local tw_blind = TW_BL.BLINDS.create({
 })
 
 function tw_blind.config.tw_bl:in_pool()
-	return not TW_BL.G.blind_sparkle_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()
@@ -28,8 +29,6 @@ function tw_blind:set_blind(reset, silent)
 	if reset then
 		return
 	end
-
-	TW_BL.G.blind_sparkle_encountered = true
 
 	ease_background_colour_blind()
 

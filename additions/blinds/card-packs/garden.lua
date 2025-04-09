@@ -6,6 +6,9 @@ local tw_blind = TW_BL.BLINDS.create({
 	config = {
 		tw_bl = {
 			twitch_blind = true,
+			one_time = true,
+			min = 3,
+			max = 5,
 			-- tags = { "twbl_run_direction" },
 		},
 	},

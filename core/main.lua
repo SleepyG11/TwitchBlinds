@@ -247,6 +247,15 @@ function TwitchBlinds:init()
 		end
 		return select_blind_ref(...)
 	end
+
+	local set_blind_ref = Blind.set_blind
+	function Blind:set_blind(...)
+		local result = set_blind_ref(self, ...)
+		if self.config and self.config.tw_bl and self.config.tw_bl.one_time then
+			TW_BL.G["blind_encountered_" .. self.key] = true
+		end
+		return result
+	end
 end
 
 function TwitchBlinds:start_run()

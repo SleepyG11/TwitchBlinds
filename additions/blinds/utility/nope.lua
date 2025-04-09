@@ -21,7 +21,10 @@ function tw_blind:in_pool()
 	return false
 end
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+	if reset then
+		return
+	end
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("nope", true, true)
 	TW_BL.CHAT_COMMANDS.toggle_max_uses("nope", nil, true)
 	TW_BL.CHAT_COMMANDS.reset(false, "nope")

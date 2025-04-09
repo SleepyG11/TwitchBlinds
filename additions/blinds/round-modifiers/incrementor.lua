@@ -20,7 +20,10 @@ function tw_blind:in_pool()
 	return false
 end
 
-function tw_blind:set_blind()
+function tw_blind:set_blind(reset, silent)
+	if reset then
+		return
+	end
 	G.GAME.blind.twbl_blind_incrementor_count = 0
 	G.GAME.blind.twbl_blind_incrementor_strucks = 0
 	TW_BL.CHAT_COMMANDS.toggle_can_collect("count", true, true)

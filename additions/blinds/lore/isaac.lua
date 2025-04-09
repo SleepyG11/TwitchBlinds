@@ -8,6 +8,7 @@ local tw_blind = TW_BL.BLINDS.create({
 			twitch_blind = true,
 			min = 4,
 			max = 6,
+			one_time = true,
 			-- tags = { "twbl_cruel_blind" },
 		},
 	},
@@ -15,7 +16,7 @@ local tw_blind = TW_BL.BLINDS.create({
 })
 
 function tw_blind.config.tw_bl:in_pool()
-	return not TW_BL.G.blind_isaac_encountered and TW_BL.BLINDS.can_appear_in_voting(tw_blind)
+	return TW_BL.BLINDS.can_appear_in_voting(tw_blind)
 end
 
 function tw_blind:in_pool()

@@ -271,3 +271,21 @@ function TwitchBlinds:main_menu()
 
 	TW_BL.EVENTS.clear_delay()
 end
+
+local e_manager_init_ref = EventManager.init
+function EventManager:init(...)
+	local result = e_manager_init_ref(self, ...)
+	self.queues.twbl_cutscenes = {}
+	return result
+end
+if G.E_MANAGER then
+	G.E_MANAGER.queues.twbl_cutscenes = {}
+end
+
+local e_manager_add_event_ref = EventManager.add_event
+function EventManager:add_event(event, queue, front, ...)
+	if G.twbl_force_event_queue and not queue then
+		queue = G.twbl_force_event_queue
+	end
+	return e_manager_add_event_ref(self, event, queue, front, ...)
+end

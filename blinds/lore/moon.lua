@@ -32,8 +32,16 @@ function tw_blind:set_blind(reset, silent)
 	end
 
 	TW_BL.G.blind_moon_encountered = true
+	local is_finished = false
+	G.E_MANAGER:add_event(Event({
+		func = function()
+			return is_finished
+		end,
+	}))
 
 	ease_background_colour_blind()
+
+	G.twbl_force_event_queue = "twbl_cutscenes"
 
 	if not G.GAME.used_vouchers["v_planet_merchant"] then
 		local card = create_card("Voucher", G.play, false, nil, nil, nil, "v_planet_merchant", nil)
@@ -51,7 +59,9 @@ function tw_blind:set_blind(reset, silent)
 		card:redeem()
 		G.E_MANAGER:add_event(Event({
 			func = function()
+				G.twbl_force_event_queue = "twbl_cutscenes"
 				card:start_dissolve()
+				G.twbl_force_event_queue = nil
 				return true
 			end,
 		}))
@@ -62,6 +72,7 @@ function tw_blind:set_blind(reset, silent)
 	G.E_MANAGER:add_event(Event({
 		trigger = "immediate",
 		func = function()
+			G.twbl_force_event_queue = "twbl_cutscenes"
 			G.twbl_force_speedfactor = 1
 
 			-- Voucher to redeem
@@ -100,6 +111,7 @@ function tw_blind:set_blind(reset, silent)
 
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					G.twbl_force_event_queue = "twbl_cutscenes"
 					G.twbl_force_speedfactor = nil
 
 					talking_card:remove_speech_bubble()
@@ -118,15 +130,17 @@ function tw_blind:set_blind(reset, silent)
 					G.E_MANAGER:add_event(Event({
 						func = function()
 							G.GAME.planet_rate = G.GAME.planet_rate / 2
+							is_finished = true
 							return true
 						end,
 					}))
-
+					G.twbl_force_event_queue = nil
 					return true
 				end,
 			}))
-
+			G.twbl_force_event_queue = nil
 			return true
 		end,
 	}))
+	G.twbl_force_event_queue = nil
 end

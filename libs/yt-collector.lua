@@ -125,7 +125,7 @@ function YoutubeCollector:update(dt)
 		end
 		if polling_data.messages then
 			for _, message in ipairs(polling_data.messages) do
-				if message.author and message.text then
+				if message.author and message.author ~= "" and message.text and message.text ~= "" then
 					self:onmessage(message.author, message.text)
 				end
 			end

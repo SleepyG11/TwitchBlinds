@@ -539,16 +539,16 @@ function TW_BL.UI.settings.get_status_text(collector_key)
 		return
 	end
 	local status = collector.connection_status
-	local text = G.localization.misc.dictionary.k_twbl_status_unknown
+	local text = localize("k_twbl_status_unknown")
 	local STATUS = collector.STATUS
 	if status == STATUS.NO_CHANNEL_NAME then
-		text = G.localization.misc.dictionary.k_twbl_status_no_channel_name
+		text = localize("k_twbl_status_no_channel_name")
 	elseif status == STATUS.CONNECTED then
-		text = G.localization.misc.dictionary.k_twbl_status_connected
+		text = localize("k_twbl_status_connected")
 	elseif status == STATUS.CONNECTING then
-		text = G.localization.misc.dictionary.k_twbl_status_connecting
+		text = localize("k_twbl_status_connecting")
 	elseif status == STATUS.DISCONNECTED then
-		text = G.localization.misc.dictionary.k_twbl_status_disconnected
+		text = localize("k_twbl_status_disconnected")
 	end
 	return text
 end

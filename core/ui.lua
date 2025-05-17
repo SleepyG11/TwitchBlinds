@@ -124,6 +124,8 @@ function TWBLPanelController:update_status(status)
 	if not text then
 		if TW_BL.CHAT_COMMANDS.get_is_any_collector_connected() then
 			text = localize("k_twbl_status_connected")
+		elseif not TW_BL.CHAT_COMMANDS.get_is_any_collector_have_channel_name() then
+			text = localize("k_twbl_status_no_channel_name")
 		else
 			text = localize("k_twbl_status_disconnected")
 		end

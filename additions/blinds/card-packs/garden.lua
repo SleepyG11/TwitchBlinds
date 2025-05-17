@@ -29,7 +29,16 @@ function tw_blind:set_blind(reset, silent)
 		return
 	end
 
+	local is_finished = false
+	G.E_MANAGER:add_event(Event({
+		func = function()
+			return is_finished
+		end,
+	}))
+
 	ease_background_colour_blind()
+
+	G.twbl_force_event_queue = "twbl_cutscenes"
 
 	-- Real Flower Pot
 	local pot_card = create_card("Joker", G.play, false, nil, nil, nil, "j_flower_pot", nil)
@@ -70,6 +79,7 @@ function tw_blind:set_blind(reset, silent)
 
 	G.E_MANAGER:add_event(Event({
 		func = function()
+			G.twbl_force_event_queue = "twbl_cutscenes"
 			G.twbl_force_speedfactor = nil
 
 			talking_card:remove_speech_bubble()
@@ -78,15 +88,19 @@ function tw_blind:set_blind(reset, silent)
 
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					G.twbl_force_event_queue = "twbl_cutscenes"
 					G.play:remove_card(pot_card)
 					G.jokers:emplace(pot_card)
 					pot_card:add_to_deck(true)
 					talking_card:remove()
+					G.twbl_force_event_queue = nil
+					is_finished = true
 					return true
 				end,
 			}))
-
+			G.twbl_force_event_queue = nil
 			return true
 		end,
 	}))
+	G.twbl_force_event_queue = nil
 end

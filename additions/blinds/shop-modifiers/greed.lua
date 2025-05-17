@@ -1,3 +1,5 @@
+-- Voting for: no cards, no boosters, no voucher
+
 local tw_blind = TW_BL.BLINDS.create({
 	key = "greed",
 	dollars = 8,

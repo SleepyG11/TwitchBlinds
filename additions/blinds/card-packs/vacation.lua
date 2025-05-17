@@ -248,9 +248,9 @@ function tw_blind:defeat()
 	for _, joker in ipairs(variant_config.jokers or {}) do
 		local center = G.P_CENTERS[joker]
 		if center then
-			table.insert(callbacks, function()
+			table.insert(callbacks, function(first)
 				G.E_MANAGER:add_event(Event({
-					func = function(first)
+					func = function()
 						local card = SMODS.create_card({
 							set = "Joker",
 							key = joker,
@@ -258,11 +258,18 @@ function tw_blind:defeat()
 						if first then
 							card:set_eternal(true)
 						end
+						if 1 / 3 > pseudorandom(pseudoseed("twbl_vacation_apply_rental")) then
+							card:set_rental(true)
+						end
+						if 1 / 3 > pseudorandom(pseudoseed("twbl_vacation_apply_perishable")) then
+							card:set_perishable(true)
+						end
 						G.jokers:emplace(card)
 						card:add_to_deck()
 						return true
 					end,
 				}))
+				return "joker"
 			end)
 		end
 	end
@@ -280,6 +287,7 @@ function tw_blind:defeat()
 						return true
 					end,
 				}))
+				return "consumeable"
 			end)
 		end
 	end
@@ -302,11 +310,14 @@ function tw_blind:defeat()
 			offset = { x = 0, y = -3.5 },
 			major = G.play,
 		})
-		-- delay(4)
 	end
 
+	local apply_eternal = true
 	for index, callback in ipairs(result_callbacks) do
-		callback(index == 1)
+		local returned_type = callback(apply_eternal)
+		if returned_type == "joker" then
+			apply_eternal = false
+		end
 	end
 	TW_BL.G.blind_vacation_variants = nil
 

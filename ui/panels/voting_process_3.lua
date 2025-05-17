@@ -7,8 +7,8 @@ local panel = TWBLPanel("voting_process_3", {
 	mystic_variants = {},
 })
 
-function panel:localize_status(status)
-	if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
+function panel:localize_status()
+	if TW_BL.CHAT_COMMANDS.get_is_any_collector_connected() then
 		return localize(self.args.status)
 	end
 end
@@ -25,7 +25,7 @@ function panel:get_definition()
 				nodes = {
 					{
 						n = G.UIT.C,
-						config = { minw = 1.915, align = "c" },
+						config = { minw = 2.215, align = "c" },
 						nodes = {
 							{
 								n = G.UIT.O,
@@ -48,7 +48,7 @@ function panel:get_definition()
 					},
 					{
 						n = G.UIT.C,
-						config = { minw = 4.25, align = "cm" },
+						config = { minw = 4.15, align = "cm" },
 						nodes = {
 							{
 								n = G.UIT.C,
@@ -92,7 +92,7 @@ function panel:get_definition()
 					},
 					{
 						n = G.UIT.C,
-						config = { minw = 4.25, align = "cm" },
+						config = { minw = 4.15, align = "cm" },
 						nodes = {
 							{
 								n = G.UIT.C,
@@ -136,7 +136,7 @@ function panel:get_definition()
 					},
 					{
 						n = G.UIT.C,
-						config = { minw = 4.25, align = "cm" },
+						config = { minw = 4.15, align = "cm" },
 						nodes = {
 							{
 								n = G.UIT.C,

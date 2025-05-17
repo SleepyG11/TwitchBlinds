@@ -29,9 +29,16 @@ function tw_blind:set_blind(reset, silent)
 	end
 
 	TW_BL.G.blind_circus_encountered = true
+	local is_finished = false
+	G.E_MANAGER:add_event(Event({
+		func = function()
+			return is_finished
+		end,
+	}))
 
 	ease_background_colour_blind()
 
+	G.twbl_force_event_queue = "twbl_cutscenes"
 	G.twbl_force_speedfactor = 1
 
 	-- Real showman
@@ -59,6 +66,8 @@ function tw_blind:set_blind(reset, silent)
 	delay(2)
 	G.E_MANAGER:add_event(Event({
 		func = function()
+			G.twbl_force_event_queue = "twbl_cutscenes"
+
 			G.twbl_force_speedfactor = nil
 			talking_card:remove_speech_bubble()
 			talking_card.children.particles:fade(0.2, 1)
@@ -73,12 +82,18 @@ function tw_blind:set_blind(reset, silent)
 				trigger = "after",
 				delay = 0.2,
 				func = function()
+					G.twbl_force_event_queue = "twbl_cutscenes"
 					talking_card:remove()
+					G.twbl_force_event_queue = nil
+					is_finished = true
 					return true
 				end,
 			}))
 
+			G.twbl_force_event_queue = nil
+
 			return true
 		end,
 	}))
+	G.twbl_force_event_queue = nil
 end

@@ -88,7 +88,7 @@ function TWBLPanelController:set(panel_key, write, full_reload, ...)
 		if target_panel then
 			target_panel.element = self:get_panel_UIBox(target_panel:get_definition())
 			self:update(unpack(args))
-			self:update_status(TW_BL.CHAT_COMMANDS.collector.connection_status)
+			self:update_status()
 			self:after_set(target_panel, function() end)
 		end
 	end
@@ -122,15 +122,9 @@ function TWBLPanelController:update_status(status)
 
 	local text = self.panel:localize_status(status)
 	if not text then
-		text = localize("k_twbl_status_unknown")
-		local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
-		if status == STATUS.NO_CHANNEL_NAME then
-			text = localize("k_twbl_status_no_channel_name")
-		elseif status == STATUS.CONNECTED then
+		if TW_BL.CHAT_COMMANDS.get_is_any_collector_connected() then
 			text = localize("k_twbl_status_connected")
-		elseif status == STATUS.CONNECTING then
-			text = localize("k_twbl_status_connecting")
-		elseif status == STATUS.DISCONNECTED then
+		else
 			text = localize("k_twbl_status_disconnected")
 		end
 	end
@@ -279,8 +273,8 @@ function twbl_init_ui()
 		TW_BL.SETTINGS.save()
 	end
 
-	function G.FUNCS.twbl_settings_paste_channel_name(e)
-		G.CONTROLLER.text_input_hook = e.UIBox:get_UIE_by_ID("text_input").children[1].children[1]
+	function G.FUNCS.twbl_settings_paste_channel_name_twitch(e)
+		G.CONTROLLER.text_input_hook = e.parent.UIBox:get_UIE_by_ID("twbl_set_channel_name").children[1].children[1]
 		G.CONTROLLER.text_input_hook:click()
 		for i = 1, 32 do
 			G.FUNCS.text_input_key({ key = "right" })
@@ -294,16 +288,45 @@ function twbl_init_ui()
 
 		for i = 1, #channel_name do
 			local c = channel_name:sub(i, i)
-			G.FUNCS.text_input_key({ key = c })
+			G.FUNCS.text_input_key({ key = c, twbl_keep_real = true })
 		end
 
 		G.FUNCS.text_input_key({ key = "return" })
 	end
 
-	function G.FUNCS.twbl_settings_save_channel_name()
+	function G.FUNCS.twbl_settings_paste_channel_name_youtube(e)
+		G.CONTROLLER.text_input_hook = e.parent.UIBox:get_UIE_by_ID("twbl_set_yt_channel_name").children[1].children[1]
+		G.CONTROLLER.text_input_hook:click()
+		for i = 1, 32 do
+			G.FUNCS.text_input_key({ key = "right" })
+		end
+		for i = 1, 32 do
+			G.FUNCS.text_input_key({ key = "backspace" })
+		end
+
+		local clipboard = (G.F_LOCAL_CLIPBOARD and G.CLIPBOARD or love.system.getClipboardText()) or ""
+		local channel_name = clipboard:match("youtube%.com/(@[%w_]+)")
+			or clipboard:match("youtube%.com/channel/([%w_]+)")
+			or ""
+
+		for i = 1, #channel_name do
+			local c = channel_name:sub(i, i)
+			G.FUNCS.text_input_key({ key = c, twbl_keep_real = true })
+		end
+
+		G.FUNCS.text_input_key({ key = "return" })
+	end
+
+	function G.FUNCS.twbl_settings_save_channel_name_twitch()
 		TW_BL.SETTINGS.current.channel_name = TW_BL.SETTINGS.temp.channel_name
 		TW_BL.SETTINGS.save()
-		TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+		TW_BL.CHAT_COMMANDS.twitch_collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	end
+
+	function G.FUNCS.twbl_settings_save_channel_name_youtube()
+		TW_BL.SETTINGS.current.yt_channel_name = TW_BL.SETTINGS.temp.yt_channel_name
+		TW_BL.SETTINGS.save()
+		TW_BL.CHAT_COMMANDS.youtube_collector:connect(TW_BL.SETTINGS.current.yt_channel_name, true)
 	end
 
 	function G.FUNCS.twbl_settings_change_delay_for_chat(args)
@@ -418,11 +441,11 @@ function twbl_init_ui()
 	-- Events
 	------------------------------
 
-	TW_BL.EVENTS.add_listener("new_connection_status", "ui_update_status", function(status, channel_name)
+	TW_BL.EVENTS.add_listener("new_connection_status", "ui_update_status", function(collector, status, channel_name)
 		for k, v in pairs(UI.controllers) do
-			v:update_status(status)
+			v:update_status()
 		end
-		UI.settings.update_status(status)
+		UI.settings.update_status()
 	end)
 
 	local last_remaining_time = nil

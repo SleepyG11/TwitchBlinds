@@ -153,7 +153,8 @@ return {
 			twbl_chat_booster = "Chat Booster",
 		},
 		dictionary = {
-			twbl_settings_twitch_channel_name = "Twitch channel name",
+			twbl_settings_twitch_channel_name_twitch = "Twitch channel name",
+			twbl_settings_twitch_channel_name_youtube = "YouTube channel name",
 			twbl_settings_enter_channel_name = "Enter channel name",
 			twbl_settings_paste_name_or_url_1 = "Paste name",
 			twbl_settings_paste_name_or_url_2 = "or url",

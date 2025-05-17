@@ -43,7 +43,8 @@ function TwitchBlinds:init()
 	self.STICKERS = twbl_init_stickers()
 	self.CHAT_COMMANDS = twbl_init_chat_commands()
 
-	TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	TW_BL.CHAT_COMMANDS.twitch_collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	TW_BL.CHAT_COMMANDS.youtube_collector:connect(TW_BL.SETTINGS.current.yt_channel_name, true)
 
 	self.UTILITIES = twbl_init_utilities()
 

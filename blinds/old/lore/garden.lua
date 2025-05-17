@@ -39,7 +39,7 @@ function tw_blind:set_blind(reset, silent)
 	-- Real Doc
 	local doc_card = create_card("Joker", G.play, false, nil, nil, nil, "j_scholar", nil)
 	doc_card.states.visible = false
-	doc_card:set_edition({ negative = true }, true, true)
+	doc_card:set_edition({ negative = true }, true)
 	G.play:emplace(doc_card)
 
 	-- Talking doc
@@ -59,7 +59,7 @@ function tw_blind:set_blind(reset, silent)
 		major = talking_card,
 	})
 	local pseudo_card = talking_card.children.card
-	pseudo_card:set_edition({ negative = true }, true, true)
+	pseudo_card:set_edition({ negative = true }, true)
 	G.play:emplace(pseudo_card)
 
 	talking_card:add_speech_bubble("twbl_blinds_garden_" .. math.random(4), nil, { quip = true })

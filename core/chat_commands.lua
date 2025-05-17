@@ -1,5 +1,6 @@
 function twbl_init_chat_commands()
-	local collector = TwitchCollector:new()
+	local twitch_collector = TwitchCollector:new()
+	local youtube_collector = YoutubeCollector:new()
 	local CHAT_COMMANDS = {
 		available_commands = {
 			["vote"] = true,
@@ -16,7 +17,13 @@ function twbl_init_chat_commands()
 			["nope!"] = "nope",
 		},
 
-		collector = collector,
+		collectors = {
+			["youtube"] = youtube_collector,
+			["twitch"] = twitch_collector,
+		},
+
+		twitch_collector = twitch_collector,
+		youtube_collector = youtube_collector,
 		enabled = false,
 
 		can_collect = {},
@@ -42,7 +49,7 @@ function twbl_init_chat_commands()
 
 	--- @param username string
 	--- @param message string
-	function CHAT_COMMANDS.process_message(username, message)
+	function CHAT_COMMANDS.process_message(username, message, connector_key)
 		local iterator = string.gmatch(message, "%S+")
 
 		local command = string.lower(iterator())
@@ -59,6 +66,27 @@ function twbl_init_chat_commands()
 		if CHAT_COMMANDS.can_use_command(command, username) then
 			TW_BL.EVENTS.emit("twitch_command", command, username, unpack(words))
 		end
+	end
+
+	function CHAT_COMMANDS.get_collector(collector_key)
+		return CHAT_COMMANDS.collectors[collector_key] or nil
+	end
+
+	function CHAT_COMMANDS.get_is_any_collector_connected()
+		for k, collector in pairs(CHAT_COMMANDS.collectors) do
+			if collector.connection_status == collector.STATUS.CONNECTED then
+				return true
+			end
+		end
+		return false
+	end
+	function CHAT_COMMANDS.get_is_any_collector_have_channel_name()
+		for k, collector in pairs(CHAT_COMMANDS.collectors) do
+			if collector.connection_status ~= collector.STATUS.NO_CHANNEL_NAME then
+				return true
+			end
+		end
+		return false
 	end
 
 	-- Command use
@@ -335,25 +363,37 @@ function twbl_init_chat_commands()
 
 	--
 
-	function collector:onmessage(username, message)
+	function twitch_collector:onmessage(username, message)
 		if CHAT_COMMANDS.enabled then
-			CHAT_COMMANDS.process_message(username, message)
+			CHAT_COMMANDS.process_message(username, message, "twitch")
 		end
 	end
 
-	function collector:onnewconnectionstatus(status)
-		if status == collector.STATUS.CONNECTED then
+	function twitch_collector:onnewconnectionstatus(status)
+		if status == twitch_collector.STATUS.CONNECTED then
 			next_reconnect_timeout = 1
 		end
-		TW_BL.EVENTS.emit("new_connection_status", status, collector.channel_name)
+		TW_BL.EVENTS.emit("new_connection_status", "twitch", status, twitch_collector.channel_name)
 	end
 
-	function collector:ondisconnect()
+	function twitch_collector:ondisconnect()
 		-- Request reconnect
 		needs_reconnect = true
 		reconnect_timeout = next_reconnect_timeout
 		next_reconnect_timeout = next_reconnect_timeout * 2
 	end
+
+	function youtube_collector:onmessage(username, message)
+		if CHAT_COMMANDS.enabled then
+			CHAT_COMMANDS.process_message(username, message, "youtube")
+		end
+	end
+
+	function youtube_collector:onnewconnectionstatus(status)
+		TW_BL.EVENTS.emit("new_connection_status", "youtube", status, twitch_collector.channel_name)
+	end
+
+	function youtube_collector:ondisconnect() end
 
 	TW_BL.EVENTS.add_listener("game_update", "chat_commands_init", function(dt)
 		if reconnect_timeout >= 0 then
@@ -361,10 +401,11 @@ function twbl_init_chat_commands()
 		else
 			if needs_reconnect then
 				needs_reconnect = false
-				self.CHAT_COMMANDS.collector:reconnect()
+				self.CHAT_COMMANDS.twitch_collector:reconnect()
 			end
 		end
-		CHAT_COMMANDS.collector:update(dt)
+		CHAT_COMMANDS.twitch_collector:update(dt)
+		CHAT_COMMANDS.youtube_collector:update(dt)
 	end)
 
 	return CHAT_COMMANDS

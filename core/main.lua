@@ -43,7 +43,8 @@ function TwitchBlinds:init()
 	self.STICKERS = twbl_init_stickers()
 	self.CHAT_COMMANDS = twbl_init_chat_commands()
 
-	TW_BL.CHAT_COMMANDS.collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	TW_BL.CHAT_COMMANDS.twitch_collector:connect(TW_BL.SETTINGS.current.channel_name, true)
+	TW_BL.CHAT_COMMANDS.youtube_collector:connect(TW_BL.SETTINGS.current.yt_channel_name, true)
 
 	self.UTILITIES = twbl_init_utilities()
 
@@ -278,4 +279,22 @@ function TwitchBlinds:main_menu()
 	TW_BL.CHAT_COMMANDS.reset(true)
 
 	TW_BL.EVENTS.clear_delay()
+end
+
+local e_manager_init_ref = EventManager.init
+function EventManager:init(...)
+	local result = e_manager_init_ref(self, ...)
+	self.queues.twbl_cutscenes = {}
+	return result
+end
+if G.E_MANAGER then
+	G.E_MANAGER.queues.twbl_cutscenes = {}
+end
+
+local e_manager_add_event_ref = EventManager.add_event
+function EventManager:add_event(event, queue, front, ...)
+	if G.twbl_force_event_queue and not queue then
+		queue = G.twbl_force_event_queue
+	end
+	return e_manager_add_event_ref(self, event, queue, front, ...)
 end

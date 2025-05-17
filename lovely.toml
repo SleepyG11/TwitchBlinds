@@ -40,6 +40,39 @@ end
 match_indent = true
 overwrite = false
 
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''local corpus = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'..(hook.config.ref_table.extended_corpus and " 0!$&()<>?:{}+-=,.[]_" or '')'''
+position = "after"
+payload = '''
+corpus = corpus .. "@"
+'''
+match_indent = true
+overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "before"
+payload = '''
+local twbl_real_key = args.key
+'''
+match_indent = true
+overwrite = false
+
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "after"
+payload = '''
+if (hook_config and hook_config.twbl_keep_real) or args.twbl_keep_real then args.key = twbl_real_key end
+'''
+match_indent = true
+overwrite = false
+
 # [[patches]]
 # [patches.pattern]
 # target = "card.lua"
@@ -52,7 +85,7 @@ overwrite = false
 #     else
 #         local used_usernames = TW_BL.G.used_usernames or {}
 #         local result_usernames = {}
-#         for _, v in ipairs(TW_BL.CHAT_COMMANDS.collector.chatters) do
+#         for _, v in ipairs(TW_BL.CHAT_COMMANDS.twitch_collector.chatters) do
 #             result_usernames[v] = true
 #         end
 #         for _, v in ipairs(used_usernames) do

@@ -64,8 +64,14 @@ function TW_BL.UI.PARTS.create_description_text(text, center)
 	}
 end
 
-function TW_BL.UI.PARTS.create_settings_channel_name_component()
-	TW_BL.SETTINGS.temp.channel_name = TW_BL.SETTINGS.current.channel_name
+function TW_BL.UI.PARTS.create_settings_channel_name_component(key)
+	local setting_key = "channel_name"
+	if key == "youtube" then
+		setting_key = "yt_channel_name"
+	elseif key == "twitch" then
+		setting_key = "channel_name"
+	end
+	TW_BL.SETTINGS.temp[setting_key] = TW_BL.SETTINGS.current[setting_key]
 	return {
 		n = G.UIT.R,
 		config = { align = "cm", padding = 0.1 },
@@ -80,7 +86,7 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 					{
 						n = G.UIT.T,
 						config = {
-							text = localize("twbl_settings_twitch_channel_name"),
+							text = localize("twbl_settings_twitch_channel_name_" .. key),
 							scale = 0.4,
 							colour = G.C.UI.TEXT_LIGHT,
 						},
@@ -103,10 +109,12 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 								max_length = 32,
 								prompt_text = localize("twbl_settings_enter_channel_name"),
 								ref_table = TW_BL.SETTINGS.temp,
-								ref_value = "channel_name",
+								ref_value = setting_key,
 								extended_corpus = true,
 								keyboard_offset = 1,
+								id = "twbl_set_channel_name_" .. key,
 								callback = function() end,
+								twbl_keep_real = true,
 							}),
 							{ n = G.UIT.C, config = { align = "cm", minw = 0.1 }, nodes = {} },
 							UIBox_button({
@@ -116,7 +124,7 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 								},
 								minw = 2,
 								minh = 0.6,
-								button = "twbl_settings_paste_channel_name",
+								button = "twbl_settings_paste_channel_name_" .. key,
 								colour = G.C.BLUE,
 								scale = 0.3,
 								col = true,
@@ -136,7 +144,7 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 						label = { localize("b_set_apply") },
 						minw = 2,
 						minh = 0.6,
-						button = "twbl_settings_save_channel_name",
+						button = "twbl_settings_save_channel_name_" .. key,
 						colour = G.C.GREEN,
 						scale = 0.4,
 						col = true,
@@ -155,9 +163,9 @@ function TW_BL.UI.PARTS.create_settings_channel_name_component()
 							{
 								n = G.UIT.O,
 								config = {
-									id = "twbl_settings_status",
+									id = "twbl_settings_status_" .. key,
 									object = DynaText({
-										string = TW_BL.UI.settings.get_status_text(),
+										string = TW_BL.UI.settings.get_status_text(key),
 										colours = { G.C.WHITE },
 										shadow = false,
 										scale = 0.4,
@@ -189,7 +197,32 @@ function TW_BL.UI.settings.get_general_tab()
 	}
 	result.nodes = {
 		TW_BL.UI.PARTS.create_settings_section("Connection", {
-			TW_BL.UI.PARTS.create_settings_channel_name_component(),
+			{
+				n = G.UIT.R,
+				config = {
+					align = "cm",
+				},
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = {
+							align = "cm",
+						},
+						nodes = {
+							TW_BL.UI.PARTS.create_settings_channel_name_component("twitch"),
+						},
+					},
+					{
+						n = G.UIT.C,
+						config = {
+							align = "cm",
+						},
+						nodes = {
+							TW_BL.UI.PARTS.create_settings_channel_name_component("youtube"),
+						},
+					},
+				},
+			},
 		}),
 		{
 			n = G.UIT.R,
@@ -500,30 +533,35 @@ function TW_BL.UI.settings.get_appearance_tab()
 	return result
 end
 
-function TW_BL.UI.settings.get_status_text()
-	local status = TW_BL.CHAT_COMMANDS.collector.connection_status
-	local text = G.localization.misc.dictionary.k_twbl_status_unknown
-
-	local STATUS = TW_BL.CHAT_COMMANDS.collector.STATUS
+function TW_BL.UI.settings.get_status_text(collector_key)
+	local collector = TW_BL.CHAT_COMMANDS.get_collector(collector_key)
+	if not collector then
+		return
+	end
+	local status = collector.connection_status
+	local text = localize("k_twbl_status_unknown")
+	local STATUS = collector.STATUS
 	if status == STATUS.NO_CHANNEL_NAME then
-		text = G.localization.misc.dictionary.k_twbl_status_no_channel_name
+		text = localize("k_twbl_status_no_channel_name")
 	elseif status == STATUS.CONNECTED then
-		text = G.localization.misc.dictionary.k_twbl_status_connected
+		text = localize("k_twbl_status_connected")
 	elseif status == STATUS.CONNECTING then
-		text = G.localization.misc.dictionary.k_twbl_status_connecting
+		text = localize("k_twbl_status_connecting")
 	elseif status == STATUS.DISCONNECTED then
-		text = G.localization.misc.dictionary.k_twbl_status_disconnected
+		text = localize("k_twbl_status_disconnected")
 	end
 	return text
 end
 
-function TW_BL.UI.settings.update_status(status)
+function TW_BL.UI.settings.update_status()
 	if G.OVERLAY_MENU then
-		local text = TW_BL.UI.settings.get_status_text()
-		local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twbl_settings_status")
-		if status_element then
-			status_element.config.object.config.string = { text }
-			status_element.config.object:update_text(true)
+		for k, collector in pairs(TW_BL.CHAT_COMMANDS.collectors) do
+			local text = TW_BL.UI.settings.get_status_text(k)
+			local status_element = G.OVERLAY_MENU:get_UIE_by_ID("twbl_settings_status_" .. k)
+			if status_element then
+				status_element.config.object.config.string = { text }
+				status_element.config.object:update_text(true)
+			end
 		end
 	end
 end

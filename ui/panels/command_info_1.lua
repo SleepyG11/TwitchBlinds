@@ -6,8 +6,8 @@ local panel = TWBLPanel("command_info_1", {
 	text = "k_twbl_panel_toggle_DEFAULT",
 })
 
-function panel:localize_status(status)
-	if status == TW_BL.CHAT_COMMANDS.collector.STATUS.CONNECTED then
+function panel:localize_status()
+	if TW_BL.CHAT_COMMANDS.get_is_any_collector_connected() then
 		return localize(self.args.status)
 	end
 end
@@ -24,7 +24,7 @@ function panel:get_definition()
 				nodes = {
 					{
 						n = G.UIT.C,
-						config = { minw = 1.915, align = "c", id = "twbl_voting_status_container" },
+						config = { minw = 2.215, align = "c", id = "twbl_voting_status_container" },
 						nodes = {
 							{
 								n = G.UIT.O,
@@ -47,7 +47,7 @@ function panel:get_definition()
 					},
 					{
 						n = G.UIT.C,
-						config = { minw = 4.25 * 3 + 0.1, align = "cm" },
+						config = { minw = 4.25 * 3 + 0.1 - 0.3, align = "cm" },
 						nodes = {
 							{
 								n = G.UIT.C,

@@ -17,27 +17,24 @@ function tw_blind:in_pool()
 	return TW_BL.BLINDS.can_natural_appear(tw_blind)
 end
 
--- Implementation in lovely/blinds_trash_can.toml
-
-function blind_trash_can_remove_scored_cards(scoring_hand)
-	G.GAME.blind:wiggle()
-	play_sound("cancel", 0.8, 1.7)
-	attention_text({
-		scale = 1.4,
-		text = localize("k_twbl_trash_ex"),
-		hold = 2,
-		align = "cm",
-		offset = { x = 0, y = -2.7 },
-		major = G.play,
-	})
-	for i = #scoring_hand, 1, -1 do
-		local card = scoring_hand[i]
-		if card.ability.name == "Glass Card" then
-			card:shatter()
-		else
-			card:start_dissolve(nil, i == #scoring_hand)
-		end
+function tw_blind:calculate(blind, context)
+	if context.after then
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				G.GAME.blind:wiggle()
+				play_sound("cancel", 0.8, 1.7)
+				attention_text({
+					scale = 1.4,
+					text = localize("k_twbl_trash_ex"),
+					hold = 2,
+					align = "cm",
+					offset = { x = 0, y = -2.7 },
+					major = G.play,
+				})
+				return true
+			end,
+		}))
+		SMODS.destroy_cards(context.scoring_hand)
+		return {}
 	end
-	SMODS.calculate_context({ remove_playing_cards = true, removed = scoring_hand })
-	delay(1)
 end

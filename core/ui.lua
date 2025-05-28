@@ -276,7 +276,8 @@ function twbl_init_ui()
 	end
 
 	function G.FUNCS.twbl_settings_paste_channel_name_twitch(e)
-		G.CONTROLLER.text_input_hook = e.parent.UIBox:get_UIE_by_ID("twbl_set_channel_name").children[1].children[1]
+		G.CONTROLLER.text_input_hook =
+			e.parent.UIBox:get_UIE_by_ID("twbl_set_channel_name_twitch").children[1].children[1]
 		G.CONTROLLER.text_input_hook:click()
 		for i = 1, 32 do
 			G.FUNCS.text_input_key({ key = "right" })
@@ -297,7 +298,8 @@ function twbl_init_ui()
 	end
 
 	function G.FUNCS.twbl_settings_paste_channel_name_youtube(e)
-		G.CONTROLLER.text_input_hook = e.parent.UIBox:get_UIE_by_ID("twbl_set_yt_channel_name").children[1].children[1]
+		G.CONTROLLER.text_input_hook =
+			e.parent.UIBox:get_UIE_by_ID("twbl_set_channel_name_youtube").children[1].children[1]
 		G.CONTROLLER.text_input_hook:click()
 		for i = 1, 32 do
 			G.FUNCS.text_input_key({ key = "right" })

@@ -31,8 +31,15 @@ local tw_sticker = TW_BL.STICKERS.create({
 --
 
 function tw_sticker:should_apply(card, center, area, bypass_roll)
+	if card.ability and card.ability.twbl_chat_booster_checked then
+		return false
+	end
+	if not card.ability then
+		card.ability = {}
+	end
+	card.ability.twbl_chat_booster_checked = true
 	return TW_BL.SETTINGS.current.chat_booster_sticker_appearance > 1
-		and card.ability.set == "Booster"
+		and center.set == "Booster"
 		and BOOSTERS_TO_APPLY[center.kind]
 		and (
 			bypass_roll
@@ -215,12 +222,15 @@ function tw_sticker:__emplace_cards(kind, mode)
 			local edition = poll_edition("twbl_standard_edition" .. G.GAME.round_resets.ante, edition_rate, true)
 
 			local front = pseudorandom_element(G.P_CARDS, pseudoseed("twbl_frontsta" .. G.GAME.round_resets.ante))
-			local card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W / 2, G.CARD_H / 2, front, center, {
+			local card = Card(area.T.x + area.T.w / 2, area.T.y, G.CARD_W, G.CARD_H, front, center, {
 				bypass_discovery_center = false,
 				bypass_discovery_ui = false,
 				discover = false,
 				bypass_back = G.GAME.selected_back.pos,
 			})
+			card:hard_set_T(nil, nil, G.CARD_W / 2, G.CARD_H / 2)
+			card.children.center.scale_mag =
+				math.min(card.children.center.atlas.px / (G.CARD_W / 2), card.children.center.atlas.py / (G.CARD_H / 2))
 
 			card:set_edition(edition)
 			local seal = SMODS.poll_seal({
@@ -314,7 +324,7 @@ end
 
 --
 
-function tw_sticker:__use()
+function tw_sticker:__use(end_func)
 	TW_BL.G.state_sticker_chat_booster.use = nil
 
 	-- If we skipping
@@ -331,15 +341,16 @@ function tw_sticker:__use()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local planet = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
-				if planet then
+				if planet and planet:can_use_consumeable(true, true) then
 					G.FUNCS.use_card({
 						config = {
 							ref_table = planet,
 						},
 					})
-					return true
+				else
+					end_func()
 				end
-				return false
+				return true
 			end,
 		}))
 		return true
@@ -349,15 +360,20 @@ function tw_sticker:__use()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local card_to_use = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
-				if card_to_use and tw_sticker:__highlight_targets(G.hand, card_to_use) then
+				if
+					card_to_use
+					and tw_sticker:__highlight_targets(G.hand, card_to_use)
+					and card_to_use:can_use_consumeable(true, true)
+				then
 					G.FUNCS.use_card({
 						config = {
 							ref_table = card_to_use,
 						},
 					})
-					return true
+				else
+					end_func()
 				end
-				return false
+				return true
 			end,
 		}))
 		return true
@@ -367,6 +383,7 @@ function tw_sticker:__use()
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				local card = tw_sticker:__sort_voting_cards(G.twbl_chat_booster_area.cards)[1]
+
 				if card then
 					card:hard_set_T(nil, nil, G.CARD_W, G.CARD_H)
 					card.children.center.scale_mag =
@@ -376,9 +393,10 @@ function tw_sticker:__use()
 							ref_table = card,
 						},
 					})
-					return true
+				else
+					end_func()
 				end
-				return false
+				return true
 			end,
 		}))
 		return true
@@ -515,10 +533,13 @@ end
 
 local skip_booster_ref = G.FUNCS.skip_booster
 function G.FUNCS.skip_booster(...)
+	local args = { ... }
 	if
 		TW_BL.G.state_sticker_chat_booster
 		and TW_BL.G.state_sticker_chat_booster.use
-		and TW_BL.STICKERS.get("chat_booster"):__use()
+		and TW_BL.STICKERS.get("chat_booster"):__use(function()
+			skip_booster_ref(unpack(args))
+		end)
 	then
 		return
 	end

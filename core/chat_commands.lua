@@ -401,7 +401,7 @@ function twbl_init_chat_commands()
 		else
 			if needs_reconnect then
 				needs_reconnect = false
-				self.CHAT_COMMANDS.twitch_collector:reconnect()
+				CHAT_COMMANDS.twitch_collector:reconnect()
 			end
 		end
 		CHAT_COMMANDS.twitch_collector:update(dt)

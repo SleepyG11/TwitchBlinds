@@ -1,0 +1,49 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Apply sticker on booster pack in shop
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''G.shop_booster:emplace(card)'''
+position = "after"
+payload = '''
+SMODS.Stickers['twbl_interactive']:twbl_naturally_apply(card, card.config.center, G.shop_booster)
+'''
+match_indent = true
+overwrite = false
+
+# Apply sticker on booster pack on create_card
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''if card.ability.consumeable and not skip_materialize then card:start_materialize() end'''
+position = "after"
+payload = '''
+SMODS.Stickers['twbl_interactive']:twbl_naturally_apply(card, card.config.center, card.area)
+'''
+match_indent = true
+overwrite = false
+
+# Trigger on booster open
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = """G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1.3*math.sqrt(G.SETTINGS.GAMESPEED), blockable = false, blocking = false, func = function()"""
+position = "after"
+payload = """
+if self.ability.set == "Booster" and self.ability.twbl_interactive then
+    G.E_MANAGER:add_event(Event({
+        trigger = "immediate",
+        blockable = false, blocking = false,
+        func = function()
+            SMODS.Stickers['twbl_interactive']:twbl_on_booster_open(self)
+            return true
+        end,
+    }))
+end
+"""
+match_indent = true
+times = 1

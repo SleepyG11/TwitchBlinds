@@ -5,13 +5,41 @@ to_number = to_number or function(x)
 	return x
 end
 
-local nativefs = require("nativefs")
-assert(load(nativefs.read(SMODS.current_mod.path .. "libs/utilities.lua")))()
-assert(load(nativefs.read(SMODS.current_mod.path .. "libs/websocket.lua")))()
-assert(load(nativefs.read(SMODS.current_mod.path .. "libs/collector.lua")))()
-assert(load(nativefs.read(SMODS.current_mod.path .. "libs/yt-collector.lua")))()
+TW_BL = setmetatable({
+	current_mod = SMODS.current_mod,
 
-assert(load(nativefs.read(SMODS.current_mod.path .. "core/main.lua")))()
+	FLAGS = {},
+	TEMP = {},
+
+	CONNECTION_STATUS = {
+		NO_CHANNEL_NAME = -1,
+		DISCONNECTED = 0,
+		CONNECTING = 1,
+		CONNECTED = 2,
+	},
+
+	refs = {},
+}, {
+	__index = function(table, index)
+		if index == "G" then
+			if G.GAME and not G.GAME.twbl then
+				G.GAME.twbl = {}
+			end
+			return G.GAME and G.GAME.twbl or {}
+		else
+			return rawget(table, index)
+		end
+	end,
+	__newindex = function(table, index, value)
+		if index == "G" then
+			if G.GAME then
+				G.GAME.twbl = (G.GAME.twbl or value or {})
+			end
+		else
+			rawset(table, index, value)
+		end
+	end,
+})
 
 SMODS.Atlas({
 	key = "modicon",
@@ -20,4 +48,18 @@ SMODS.Atlas({
 	py = 34,
 })
 
-TW_BL:init()
+function TW_BL.load_file(file)
+	return assert(SMODS.load_file(file))()
+end
+function TW_BL.load_files(files, prefix)
+	for _, file in pairs(files) do
+		TW_BL.load_file(prefix .. file)
+	end
+end
+
+TW_BL.load_file("src/index.lua")
+
+-- TODO:
+-- 1. how imeplement sticker for buffoon and celestial?
+-- 2. pause for chatters to vote
+-- 3. description for reroll vouchers

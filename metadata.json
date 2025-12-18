@@ -3,10 +3,10 @@
 	"name": "Twitch Blinds",
 	"display_name": "Twitch Blinds",
 	"author": ["SleepyG11"],
-	"description": "Let your Twitch chat decide which new boss will end your run ;)",
+	"description": "Let your Twitch chat decide how to kill your run ;)",
 	"prefix": "twbl",
 	"priority": -1,
-	"version": "1.3.0-pre3",
+	"version": "2.0.0-pre1",
 	"main_file": "index.lua",
 	"badge_colour": "8E15AD",
 	"dependencies": []

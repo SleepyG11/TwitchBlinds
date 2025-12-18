@@ -1,0 +1,36 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Apply scale on card_eval_status_text
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = '''delay = delay*1.25'''
+position = "after"
+payload = '''
+if TW_BL.FLAGS.card_eval_status_text_scale then
+    config.scale = config.scale and (config.scale * TW_BL.FLAGS.card_eval_status_text_scale) or TW_BL.FLAGS.card_eval_status_text_scale
+end
+if TW_BL.FLAGS.card_eval_status_text_align then
+    card_aligned = TW_BL.FLAGS.card_eval_status_text_align
+    y_off = TW_BL.FLAGS.card_eval_status_text_align_y_off or y_off
+end
+'''
+match_indent = true
+overwrite = false
+
+# Force speedfactor (important for talking cards)
+[[patches]]
+[patches.pattern]
+target = "game.lua"
+pattern = '''self.TIMERS.TOTAL = self.TIMERS.TOTAL + dt*(self.SPEEDFACTOR)'''
+position = "before"
+payload = '''
+if G.twbl_force_speedfactor then
+    self.SPEEDFACTOR = G.twbl_force_speedfactor
+end
+'''
+match_indent = true
+overwrite = false

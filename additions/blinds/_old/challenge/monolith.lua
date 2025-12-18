@@ -1,1 +1,0 @@
--- Spawn obelisk, generate 2 stone cards every round

@@ -9,7 +9,7 @@ target = "functions/button_callbacks.lua"
 pattern = "G.FUNCS.can_discard = function(e)"
 position = "after"
 payload = '''
-if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == TW_BL.BLINDS.get_key("precision") and #G.hand.highlighted <= 4) then 
+if G.GAME.current_round.discards_left <= 0 or (G.GAME.blind.name == "bl_twbl_precision" and #G.hand.highlighted <= 4) then 
     e.config.colour = G.C.UI.BACKGROUND_INACTIVE
     e.config.button = nil
     return

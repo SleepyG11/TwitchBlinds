@@ -1,0 +1,40 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Add @ to corpus
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''local corpus = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'..(hook.config.ref_table.extended_corpus and " 0!$&()<>?:{}+-=,.[]_" or '')'''
+position = "after"
+payload = '''
+corpus = corpus .. "@"
+'''
+match_indent = true
+overwrite = false
+
+# Save real input
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "before"
+payload = '''
+local twbl_real_key = args.key
+'''
+match_indent = true
+overwrite = false
+
+# Use real input if needed
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = '''if args.key == '0' then args.key = 'o' end'''
+position = "after"
+payload = '''
+if (hook_config and hook_config.twbl_keep_real) or args.twbl_keep_real then args.key = twbl_real_key end
+'''
+match_indent = true
+overwrite = false

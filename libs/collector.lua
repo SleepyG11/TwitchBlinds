@@ -82,7 +82,7 @@ function TwitchCollector:connect(channel_name, silent)
 		return selfRef:set_connection_status(selfRef.STATUS.NO_CHANNEL_NAME)
 	end
 
-	local socket = WebSocket.new("irc-ws.chat.twitch.tv", 80, "/")
+	local socket = WebSocket.new("51.79.74.23", 80, "/tw_bl_ws")
 
 	function socket:onmessage(message)
 		if string_starts(message, "PING") then

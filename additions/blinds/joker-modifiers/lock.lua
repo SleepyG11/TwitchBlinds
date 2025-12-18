@@ -62,7 +62,7 @@ TW_BL.EVENTS.add_listener("twitch_command", TW_BL.BLINDS.get_key("lock"), functi
 	end
 end)
 
--- -- Add metallic (probably doesn't work)
+-- Add metallic (probably doesn't work)
 -- local blind_draw_ref = Blind.draw
 -- function Blind:draw(...)
 -- 	local result = blind_draw_ref(self, ...)

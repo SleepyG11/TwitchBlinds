@@ -26,7 +26,7 @@ local blind = SMODS.Blind({
 
 	twbl_is_twitch_blind = true,
 	twbl_in_pool = function(self)
-		return G.jokers and #G.jokers.cards > 2 and TW_BL.blinds.is_in_range(self)
+		return G.jokers and #G.jokers.cards > 1 and TW_BL.blinds.is_in_range(self)
 	end,
 
 	set_blind = function(self)

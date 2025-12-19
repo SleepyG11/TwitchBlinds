@@ -222,6 +222,7 @@ return {
 			},
 			twbl_settings_channel_name_subdescription_twitch = {
                 "{s:0.8}Can connect even if stream is not Live{}",
+                '{s:0.8}If it stuck on "Connecting...", try reconnect{}',
 			},
 
 			twbl_settings_channel_name_description_youtube = {

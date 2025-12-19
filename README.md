@@ -1,5 +1,5 @@
-# Twitch Blinds: Balatro mod
-*Let your Twitch chat decide which new boss will end your run ;)*
+# Twitch Blinds: Interactive Balatro mod
+*Let your Twitch chat decide how to kill your run ;)*
 
 ---
 

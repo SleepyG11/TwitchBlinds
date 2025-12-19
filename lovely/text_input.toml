@@ -10,7 +10,9 @@ target = "functions/button_callbacks.lua"
 pattern = '''local corpus = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'..(hook.config.ref_table.extended_corpus and " 0!$&()<>?:{}+-=,.[]_" or '')'''
 position = "after"
 payload = '''
-corpus = corpus .. "@"
+if (hook_config and hook_config.twbl_keep_real) or args.twbl_keep_real then
+    corpus = corpus .. "@"
+end
 '''
 match_indent = true
 overwrite = false

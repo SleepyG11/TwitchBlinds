@@ -89,6 +89,10 @@ function connect(keep)
 	function socket:onclose(code, reason)
 		disconnect(true)
 	end
+
+    function socket:onerror()
+        disconnect(true)
+    end
 end
 function disconnect(by_socket, by_reconnect)
 	if socket then
@@ -99,7 +103,7 @@ function disconnect(by_socket, by_reconnect)
 			socket:close()
 		else
 			retry_consumed = false
-			retry_interval = 5
+			retry_interval = 10
 		end
 		socket = nil
 	end

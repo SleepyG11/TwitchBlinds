@@ -204,7 +204,7 @@ function disconnect(by_socket, by_reconnect)
 
 	if by_socket then
 		retry_consumed = false
-		retry_interval = 5
+		retry_interval = 10
 	end
 
 	if not by_reconnect then

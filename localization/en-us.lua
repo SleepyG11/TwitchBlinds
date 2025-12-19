@@ -220,9 +220,16 @@ return {
 			twbl_settings_channel_name_description_twitch = {
 				"https://twitch.tv/{C:attention}channel_name{}",
 			},
+			twbl_settings_channel_name_subdescription_twitch = {
+                "{s:0.8}Can connect even if stream is not Live{}",
+			},
+
 			twbl_settings_channel_name_description_youtube = {
 				"https://youtube.com/{C:attention}@channel_name{} {s:0.8,C:inactive}keep @{}",
-				"https://youtube.com/channel/{C:attention}channel_id{} {s:0.8,C:inactive}without @{}",
+				"https://youtube.com/channel/{C:attention}channel_id{} {s:0.8,C:inactive}remove @{}",   
+			},
+            twbl_settings_channel_name_subdescription_youtube = {
+                "{s:0.8}Can connect only if stream is Live{}"
 			},
 
 			twbl_settings_enter_channel_name = "Enter channel name",

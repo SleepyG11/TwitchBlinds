@@ -141,6 +141,26 @@ function TW_BL.UI.provider_connection_config(provider)
 							},
 						},
 					},
+                    {
+						n = G.UIT.R,
+						config = { minh = 0.1 },
+					},
+					{
+						n = G.UIT.R,
+						config = { align = "cm" },
+						nodes = {
+							{
+								n = G.UIT.C,
+								nodes = TW_BL.L.parse_lines(
+									localize("twbl_settings_channel_name_subdescription_" .. provider.key),
+									{
+										default_col = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.8),
+										align = "cm",
+									}
+								),
+							},
+						},
+					},
 				},
 			},
 		},

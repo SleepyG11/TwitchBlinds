@@ -391,10 +391,11 @@ return {
 			k_twbl_waiting_for_chat = "Waiting for chat...",
 
 			twbl_connection_status = {
-				[-1] = "No channel!",
+				[-1] = "No channel...",
 				[0] = "Disconnected...",
 				[1] = "Connecting...",
-				[2] = "Connected",
+				[2] = "Getting chat...",
+				[3] = "Connected",
 			},
 		},
 		quips = {

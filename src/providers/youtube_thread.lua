@@ -6,10 +6,12 @@ local https = require("SMODS.https")
 local json = require("json")
 
 local CONNECTION_STATUS = {
-	NO_CHANNEL_NAME = -1,
-	DISCONNECTED = 0,
-	CONNECTING = 1,
-	CONNECTED = 2,
+    NO_CHANNEL_NAME = -1,
+    DISCONNECTED = 0,
+    CONNECTING = 1,
+    CONNECTING_TO_SERVICE = 1,
+    CONNECTING_TO_CHANNEL = 2,
+    CONNECTED = 3,
 }
 local connection_status = CONNECTION_STATUS.NO_CHANNEL_NAME
 local retry_consumed = true
@@ -42,7 +44,7 @@ function get_start_continuation()
 		retry_consumed = true
 		return
 	end
-	set_connection_status(CONNECTION_STATUS.CONNECTING)
+	set_connection_status(CONNECTION_STATUS.CONNECTING_TO_SERVICE)
 	local execute_channel_name = channel_name
 	if string.sub(channel_name, 1, 1) ~= "@" then
 		execute_channel_name = "channel/" .. channel_name
@@ -72,6 +74,10 @@ function get_chat_messages(first)
 	if not continuation then
 		return
 	end
+
+    if first then
+        set_connection_status(CONNECTION_STATUS.CONNECTING_TO_CHANNEL)
+    end
 
 	local success, data = pcall(function()
 		local request_body = {

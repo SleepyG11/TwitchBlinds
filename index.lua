@@ -11,13 +11,6 @@ TW_BL = setmetatable({
 	FLAGS = {},
 	TEMP = {},
 
-	CONNECTION_STATUS = {
-		NO_CHANNEL_NAME = -1,
-		DISCONNECTED = 0,
-		CONNECTING = 1,
-		CONNECTED = 2,
-	},
-
 	refs = {},
 }, {
 	__index = function(table, index)
@@ -63,3 +56,4 @@ TW_BL.load_file("src/index.lua")
 -- 1. how imeplement sticker for buffoon and celestial?
 -- 2. pause for chatters to vote
 -- 3. description for reroll vouchers
+-- 4. Implement displaying optional votes count on cards

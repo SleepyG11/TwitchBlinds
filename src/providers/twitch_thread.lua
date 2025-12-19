@@ -5,10 +5,12 @@ local SOCKET_PATH = "/twbl-proxy"
 
 local socket
 local CONNECTION_STATUS = {
-	NO_CHANNEL_NAME = -1,
-	DISCONNECTED = 0,
-	CONNECTING = 1,
-	CONNECTED = 2,
+    NO_CHANNEL_NAME = -1,
+    DISCONNECTED = 0,
+    CONNECTING = 1,
+    CONNECTING_TO_SERVICE = 1,
+    CONNECTING_TO_CHANNEL = 2,
+    CONNECTED = 3,
 }
 local connection_status = CONNECTION_STATUS.NO_CHANNEL_NAME
 local retry_consumed = true
@@ -49,11 +51,11 @@ function connect(keep)
 		return
 	end
 
-	set_connection_status(CONNECTION_STATUS.CONNECTING)
+	set_connection_status(CONNECTION_STATUS.CONNECTING_TO_SERVICE)
 	socket = WebSocket.new(SOCKET_HOST, SOCKET_PORT, SOCKET_PATH)
 
 	function socket:onmessage(message)
-		-- check is this html response and if so, disconnect
+		-- TODO: check is this html response and if so, disconnect
 		if string_starts(message, "PING") then
 			socket:send("PONG")
 			socket:send("PING")
@@ -70,6 +72,7 @@ function connect(keep)
 		local display_name = message:match("display%-name=([^;]+)")
 		local privmsg_content = message:match("PRIVMSG #" .. channel_name .. " :(.+)")
 		if display_name and privmsg_content then
+            set_connection_status(CONNECTION_STATUS.CONNECTED)
 			send_new_message(display_name, privmsg_content:sub(1, -3))
 		end
 	end
@@ -80,6 +83,7 @@ function connect(keep)
 		socket:send("NICK justinfan13847")
 		socket:send("USER justinfan13847 8 * :justinfan13847")
 		socket:send("JOIN #" .. channel_name)
+        set_connection_status(CONNECTION_STATUS.CONNECTING_TO_CHANNEL)
 	end
 
 	function socket:onclose(code, reason)

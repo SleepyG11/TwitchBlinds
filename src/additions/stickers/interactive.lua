@@ -66,6 +66,7 @@ local effect_options = {
 					area = area,
 					no_edition = true,
 					key_append = "twbl_std",
+					bypass_discovery_center = true,
 				})
 				local _edition = SMODS.poll_edition({
 					key = "twbl_std_edition" .. G.GAME.round_resets.ante,
@@ -226,6 +227,7 @@ local effect_options = {
 					local _card = SMODS.create_card({
 						key = _center,
 						area = area,
+						bypass_discovery_center = true,
 					})
 
 					area:emplace(_card)

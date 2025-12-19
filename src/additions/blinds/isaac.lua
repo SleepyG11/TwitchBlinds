@@ -35,6 +35,7 @@ local blind = SMODS.Blind({
 		local card = SMODS.create_card({
 			key = "j_ceremonial",
 			area = G.jokers,
+			bypass_discovery_center = true,
 		})
 		card.pinned = true
 		card:set_eternal(true)

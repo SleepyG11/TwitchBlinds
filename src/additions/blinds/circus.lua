@@ -40,6 +40,8 @@ local blind = SMODS.Blind({
 		G.twbl_force_event_queue = "twbl_cutscenes"
 		G.twbl_force_speedfactor = 1
 
+		SMODS.bypass_create_card_discovery_center = true
+
 		-- Real showman
 		local jimbo_card = create_card("Joker", G.play, false, nil, nil, nil, "j_ring_master", nil)
 		jimbo_card.states.visible = false
@@ -90,5 +92,7 @@ local blind = SMODS.Blind({
 				return true
 			end,
 		}))
+
+		SMODS.bypass_create_card_discovery_center = nil
 	end,
 })

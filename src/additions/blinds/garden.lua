@@ -42,6 +42,8 @@ local blind = SMODS.Blind({
 		G.twbl_force_event_queue = "twbl_cutscenes"
 		G.twbl_force_speedfactor = 1
 
+		SMODS.bypass_create_card_discovery_center = true
+
 		-- Real Flower Pot
 		local pot_card = create_card("Joker", G.play, false, nil, nil, nil, "j_flower_pot", nil)
 		pot_card:set_eternal(true)
@@ -101,6 +103,8 @@ local blind = SMODS.Blind({
 				return true
 			end,
 		}))
+
+		SMODS.bypass_create_card_discovery_center = nil
 	end,
 
 	twbl_load = function(self)

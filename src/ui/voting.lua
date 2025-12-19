@@ -335,7 +335,9 @@ function TW_BL.UI.voting_with_area_UIBox(args)
 			n = G.UIT.ROOT,
 			config = { colour = G.C.CLEAR, align = "cm" },
 			nodes = {
-				voting_UIBox,
+				{ n = G.UIT.R, config = { align = "cm" }, nodes = {
+					voting_UIBox,
+				} },
 				{ n = G.UIT.R, config = { minh = 0.1 } },
 				{
 					n = G.UIT.R,

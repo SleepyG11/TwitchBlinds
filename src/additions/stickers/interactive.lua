@@ -111,6 +111,7 @@ local effect_options = {
 			TW_BL.UI.top_booster_panel.show(function()
 				return TW_BL.UI.voting_with_area_UIBox({
 					w = false,
+					minw = 2,
 					status = false,
 					items = {
 						{

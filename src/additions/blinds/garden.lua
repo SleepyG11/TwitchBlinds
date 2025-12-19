@@ -1,5 +1,3 @@
--- TODO: vote for edition
-
 SMODS.Atlas({
 	key = "twbl_blind_atlas_garden",
 	px = 34,

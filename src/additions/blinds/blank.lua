@@ -12,6 +12,7 @@ SMODS.Blind({
 	dollars = 0,
 	mult = 0,
 	boss = { min = -1, max = -1 },
+    no_collection = true,
 
 	boss_colour = HEX("636c81"),
 

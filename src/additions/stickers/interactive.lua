@@ -160,6 +160,7 @@ local effect_options = {
 	},
 	["Arcana"] = {
 		rate = 0.4,
+		spectral_rate = 0.15,
 
 		card_scale = 1 / 2.5,
 
@@ -202,7 +203,10 @@ local effect_options = {
 				local rolled_centers = {}
 				for i = 1, 4 do
 					local card_pool, card_pool_key = tarot_pool, tarot_pool_key
-					if 0.25 > pseudorandom("twbl_sticker_interactive_card_pool" .. G.GAME.round_resets.ante) then
+					if
+						self.spectral_rate
+						> pseudorandom("twbl_sticker_interactive_card_pool" .. G.GAME.round_resets.ante)
+					then
 						card_pool, card_pool_key = spectral_pool, spectral_pool_key
 					end
 					card_pool = TW_BL.utils.table_filter(card_pool, function(v)

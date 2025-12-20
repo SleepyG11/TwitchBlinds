@@ -185,7 +185,8 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 			table.insert(items, {
 				text = text,
 				mystic = index == 3,
-				-- TODO: UI for displaying edition info_queue
+				text_func = "twbl_setup_center_preview",
+				center = effect.key,
 			})
 		end
 

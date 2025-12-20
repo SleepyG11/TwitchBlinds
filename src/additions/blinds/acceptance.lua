@@ -65,7 +65,8 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 			table.insert(items, {
 				text = localize({ type = "name_text", set = "Spectral", key = effect.key, vars = {} }),
 				mystic = index == 1,
-				-- TODO: UI for displaying spectral info_queue
+				text_func = "twbl_setup_center_preview",
+				center = effect.key,
 			})
 		end
 		return items

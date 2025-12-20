@@ -284,6 +284,28 @@ G.FUNCS.twbl_setup_blind_preview = function(e)
 	end
 end
 
+G.FUNCS.twbl_setup_center_preview = function(e)
+	local args = e.config.twbl_args
+	local item = e.config.twbl_item
+
+	e.config.func = nil
+
+	if not (item.mystic and TW_BL.cc.mystic_variants.enabled) then
+		e.float = true
+		e.states.hover.can = true
+		e.states.collide.can = true
+		function e:hover(...)
+			local center = G.P_CENTERS[item.center]
+			if center then
+				-- TODO: this thing does not include info_queue, fix this?
+				self.config.h_popup = create_UIBox_detailed_tooltip(center)
+				self.config.h_popup_config = { align = "mb", offset = { x = 0, y = 0.2 }, parent = e }
+			end
+			Node.hover(self, ...)
+		end
+	end
+end
+
 --- @param args { status?: boolean, command: string, connected_status_text?: string, status_func?: string, items: TW_BL.voting_variant[] }
 function TW_BL.UI.blind_action_voting_UIBox(args)
 	args = args or {}
@@ -297,21 +319,18 @@ function TW_BL.UI.blind_action_voting_UIBox(args)
 		local stats = vote_stats[i]
 
 		if item and stats then
-			table.insert(items, {
-				command = args.command .. " " .. i,
-				text = item.text or "-",
-				description = item.description,
-				item_func = item.item_func,
-				command_func = item.command_func,
-				text_func = item.text_func,
-				percent_func = item.percent_func,
-				mystic = item.mystic,
-				percent = {
-					ref_table = stats,
-					ref_value = "percent",
-					suffix = "%",
-				},
-			})
+			table.insert(
+				items,
+				TW_BL.utils.table_shallow_merge({}, item, {
+					command = args.command .. " " .. i,
+					text = item.text or "-",
+					percent = {
+						ref_table = stats,
+						ref_value = "percent",
+						suffix = "%",
+					},
+				})
+			)
 		end
 	end
 	return TW_BL.UI.voting_UIBox({

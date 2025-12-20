@@ -59,7 +59,7 @@ local effect_options = {
 
 		open = function(self, card, center)
 			local area =
-				CardArea(0, 0, 9, G.CARD_H * self.card_scale, { card_limit = 5, type = "title_2", highlight_limit = 0 })
+				CardArea(0, 0, 7, G.CARD_H * self.card_scale, { card_limit = 5, type = "title_2", highlight_limit = 0 })
 			for i = 1, 5 do
 				local _card = SMODS.create_card({
 					set = "Enhanced",
@@ -171,7 +171,7 @@ local effect_options = {
 				local area = CardArea(
 					0,
 					0,
-					G.CARD_W / (2.5 * self.card_scale * 2) * 3,
+					G.CARD_W / (2.5 * self.card_scale * 2) * 4,
 					0.55 * 1.5,
 					{ card_limit = 4, type = "title_2", highlight_limit = 0 }
 				)

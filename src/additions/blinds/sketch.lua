@@ -55,7 +55,9 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 			{
 				command = TW_BL.L.command_with_arg(args.command, "pos_Joker_singular"),
 				text = TW_BL.L.blind_interaction_text(blind),
-				description = TW_BL.L.command_use_limits(args.command_max_uses, args.command_use_refresh_timeout),
+				description = TW_BL.L.command_use_limits(args.command_max_uses, args.command_use_refresh_timeout)
+					.. ", "
+					.. localize("twbl_hint_removes_negative"),
 			},
 		}
 	end,

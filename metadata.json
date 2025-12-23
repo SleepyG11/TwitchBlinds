@@ -9,5 +9,5 @@
 	"version": "2.0.0",
 	"main_file": "index.lua",
 	"badge_colour": "8E15AD",
-	"dependencies": []
+	"dependencies": ["Steamodded (>=1.0.0~BETA-1221a)"]
 }

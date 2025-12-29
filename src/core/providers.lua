@@ -6,12 +6,12 @@ function BaseProvider:init(key)
 	key = string.lower(key)
 	self.key = key
 	self.CONNECTION_STATUS = {
-        NO_CHANNEL_NAME = -1,
-        DISCONNECTED = 0,
-        CONNECTING = 1,
-        CONNECTING_TO_SERVICE = 1,
-        CONNECTING_TO_CHANNEL = 2,
-        CONNECTED = 3,
+		NO_CHANNEL_NAME = -1,
+		DISCONNECTED = 0,
+		CONNECTING = 1,
+		CONNECTING_TO_SERVICE = 1,
+		CONNECTING_TO_CHANNEL = 2,
+		CONNECTED = 3,
 	}
 	self.connection_status = self.CONNECTION_STATUS.NO_CHANNEL_NAME
 	self.connection_status_text = "..."
@@ -75,12 +75,12 @@ TW_BL.providers = {
 	dictionary = {},
 
 	CONNECTION_STATUS = {
-        NO_CHANNEL_NAME = -1,
-        DISCONNECTED = 0,
-        CONNECTING = 1,
-        CONNECTING_TO_SERVICE = 1,
-        CONNECTING_TO_CHANNEL = 2,
-        CONNECTED = 3,
+		NO_CHANNEL_NAME = -1,
+		DISCONNECTED = 0,
+		CONNECTING = 1,
+		CONNECTING_TO_SERVICE = 1,
+		CONNECTING_TO_CHANNEL = 2,
+		CONNECTED = 3,
 	},
 
 	connection_status_text = "...",
@@ -187,9 +187,13 @@ TW_BL.e_mitter.on("load", function()
 	TW_BL.Youtube:set_channel_name(TW_BL.cc.youtube_channel_name.value, true)
 end)
 
--- TW_BL.e_mitter.on("new_provider_connection_status", function(event)
--- 	print(string.format("New %s connection status: %s", event.provider, event.connection_status))
--- end)
--- TW_BL.e_mitter.on("new_provider_message", function(event)
--- 	print(string.format("New %s message: %s -> %s", event.provider, event.username, event.message))
--- end)
+TW_BL.e_mitter.on("new_provider_connection_status", function(event)
+	if TW_BL.FLAGS.log then
+		print(string.format("New %s connection status: %s", event.provider, event.connection_status))
+	end
+end)
+TW_BL.e_mitter.on("new_provider_message", function(event)
+	if TW_BL.FLAGS.log then
+		print(string.format("New %s message: %s -> %s", event.provider, event.username, event.message))
+	end
+end)

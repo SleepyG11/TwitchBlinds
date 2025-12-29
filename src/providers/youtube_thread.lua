@@ -6,18 +6,19 @@ local https = require("SMODS.https")
 local json = require("json")
 
 local CONNECTION_STATUS = {
-    NO_CHANNEL_NAME = -1,
-    DISCONNECTED = 0,
-    CONNECTING = 1,
-    CONNECTING_TO_SERVICE = 1,
-    CONNECTING_TO_CHANNEL = 2,
-    CONNECTED = 3,
+	NO_CHANNEL_NAME = -1,
+	DISCONNECTED = 0,
+	CONNECTING = 1,
+	CONNECTING_TO_SERVICE = 1,
+	CONNECTING_TO_CHANNEL = 2,
+	CONNECTED = 3,
 }
 local connection_status = CONNECTION_STATUS.NO_CHANNEL_NAME
 local retry_consumed = true
 local retry_interval = 0
 local polling_consumed = true
 local polling_interval = 0
+local send_message_interval = 0.2
 local channel_name = nil
 local continuation = nil
 
@@ -25,6 +26,8 @@ local https_input = love.thread.getChannel("twbl_youtube_thread_input")
 local https_output = love.thread.getChannel("twbl_youtube_thread_output")
 
 --
+
+local messages_stack = {}
 
 function send_new_messages(messages)
 	https_output:push({ new_messages = true, messages = messages })
@@ -75,9 +78,9 @@ function get_chat_messages(first)
 		return
 	end
 
-    if first then
-        set_connection_status(CONNECTION_STATUS.CONNECTING_TO_CHANNEL)
-    end
+	if first then
+		set_connection_status(CONNECTION_STATUS.CONNECTING_TO_CHANNEL)
+	end
 
 	local success, data = pcall(function()
 		local request_body = {
@@ -163,7 +166,7 @@ function get_chat_messages(first)
 	continuation = continuation_success and next_continuation or nil
 	local result_messages = messages_success and new_messages or {}
 	for _, new_message in ipairs(result_messages) do
-		send_new_message(new_message.username, new_message.message)
+		table.insert(messages_stack, { username = new_message.username, message = new_message.message })
 	end
 
 	if continuation then
@@ -171,7 +174,7 @@ function get_chat_messages(first)
 			set_connection_status(CONNECTION_STATUS.CONNECTED)
 		end
 		polling_consumed = false
-		polling_interval = 1
+		polling_interval = 1.25
 	else
 		disconnect(true, false)
 	end
@@ -228,6 +231,20 @@ function update(dt)
 	elseif not retry_consumed then
 		retry_consumed = true
 		connect()
+	end
+	if send_message_interval > 0 then
+		send_message_interval = send_message_interval - dt
+	else
+		send_message_interval = 0.2
+		if #messages_stack > 20 then
+			send_message_interval = 0.025
+		elseif #messages_stack > 10 then
+			send_message_interval = 0.1
+		end
+		local msg = table.remove(messages_stack, 1)
+		if msg then
+			send_new_message(msg.username, msg.message)
+		end
 	end
 end
 

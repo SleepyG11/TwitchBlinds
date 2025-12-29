@@ -11,7 +11,7 @@ local blind = SMODS.Blind({
 	key = "eraser",
 	dollars = 5,
 	mult = 2,
-	boss = { min = 2, max = -1 },
+	boss = { min = 2 },
 	boss_colour = HEX("ee6995"),
 
 	atlas = "twbl_blind_atlas_eraser",

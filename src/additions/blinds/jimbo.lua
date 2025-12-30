@@ -116,18 +116,17 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 	connected_status_text = function()
 		return localize("k_twbl_jimbo_ex")
 	end,
+	weighted_voting = true,
+	weight_func = function(a, b)
+		return (b - a) * 0.1 + 0.5
+	end,
+	set_vote_variants = function()
+		return { "down", "up" }
+	end,
 	command = "grow",
 	command_max_uses = 1,
 	get_items = function(_, args)
 		return {
-			{
-				command = args.command .. " up",
-				text = localize({
-					type = "variable",
-					key = "twbl_jimbo_grow_up",
-					vars = {},
-				}),
-			},
 			{
 				command = args.command .. " down",
 				text = localize({
@@ -136,19 +135,28 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 					vars = {},
 				}),
 			},
+			{
+				command = args.command .. " up",
+				text = localize({
+					type = "variable",
+					key = "twbl_jimbo_grow_up",
+					vars = {},
+				}),
+			},
 		}
 	end,
 	on_new_provider_command = function(event, args)
-		local words = { up = true, down = true }
 		local arg1 = event.words[1]
 		if
-			words[arg1]
-			and G.GAME.blind.__twbl_jimbo_card
+			G.GAME.blind.__twbl_jimbo_card
 			and not G.GAME.blind.__twbl_jimbo_card.REMOVED
 			and TW_BL.chat_commands.default_command_check(event, {
 				command = args.command,
 				can_use_command = true,
 				increment_command_use = true,
+				vote_id = "blind_action",
+				can_vote_for_variant = true,
+				increment_vote_score = true,
 			})
 		then
 			local card = G.GAME.blind.__twbl_jimbo_card

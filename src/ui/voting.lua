@@ -402,3 +402,271 @@ function TW_BL.UI.voting_with_area_UIBox(args)
 		}
 	end
 end
+
+--- @param args { status?: boolean, connected_status_text?: string, status_func?: string, left_item: TW_BL.voting_variant, right_item: TW_BL.voting_variant, ref_table: table, ref_value: string, w?: number | false }
+function TW_BL.UI.voting_weighted_UIBox(args)
+	args = args or {}
+	local total_width = args.w or 14.95
+	if args.w == false then
+		total_width = nil
+	end
+	local width = total_width
+
+	local content = {}
+	if args.status then
+		-- TODO: holy shit, DynaText sucks when we're working with text. Even regular text doesnt help.
+		-- Somehow figure this out...
+		local text_w = 2.5
+		width = width and width - text_w
+		local status_string = {
+			ref_table = setmetatable({}, {
+				__index = function()
+					return (TW_BL.providers.connection_status == TW_BL.providers.CONNECTION_STATUS.CONNECTED)
+							and args.connected_status_text
+						or TW_BL.providers.connection_status_text
+				end,
+			}),
+			ref_value = "vote_text",
+		}
+		table.insert(content, {
+			n = G.UIT.C,
+			config = {
+				minw = text_w,
+				maxw = text_w,
+				padding = 0.1,
+				func = args.status_func,
+				twbl_args = args,
+				align = "c",
+			},
+			nodes = {
+				{
+					n = G.UIT.O,
+					config = {
+						object = DynaText({
+							string = { status_string },
+							colours = { G.C.UI.TEXT_LIGHT },
+							shadow = false,
+							rotate = false,
+							float = true,
+							bump = true,
+							silent = true,
+							scale = 0.35,
+							spacing = 1,
+							maxw = 2,
+						}),
+						id = "twbl_status",
+					},
+				},
+			},
+		})
+	end
+
+	for index, item in ipairs({ args.left_item, args.right_item }) do
+		local variant_w = width and width / 3
+		table.insert(content, {
+			n = G.UIT.C,
+			config = {
+				minw = (item.minw and item.minw + 0.2) or variant_w,
+				maxw = variant_w,
+				align = "cm",
+				func = item.item_func,
+				twbl_item = item,
+				twbl_args = args,
+			},
+			nodes = {
+				{ n = G.UIT.C, config = { minw = 0.05 } },
+				item.command and {
+					n = G.UIT.C,
+					config = {
+						padding = 0.08,
+						r = 0.3,
+						align = "cm",
+						colour = G.C.CHIPS,
+						func = item.command_func,
+						twbl_item = item,
+						twbl_args = args,
+					},
+					nodes = {
+						{
+							n = G.UIT.O,
+							config = {
+								object = DynaText({
+									string = { item.command },
+									scale = 0.25,
+									colours = { G.C.UI.TEXT_LIGHT },
+									shadow = true,
+									rotate = false,
+									silent = true,
+									bump = false,
+									spacing = 0,
+								}),
+								id = "twbl_command_" .. index,
+							},
+						},
+					},
+				} or nil,
+				item.command and { n = G.UIT.C, config = { minw = 0.1 } } or nil,
+				{
+					n = G.UIT.C,
+					config = { align = "cm", func = item.text_func, twbl_item = item, twbl_args = args },
+					nodes = is_mystic and {
+						{
+							n = G.UIT.R,
+							config = {
+								align = "cm",
+							},
+							nodes = {
+								{
+									n = G.UIT.O,
+									config = {
+										object = DynaText({
+											string = { "???" },
+											scale = 0.3,
+											colours = { G.C.UI.TEXT_LIGHT },
+											shadow = true,
+											rotate = false,
+											silent = true,
+											bump = true,
+											spacing = 0,
+										}),
+										id = "twbl_text_" .. index,
+									},
+								},
+							},
+						},
+					} or {
+						{
+							n = G.UIT.R,
+							config = {
+								align = "cm",
+							},
+							nodes = {
+								{
+									n = G.UIT.T,
+									config = {
+										text = item.text,
+										scale = 0.3,
+										colour = G.C.UI.TEXT_LIGHT,
+										id = "twbl_text_" .. index,
+									},
+								},
+							},
+						},
+						item.description and {
+							n = G.UIT.R,
+							config = {
+								align = "cm",
+							},
+							nodes = {
+								{
+									n = G.UIT.T,
+									config = {
+										text = item.description,
+										scale = 0.2,
+										colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.8),
+										id = "twbl_description_" .. index,
+									},
+								},
+							},
+						} or nil,
+					},
+				},
+				{ n = G.UIT.C, config = { minw = 0.1 } },
+			},
+		})
+	end
+
+	table.insert(content, args.status and 3 or 2, {
+		n = G.UIT.C,
+		config = {
+			minw = width and width / 3,
+			align = "cm",
+		},
+		nodes = {
+			{
+				n = G.UIT.R,
+				config = {
+					colour = G.C.MULT,
+					minh = 0.15,
+					r = 0.2,
+					minw = width and width / 3,
+					func = "twbl_setup_voting_progress_bar",
+					twbl_weight_func = args.weight_func or function(a, b)
+						if a == 0 and b == 0 then
+							return 0.5
+						end
+						if b == 0 then
+							return 1
+						end
+						return a / b
+					end,
+				},
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							colour = G.C.CHIPS,
+							minh = 0.15,
+							r = 0.2,
+						},
+					},
+				},
+			},
+		},
+	})
+
+	local t = {
+		n = G.UIT.ROOT,
+		config = {
+			colour = { 0, 0, 0, 0.75 },
+			minw = total_width,
+			maxw = total_width,
+			minh = 0.5,
+			r = 0.1,
+			-- align = "cm",
+		},
+		nodes = {
+			{
+				n = G.UIT.R,
+				config = {
+					align = "c",
+					minh = 0.5,
+				},
+				nodes = content,
+			},
+		},
+	}
+
+	return t
+end
+
+G.FUNCS.twbl_setup_voting_progress_bar = function(e)
+	e.config.func = nil
+	TW_BL.e_mitter.on("new_provider_command", function()
+		local vote_stats = TW_BL.chat_commands.get_vote_status("blind_action")
+		if not vote_stats then
+			return
+		end
+		local score = function(i)
+			return i and i.score or 0
+		end
+		local percent = math.max(0, math.min(1, e.config.twbl_weight_func(score(vote_stats[1]), score(vote_stats[2]))))
+		local w = e.T.w * percent
+		e.children[1].T.w = w
+	end, {
+		key = "weighted_voting_action",
+		tags = {
+			in_run = true,
+		},
+	})
+	local old_remove = e.remove
+	function e:remove(...)
+		old_remove(self, ...)
+		TW_BL.e_mitter.off("new_provider_command", "weighted_voting_action")
+	end
+	local percent = math.max(0, math.min(1, 0 * 0.1 + 0.5))
+	local w = e.T.w * percent
+	e.children[1].T.w = w
+
+	-- TODO: arrow
+end

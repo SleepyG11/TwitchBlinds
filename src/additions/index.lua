@@ -16,6 +16,7 @@ SMODS.Atlas({
 --- @field command_max_uses? number
 --- @field command_use_refresh_timeout? number
 --- @field voting? boolean
+--- @field weighted_voting? boolean
 --- @field set_vote_variants? fun(effects: table[]): string[]
 --- @field delay_load? boolean
 --- @field set_effects? fun(): table[]
@@ -42,8 +43,10 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 		TW_BL.chat_commands.set({
 			command = args.command,
 			command_max_uses = args.command_max_uses or false,
-			vote_id = args.voting and "blind_action" or nil,
-			set_vote_variants = args.voting and args.set_vote_variants(G.GAME.blind.effect.effects or {}) or nil,
+			vote_id = (args.voting or args.weighted_voting) and "blind_action" or nil,
+			set_vote_variants = (args.voting or args.weighted_voting) and args.set_vote_variants(
+				G.GAME.blind.effect.effects or {}
+			) or nil,
 			reset_command_use = true,
 			reset_vote_score = true,
 		})
@@ -57,6 +60,17 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 					connected_status_text = connected_status_text,
 					command = args.command,
 					items = args.get_items(G.GAME.blind.effect.effects or {}, args),
+				})
+			end, true)
+		elseif args.weighted_voting then
+			TW_BL.UI.top_screen_panel.show(function()
+				local items = args.get_items({}, args)
+				return TW_BL.UI.voting_weighted_UIBox({
+					status = true,
+					connected_status_text = connected_status_text,
+					left_item = items[1],
+					right_item = items[2],
+					weight_func = args.weight_func,
 				})
 			end, true)
 		else

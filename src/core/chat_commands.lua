@@ -27,6 +27,7 @@ TW_BL.chat_commands = {
 	vote_variants = {},
 	-- Score of each voting variant
 	vote_score = {},
+	weighted_vote_score = {},
 
 	vote_buffer = {},
 }
@@ -34,6 +35,9 @@ TW_BL.chat_commands = {
 --
 
 function TW_BL.chat_commands.can_use_command(command, username)
+	if TW_BL.FLAGS.bypass_max_use then
+		return true
+	end
 	if
 		TW_BL.chat_commands.max_uses[command]
 		and TW_BL.chat_commands.get_command_use(command, username) >= TW_BL.chat_commands.max_uses[command]
@@ -122,7 +126,7 @@ end
 
 --- @param id string
 --- @param variant string
---- @return integer | nil
+--- @return integer
 function TW_BL.chat_commands.get_vote_score(id, variant)
 	if not TW_BL.chat_commands.vote_score[id] then
 		TW_BL.chat_commands.vote_score[id] = {}
@@ -157,6 +161,44 @@ end
 function TW_BL.chat_commands.reset_vote_score(id)
 	TW_BL.chat_commands.vote_score[id] = {}
 	TW_BL.chat_commands.get_vote_status(id)
+end
+
+--
+
+--- @param id string
+--- @return integer
+function TW_BL.chat_commands.get_weighted_vote_score(id)
+	if not TW_BL.chat_commands.weighted_vote_score[id] then
+		TW_BL.chat_commands.weighted_vote_score[id] = {}
+	end
+	return TW_BL.chat_commands.weighted_vote_score[id].score or 0
+end
+
+--- @param id string
+--- @param score integer | nil
+function TW_BL.chat_commands.set_weighted_vote_score(id, score)
+	if not TW_BL.chat_commands.weighted_vote_score[id] then
+		TW_BL.chat_commands.weighted_vote_score[id] = {}
+	end
+	TW_BL.chat_commands.weighted_vote_score[id].score = score or 0
+end
+
+--- @param id string
+function TW_BL.chat_commands.increment_weighted_vote_score(id)
+	TW_BL.chat_commands.set_weighted_vote_score(id, TW_BL.chat_commands.get_weighted_vote_score(id) + 1)
+end
+
+--- @param id string
+function TW_BL.chat_commands.decrement_weighted_vote_score(id)
+	TW_BL.chat_commands.set_weighted_vote_score(id, math.max(0, TW_BL.chat_commands.get_weighted_vote_score(id) - 1))
+end
+
+--- @param id string
+function TW_BL.chat_commands.reset_weighted_vote_score(id, score)
+	TW_BL.chat_commands.weighted_vote_score[id] = {}
+	if score then
+		TW_BL.chat_commands.weighted_vote_score[id].score = score
+	end
 end
 
 --
@@ -292,7 +334,7 @@ end
 
 --
 
---- @param args? { reset_vote_score?: boolean | string, reset_command_use?: boolean | string }
+--- @param args? { reset_vote_score?: boolean | string, reset_command_use?: boolean | string, reset_weighted_vote_score?: boolean | string, reset_weighted_vote_score_value?: number }
 function TW_BL.chat_commands.reset(args)
 	args = args or {}
 	if args.reset_vote_score then
@@ -307,6 +349,16 @@ function TW_BL.chat_commands.reset(args)
 			TW_BL.chat_commands.uses = {}
 		else
 			TW_BL.chat_commands.reset_command_use(args.reset_command_use)
+		end
+	end
+	if args.reset_weighted_vote_score then
+		if args.reset_weighted_vote_score == true then
+			TW_BL.chat_commands.weighted_vote_score = {}
+		else
+			TW_BL.chat_commands.reset_weighted_vote_score(
+				args.reset_weighted_vote_score,
+				args.reset_weighted_vote_score_value
+			)
 		end
 	end
 end
@@ -332,7 +384,7 @@ end
 
 --
 
---- @param args { command?: string, command_max_uses?: number | false, reset_command_use?: boolean, vote_id?: string, set_vote_variants?: string[], reset_vote_score?: boolean }
+--- @param args { command?: string, command_max_uses?: number | false, reset_command_use?: boolean, vote_id?: string, set_vote_variants?: string[], reset_vote_score?: boolean, reset_weighted_score?: boolean, reset_weighted_score_value?: number }
 function TW_BL.chat_commands.set(args)
 	args = args or {}
 	if args.command then
@@ -350,12 +402,16 @@ function TW_BL.chat_commands.set(args)
 		if args.reset_vote_score then
 			TW_BL.chat_commands.reset_vote_score(args.vote_id)
 		end
+		if args.reset_weighted_score then
+			TW_BL.chat_commands.reset_weighted_vote_score(args.vote_id, args.reset_weighted_score_value)
+		end
 	end
 end
 
 --
 
---- @param args { command: string, can_use_command?: boolean, increment_command_use?: boolean, vote_id?: string, can_vote_for_variant?: boolean, increment_vote_score?: boolean }
+--- @alias TW_BL.update_weight_func fun(old_score: number, variant: string, vote_status: table): number
+--- @param args { command: string, can_use_command?: boolean, increment_command_use?: boolean, vote_id?: string, can_vote_for_variant?: boolean, increment_vote_score?: boolean, update_weight?: boolean, update_weight_func?: TW_BL.update_weight_func, check_weight_boundaries?: boolean }
 function TW_BL.chat_commands.default_command_check(event, args)
 	args = args or {}
 	if not args.command then
@@ -374,11 +430,31 @@ function TW_BL.chat_commands.default_command_check(event, args)
 	then
 		return false
 	end
-	if args.increment_command_use then
-		TW_BL.chat_commands.increment_command_use(args.command, event.username)
-	end
 	if args.vote_id and args.increment_vote_score then
 		TW_BL.chat_commands.increment_vote_score(args.vote_id, event.words[1])
+	end
+	if args.vote_id and args.update_weight then
+		local new_score
+		if args.update_weight_func then
+			new_score = args.update_weight_func(
+				TW_BL.chat_commands.get_weighted_vote_score(args.vote_id),
+				event.words[1],
+				TW_BL.chat_commands.get_vote_status(args.vote_id)
+			)
+		else
+			local vote_score = TW_BL.chat_commands.get_vote_status(args.vote_id)
+			local score_1 = vote_score[1] and vote_score[1].score or 0
+			local score_2 = vote_score[2] and vote_score[2].score or 0
+			new_score = (score_1 + score_2 == 0) and 0.5 or (score_1 / (score_1 + score_2))
+		end
+		if args.check_weight_boundaries and (new_score > 1 or new_score < 0) then
+			TW_BL.chat_commands.decrement_vote_score(args.vote_id, event.words[1])
+			return false
+		end
+		TW_BL.chat_commands.set_weighted_vote_score(args.vote_id, new_score)
+	end
+	if args.increment_command_use then
+		TW_BL.chat_commands.increment_command_use(args.command, event.username)
 	end
 	return true
 end

@@ -403,7 +403,9 @@ function TW_BL.UI.voting_with_area_UIBox(args)
 	end
 end
 
---- @param args { status?: boolean, connected_status_text?: string, status_func?: string, left_item: TW_BL.voting_variant, right_item: TW_BL.voting_variant, ref_table: table, ref_value: string, w?: number | false }
+--- @alias TW_BL.weight_func fun(left: number, right: number): number
+
+--- @param args { status?: boolean, connected_status_text?: string, status_func?: string, left_item: TW_BL.voting_variant, right_item: TW_BL.voting_variant, w?: number | false, progress_w?: number, progress_items?: table }
 function TW_BL.UI.voting_weighted_UIBox(args)
 	args = args or {}
 	local total_width = args.w or 14.95
@@ -461,12 +463,22 @@ function TW_BL.UI.voting_weighted_UIBox(args)
 		})
 	end
 
-	for index, item in ipairs({ args.left_item, args.right_item }) do
+	local items_content = {}
+
+	local items_count = 0
+	if args.left_item then
+		items_count = items_count + 1
+	end
+	if args.right_item then
+		items_count = items_count + 1
+	end
+
+	local add_item = function(index, item, colour)
 		local variant_w = width and width / 3
-		table.insert(content, {
+		table.insert(items_content, {
 			n = G.UIT.C,
 			config = {
-				minw = (item.minw and item.minw + 0.2) or variant_w,
+				minw = (item.minw and item.minw + 0.2) or nil,
 				maxw = variant_w,
 				align = "cm",
 				func = item.item_func,
@@ -481,7 +493,7 @@ function TW_BL.UI.voting_weighted_UIBox(args)
 						padding = 0.08,
 						r = 0.3,
 						align = "cm",
-						colour = G.C.CHIPS,
+						colour = colour or G.C.CHIPS,
 						func = item.command_func,
 						twbl_item = item,
 						twbl_args = args,
@@ -506,7 +518,7 @@ function TW_BL.UI.voting_weighted_UIBox(args)
 					},
 				} or nil,
 				item.command and { n = G.UIT.C, config = { minw = 0.1 } } or nil,
-				{
+				item.text and {
 					n = G.UIT.C,
 					config = { align = "cm", func = item.text_func, twbl_item = item, twbl_args = args },
 					nodes = is_mystic and {
@@ -570,49 +582,78 @@ function TW_BL.UI.voting_weighted_UIBox(args)
 							},
 						} or nil,
 					},
-				},
+				} or nil,
 				{ n = G.UIT.C, config = { minw = 0.1 } },
 			},
 		})
 	end
 
-	table.insert(content, args.status and 3 or 2, {
+	if args.left_item then
+		add_item(1, args.left_item, HEX("f5009b"))
+	end
+
+	local progressbar_width = args.progress_w
+	if not progressbar_width then
+		progressbar_width = width and width / 3 or 3
+		if progressbar_width and items_count == 1 then
+			progressbar_width = progressbar_width * 2
+		end
+	end
+
+	table.insert(items_content, {
 		n = G.UIT.C,
 		config = {
-			minw = width and width / 3,
+			minw = progressbar_width,
 			align = "cm",
 		},
 		nodes = {
 			{
-				n = G.UIT.R,
-				config = {
-					colour = G.C.MULT,
-					minh = 0.15,
-					r = 0.2,
-					minw = width and width / 3,
-					func = "twbl_setup_voting_progress_bar",
-					twbl_weight_func = args.weight_func or function(a, b)
-						if a == 0 and b == 0 then
-							return 0.5
-						end
-						if b == 0 then
-							return 1
-						end
-						return a / b
-					end,
-				},
+				n = G.UIT.C,
+				config = { align = "cm" },
 				nodes = {
 					{
 						n = G.UIT.R,
 						config = {
-							colour = G.C.CHIPS,
+							colour = HEX("387aff"),
 							minh = 0.15,
-							r = 0.2,
+							r = 0.3,
+							minw = progressbar_width - 0.4,
+							func = "twbl_setup_voting_progress_bar",
+							twbl_progress_items = args.progress_items,
 						},
+						nodes = {
+							{
+								n = G.UIT.R,
+								config = {
+									colour = HEX("f5009b"),
+									minh = 0.15,
+									r = 0.3,
+								},
+							},
+						},
+					},
+					{
+						n = G.UIT.R,
+						config = { minh = 0.225 },
 					},
 				},
 			},
+			{ n = G.UIT.C, config = { minw = 0.1 } },
 		},
+	})
+
+	if args.right_item then
+		add_item(2, args.right_item, HEX("387aff"))
+	end
+
+	table.insert(content, {
+		n = G.UIT.C,
+		config = {
+			minw = width,
+			maxw = width,
+			align = "cm",
+		},
+		nodes = items_content,
 	})
 
 	local t = {
@@ -642,17 +683,13 @@ end
 
 G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 	e.config.func = nil
-	TW_BL.e_mitter.on("new_provider_command", function()
-		local vote_stats = TW_BL.chat_commands.get_vote_status("blind_action")
-		if not vote_stats then
-			return
-		end
-		local score = function(i)
-			return i and i.score or 0
-		end
-		local percent = math.max(0, math.min(1, e.config.twbl_weight_func(score(vote_stats[1]), score(vote_stats[2]))))
+	local set = function(percent)
 		local w = e.T.w * percent
+		e.children[1].config.minw = w
 		e.children[1].T.w = w
+	end
+	TW_BL.e_mitter.on("new_provider_command", function()
+		set(TW_BL.chat_commands.get_weighted_vote_score("blind_action"))
 	end, {
 		key = "weighted_voting_action",
 		tags = {
@@ -664,9 +701,87 @@ G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 		old_remove(self, ...)
 		TW_BL.e_mitter.off("new_provider_command", "weighted_voting_action")
 	end
-	local percent = math.max(0, math.min(1, 0 * 0.1 + 0.5))
-	local w = e.T.w * percent
-	e.children[1].T.w = w
+	set(TW_BL.chat_commands.get_weighted_vote_score("blind_action"))
+
+	for index, item in ipairs(e.config.twbl_progress_items or {}) do
+		if item.line then
+			local box = UIBox({
+				definition = {
+					n = G.UIT.ROOT,
+					config = {
+						colour = G.C.CLEAR,
+					},
+					nodes = {
+						{
+							n = G.UIT.C,
+							config = {
+								colour = item.colour or G.C.UI.TEXT_LIGHT,
+								minw = 0.035,
+								maxw = 0.035,
+								minh = e.T.h,
+								maxh = e.T.h,
+							},
+						},
+					},
+				},
+				config = {
+					parent = e,
+					offset = {
+						x = e.T.w * item.pos,
+						y = 0,
+					},
+					align = "cl",
+					major = e,
+				},
+			})
+			e.children["twbl_progress_item_line_" .. index] = box
+		end
+		if item.text then
+			local pos = item.pos
+			local align
+			if item.center then
+				align = "bmi"
+				pos = 0.5 - pos
+			elseif pos < 0.35 then
+				align = "bli"
+			elseif pos > 0.65 then
+				align = "bri"
+				pos = pos - 1
+			else
+				align = "bmi"
+				pos = 0.5 - pos
+			end
+
+			local box = UIBox({
+				definition = {
+					n = G.UIT.ROOT,
+					config = {
+						colour = G.C.CLEAR,
+					},
+					nodes = {
+						{
+							n = G.UIT.T,
+							config = {
+								text = item.text,
+								scale = 0.225,
+								colour = item.colour or G.C.UI.TEXT_LIGHT,
+							},
+						},
+					},
+				},
+				config = {
+					parent = e,
+					offset = {
+						y = 0.25,
+						x = e.T.w * pos,
+					},
+					align = align,
+					major = e,
+				},
+			})
+			e.children["twbl_progress_item_text_" .. index] = box
+		end
+	end
 
 	-- TODO: arrow
 end

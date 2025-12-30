@@ -117,31 +117,87 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 		return localize("k_twbl_jimbo_ex")
 	end,
 	weighted_voting = true,
-	weight_func = function(a, b)
-		return (b - a) * 0.1 + 0.5
+	update_weight_func = function(old_score, variant)
+		if variant == "down" then
+			return old_score + 0.1
+		elseif variant == "up" then
+			return old_score - 0.1
+		else
+			return old_score
+		end
 	end,
+	check_weight_boundaries = true,
+	default_weight_score = 0.5,
 	set_vote_variants = function()
 		return { "down", "up" }
 	end,
 	command = "grow",
 	command_max_uses = 1,
+	progress_w = 8,
 	get_items = function(_, args)
 		return {
-			{
+			left = {
 				command = args.command .. " down",
-				text = localize({
-					type = "variable",
-					key = "twbl_jimbo_grow_down",
-					vars = {},
-				}),
 			},
-			{
+			right = {
 				command = args.command .. " up",
-				text = localize({
-					type = "variable",
-					key = "twbl_jimbo_grow_up",
-					vars = {},
-				}),
+			},
+			progress = {
+				{
+					pos = 0,
+					text = localize({
+						type = "variable",
+						key = "twbl_jimbo_grow_down",
+						vars = {},
+					}),
+				},
+				{
+					pos = 0.1,
+					line = true,
+				},
+				{
+					pos = 0.2,
+					line = true,
+				},
+				{
+					pos = 0.3,
+					line = true,
+				},
+				{
+					pos = 0.4,
+					line = true,
+				},
+				{
+					pos = 0.5,
+					center = true,
+					line = true,
+					text = TW_BL.L.command_use_limits(args.command_max_uses, args.command_use_refresh_timeout),
+					colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.8),
+				},
+				{
+					pos = 0.6,
+					line = true,
+				},
+				{
+					pos = 0.7,
+					line = true,
+				},
+				{
+					pos = 0.8,
+					line = true,
+				},
+				{
+					pos = 0.9,
+					line = true,
+				},
+				{
+					pos = 1,
+					text = localize({
+						type = "variable",
+						key = "twbl_jimbo_grow_up",
+						vars = {},
+					}),
+				},
 			},
 		}
 	end,
@@ -157,6 +213,9 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				vote_id = "blind_action",
 				can_vote_for_variant = true,
 				increment_vote_score = true,
+				update_weight = true,
+				update_weight_func = args.update_weight_func,
+				check_weight_boundaries = args.check_weight_boundaries,
 			})
 		then
 			local card = G.GAME.blind.__twbl_jimbo_card

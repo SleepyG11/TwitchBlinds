@@ -16,12 +16,15 @@ SMODS.Atlas({
 --- @field command_max_uses? number
 --- @field command_use_refresh_timeout? number
 --- @field voting? boolean
---- @field weighted_voting? boolean
 --- @field set_vote_variants? fun(effects: table[]): string[]
 --- @field delay_load? boolean
 --- @field set_effects? fun(): table[]
 --- @field apply_effect? fun(effect: table)
 --- @field get_items fun(effects: table[], args: TW_BL.bootstrap_interactive_blind_args): table[]
+--- @field weighted_voting? boolean
+--- @field update_weight_func? TW_BL.update_weight_func
+--- @field default_weight_score? number
+--- @field check_weight_boundaries? boolean
 --- @field on_new_provider_command? fun(event: table, args: TW_BL.bootstrap_interactive_blind_args, card?: Card): boolean?
 --- @field cards_voting? boolean
 --- @field get_cardarea? fun(): CardArea
@@ -31,6 +34,7 @@ SMODS.Atlas({
 ---@param args TW_BL.bootstrap_interactive_blind_args
 function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 	args = args or {}
+
 	local old_twbl_load = blind.twbl_load
 	blind.twbl_load = function(self)
 		if old_twbl_load then
@@ -49,6 +53,8 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 			) or nil,
 			reset_command_use = true,
 			reset_vote_score = true,
+			reset_weighted_score = true,
+			reset_weighted_score_value = args.default_weight_score or 0.5,
 		})
 		local connected_status_text = (
 			type(args.connected_status_text) == "function" and (args.connected_status_text() or "ERROR")
@@ -68,9 +74,10 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 				return TW_BL.UI.voting_weighted_UIBox({
 					status = true,
 					connected_status_text = connected_status_text,
-					left_item = items[1],
-					right_item = items[2],
-					weight_func = args.weight_func,
+					left_item = items.left,
+					right_item = items.right,
+					progress_items = items.progress or {},
+					progress_w = args.progress_w,
 				})
 			end, true)
 		else
@@ -115,6 +122,33 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 						message = event.username,
 					})
 					refresh()
+				end
+			elseif args.weighted_voting then
+				if args.on_new_provider_command then
+					if args.on_new_provider_command(event, args) then
+						refresh()
+					end
+				else
+					if
+						TW_BL.chat_commands.default_command_check(event, {
+							command = args.command,
+							can_use_command = true,
+							increment_command_use = true,
+							vote_id = "blind_action",
+							can_vote_for_variant = true,
+							increment_vote_score = true,
+							update_weight = true,
+							update_weight_func = args.update_weight_func,
+							check_weight_boundaries = args.check_weight_boundaries,
+						})
+					then
+						TW_BL.UI.notify({
+							target = "panel",
+							panel = "top_screen_panel",
+							message = event.username,
+						})
+						refresh()
+					end
 				end
 			elseif args.cards_voting then
 				if args.on_new_provider_command(event, args, TW_BL.utils.command_card(args.get_cardarea(), event)) then

@@ -200,8 +200,8 @@ return {
 			twbl_trash_can_filter_random_type = "random #1#",
 			twbl_trash_can_filter_all = "all cards in deck",
 
-			twbl_jimbo_grow_up = "Make Jimbo bigger",
-			twbl_jimbo_grow_down = "Make Jimbo smaller",
+			twbl_jimbo_grow_up = "BIG JIMBO",
+			twbl_jimbo_grow_down = "smol jimbo",
 
 			twbl_trash_can_effect_remove = "Remove cards",
 			twbl_trash_can_effect_duplicate = "Duplicate cards",

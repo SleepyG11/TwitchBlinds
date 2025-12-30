@@ -118,9 +118,9 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 	end,
 	weighted_voting = true,
 	update_weight_func = function(old_score, variant)
-		if variant == "down" then
+		if variant == "left" then
 			return old_score + 0.1
-		elseif variant == "up" then
+		elseif variant == "right" then
 			return old_score - 0.1
 		else
 			return old_score
@@ -129,18 +129,19 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 	check_weight_boundaries = true,
 	default_weight_score = 0.5,
 	set_vote_variants = function()
-		return { "down", "up" }
+		return { "left", "right" }
 	end,
-	command = "grow",
+	command = "vote",
 	command_max_uses = 1,
+	command_use_refresh_timeout = 10,
 	progress_w = 8,
 	get_items = function(_, args)
 		return {
 			left = {
-				command = args.command .. " down",
+				command = args.command .. " left",
 			},
 			right = {
-				command = args.command .. " up",
+				command = args.command .. " right",
 			},
 			progress = {
 				{
@@ -225,11 +226,11 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 			local step = (max_size - min_size) / 10
 
 			local new_size, colour
-			if arg1 == "up" then
+			if arg1 == "right" then
 				-- increase jimbo
 				new_size = math.min(current_size + step, max_size)
 				colour = G.C.CHIPS
-			elseif arg1 == "down" then
+			elseif arg1 == "left" then
 				-- decrease jimbo
 				new_size = math.max(current_size - step, min_size)
 				colour = G.C.RED

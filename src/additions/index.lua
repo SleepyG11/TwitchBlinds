@@ -255,6 +255,7 @@ TW_BL.load_files({
 	"misstock.lua",
 	"trash_can.lua",
 	"acceptance.lua",
+	"time_spiral.lua",
 	"isaac.lua",
 	"jimbo.lua",
 	"circus.lua",

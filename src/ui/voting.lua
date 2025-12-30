@@ -741,7 +741,7 @@ G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 			local align
 			if item.center then
 				align = "bmi"
-				pos = 0.5 - pos
+				pos = pos - 0.5
 			elseif pos < 0.35 then
 				align = "bli"
 			elseif pos > 0.65 then
@@ -749,7 +749,7 @@ G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 				pos = pos - 1
 			else
 				align = "bmi"
-				pos = 0.5 - pos
+				pos = pos - 0.5
 			end
 
 			local box = UIBox({

@@ -128,9 +128,9 @@ return {
 				name = "The Incrementor",
 				text = { "Chat can start counting", "to increase the blind's size" },
 			},
-			bl_twbl_spiral = {
+			bl_twbl_time_spiral = {
 				name = "The Time Spiral",
-				text = { "Chat can move in time..." },
+				text = { "Chat can move in time" },
 			},
 			-- bl_twbl_fee = {
 			-- 	name = "The Fee",
@@ -177,6 +177,9 @@ return {
 		v_dictionary = {
 			twbl_for_shops = "for #1# shops",
 			twbl_for_antes = "for #1# antes",
+
+			twbl_ante_diff_singular = "#1# ante",
+			twbl_ante_diff_plural = "#1# antes",
 
 			twbl_votes_amount_singular = "#1# vote/user",
 			twbl_votes_amount_plural = "#1# votes/user",

@@ -181,6 +181,10 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 			if result_card then
 				result_card.ability.twbl_winner = true
 			end
+		elseif args.weighted_voting then
+			if not G.GAME.blind.effect.win_weight then
+				G.GAME.blind.effect.win_weight = TW_BL.chat_commands.get_weighted_vote_score("blind_action")
+			end
 		end
 	end
 	local old_set_blind = blind.set_blind
@@ -220,6 +224,8 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 			TW_BL.utils.reset_cards_score(area, true)
 		elseif args.voting then
 			arg = G.GAME.blind.effect.effects and G.GAME.blind.effect.effects[G.GAME.blind.effect.winner or 1]
+		elseif args.weighted_voting then
+			arg = G.GAME.blind.effect.win_weight or args.default_weight_score
 		end
 		return callback(arg)
 	end

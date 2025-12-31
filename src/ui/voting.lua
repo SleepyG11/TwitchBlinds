@@ -715,7 +715,7 @@ G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 						{
 							n = G.UIT.C,
 							config = {
-								colour = item.colour or G.C.UI.TEXT_LIGHT,
+								colour = item.line_colour or G.C.UI.TEXT_LIGHT,
 								minw = 0.035,
 								maxw = 0.035,
 								minh = e.T.h,

@@ -155,6 +155,7 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				{
 					pos = 0.1,
 					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.2,
@@ -163,6 +164,7 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				{
 					pos = 0.3,
 					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.4,
@@ -174,6 +176,7 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 					line = true,
 					text = TW_BL.L.command_use_limits(args.command_max_uses, args.command_use_refresh_timeout),
 					colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.8),
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.6,
@@ -182,6 +185,7 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				{
 					pos = 0.7,
 					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.8,
@@ -190,6 +194,7 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				{
 					pos = 0.9,
 					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 1,

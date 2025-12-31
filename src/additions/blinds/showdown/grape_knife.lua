@@ -2,7 +2,7 @@ SMODS.Atlas({
 	key = "twbl_blind_atlas_grape_knife",
 	px = 34,
 	py = 34,
-	path = "blinds/blank.png",
+	path = "blinds/grape_knife.png",
 	atlas_table = "ANIMATION_ATLAS",
 	frames = 21,
 })
@@ -64,6 +64,8 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 						vars = {},
 					}),
 					center = true,
+					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.19,
@@ -75,6 +77,11 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 					}),
 				},
 				{
+					pos = 0.3,
+					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
+				},
+				{
 					pos = 0.41,
 					line = true,
 				},
@@ -83,10 +90,17 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 					center = true,
 					text = TW_BL.L.command_use_limits(args.command_max_uses, args.command_use_refresh_timeout),
 					colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.8),
+					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.59,
 					line = true,
+				},
+				{
+					pos = 0.7,
+					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 				{
 					pos = 0.81,
@@ -105,6 +119,8 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 						vars = {},
 					}),
 					center = true,
+					line = true,
+					line_colour = adjust_alpha(G.C.UI.TEXT_LIGHT, 0.3),
 				},
 			},
 		}

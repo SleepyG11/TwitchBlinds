@@ -52,7 +52,7 @@ function TW_BL.UI.notify(args)
 		if G.GAME.blind then
 			attention_text({
 				text = args.message,
-				scale = args.scale or 0.4,
+				scale = args.scale or 0.3,
 				hold = args.hold or 0.5,
 				backdrop_colour = args.colour or G.C.ORANGE,
 				align = "cmi",

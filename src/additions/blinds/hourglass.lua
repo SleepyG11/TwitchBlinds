@@ -125,7 +125,6 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				mult = 1
 			end
 			if mult ~= 0 then
-				-- silent buff + prevent from instant double scale
 				if not G.GAME.blind.twbl_clock_time then
 					G.GAME.blind.twbl_clock_time = G.TIMERS.REAL
 				end
@@ -141,18 +140,12 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 				G.GAME.blind:set_text()
 
-				-- TODO: custom notify for blind
-				attention_text({
-					text = event.username .. ": " .. tostring(mult),
-					scale = 0.3,
+				TW_BL.UI.notify({
+					target = "blind",
+					message = event.username .. ": " .. tostring(mult),
+					colour = mult > 0 and G.C.MULT or G.C.CHIPS,
 					hold = 1,
-					backdrop_colour = mult > 0 and G.C.MULT or G.C.CHIPS,
-					align = "cmi",
-					major = G.GAME.blind,
-					offset = {
-						x = 0,
-						y = 0,
-					},
+					with_sound = true,
 				})
 				return true
 			end

@@ -742,9 +742,14 @@ G.FUNCS.twbl_setup_voting_progress_bar = function(e)
 			if item.center then
 				align = "bmi"
 				pos = pos - 0.5
-			elseif pos < 0.35 then
+			elseif item.left then
 				align = "bli"
-			elseif pos > 0.65 then
+			elseif item.right then
+				align = "bri"
+				pos = pos - 1
+			elseif pos < 0.5 then
+				align = "bli"
+			elseif pos > 0.5 then
 				align = "bri"
 				pos = pos - 1
 			else

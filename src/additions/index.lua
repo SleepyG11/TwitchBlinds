@@ -264,6 +264,7 @@ TW_BL.load_files({
 
 TW_BL.load_files({
 	"plum_hammer.lua",
+	"grape_knife.lua",
 }, "src/additions/blinds/showdown/")
 
 TW_BL.load_files({

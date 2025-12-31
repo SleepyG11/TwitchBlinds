@@ -168,6 +168,10 @@ return {
 				text = { "Chat can add or remove", "up to #1# debuffs on Jokers" },
 				interaction_text = "Add/remove debuff on Joker",
 			},
+			bl_twbl_grape_knife = {
+				name = "Grape Knife",
+				text = { "Chat can choose", "cards to debuff" },
+			},
 		},
 	},
 	misc = {
@@ -211,6 +215,11 @@ return {
 			twbl_trash_can_effect_randomize = "Randomize #1#",
 			twbl_trash_can_effect_remove_field = "Remove #1#",
 			twbl_trash_can_effect_make_a_stone = "Convert to Stone",
+
+			twbl_grape_knife_seals = "Seals",
+			twbl_grape_knife_enhanced = "Enhanced",
+			twbl_grape_knife_most_common_suit = "Most common Suit",
+			twbl_grape_knife_most_common_rank = "Most common Rank",
 
 			twbl_interactive_Standard_single = "Choose a card to add to deck",
 			twbl_interactive_ArcanaSpectral_multiple = "Choose a consumable to use",

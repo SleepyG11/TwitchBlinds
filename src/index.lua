@@ -32,7 +32,7 @@ end
 
 local love_update_ref = love.update
 function love.update(dt, ...)
-	TW_BL.e_mitter.emit("update", dt)
+	TW_BL.e_mitter.emit("game_update", dt)
 	return love_update_ref(dt, ...)
 end
 

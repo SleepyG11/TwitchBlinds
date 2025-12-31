@@ -24,7 +24,7 @@ function BaseProvider:init(key)
 		love.thread.newThread(love.filesystem.newFileData(thread_file, '=[SMODS twbl "threads/' .. key .. '"]'))
 	self.https_thread:start()
 
-	TW_BL.e_mitter.on("update", function(dt)
+	TW_BL.e_mitter.on("game_update", function(dt)
 		self.https_input:push({ update = true, dt = dt })
 		local event = self.https_output:pop()
 		while event do

@@ -246,6 +246,7 @@ TW_BL.load_files({
 	"eraser.lua",
 	"chaos.lua",
 	"flashlight.lua",
+	"hourglass.lua",
 	"pin.lua",
 	"stock_market.lua",
 	"banana.lua",

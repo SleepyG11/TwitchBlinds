@@ -41,7 +41,7 @@ return {
 				name = "The Circus",
 				text = { "The show is", "about to begin!" },
 			},
-			bl_twbl_clock = {
+			bl_twbl_hourglass = {
 				name = "The Hourglass",
 				text = { "Hurry up!" },
 			},
@@ -184,6 +184,8 @@ return {
 
 			twbl_ante_diff_singular = "#1# ante",
 			twbl_ante_diff_plural = "#1# antes",
+
+			twbl_seconds_diff_singular = "#1# second",
 
 			twbl_votes_amount_singular = "#1# vote/user",
 			twbl_votes_amount_plural = "#1# votes/user",
@@ -356,6 +358,7 @@ return {
 			k_twbl_never_lucky_ex = "Never lucky!",
 			k_twbl_jimbo_ex = "Jimbo!",
 			k_twbl_invest_ex = "Invest!",
+			k_twbl_time_is_ticking_ex = "Time is ticking!",
 
 			twbl_no_edition = "No edition",
 

@@ -10,6 +10,7 @@ TW_BL.chat_commands = {
 		["nope"] = true,
 		["count"] = true,
 		["grow"] = true,
+		["clock"] = true,
 	},
 	commands_aliases = {
 		["nope!"] = "nope",

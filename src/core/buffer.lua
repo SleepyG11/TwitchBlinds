@@ -9,7 +9,7 @@ function TW_BL.buffered(key, func)
 	return buffer[key]
 end
 
-TW_BL.e_mitter.on("update", function(dt)
+TW_BL.e_mitter.on("game_update", function(dt)
 	buffer = {}
 	TW_BL.buffer = buffer
 end)

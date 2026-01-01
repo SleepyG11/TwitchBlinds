@@ -58,6 +58,7 @@ local blind = SMODS.Blind({
 			if G.TIMERS.REAL - G.GAME.blind.twbl_clock_time > TIME_DELAY then
 				G.GAME.blind.twbl_clock_time = G.TIMERS.REAL
 				-- TODO: need to fix a problem with no chips saving
+				G.GAME.blind:wiggle()
 				G.GAME.blind.chips = increment_clock_chips(
 					to_big(G.GAME.blind.chips),
 					to_big(get_blind_amount(G.GAME.round_resets.ante)) * to_big(G.GAME.starting_params.ante_scaling),
@@ -131,7 +132,6 @@ TW_BL.blinds.bootstrap_interactive_blind(blind, {
 				G.GAME.blind.twbl_clock_time = G.GAME.blind.twbl_clock_time + 0.05
 
 				TW_BL.chat_commands.increment_command_use(event.command, event.username)
-				G.GAME.blind:wiggle()
 				G.GAME.blind.chips = increment_clock_chips(
 					to_big(G.GAME.blind.chips),
 					to_big(get_blind_amount(G.GAME.round_resets.ante)) * to_big(G.GAME.starting_params.ante_scaling),

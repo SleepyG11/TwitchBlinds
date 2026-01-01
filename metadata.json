@@ -6,7 +6,7 @@
 	"description": "Let your Twitch chat decide how to kill your run ;)",
 	"prefix": "twbl",
 	"priority": -1,
-	"version": "2.1.1",
+	"version": "2.1.1b",
 	"main_file": "index.lua",
 	"badge_colour": "8E15AD",
 	"dependencies": ["Steamodded (>=1.0.0~BETA-1224a)"]

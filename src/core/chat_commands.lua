@@ -467,5 +467,6 @@ TW_BL.e_mitter.on("run_delete", function()
 	TW_BL.chat_commands.reset({
 		reset_vote_score = true,
 		reset_command_use = true,
+        reset_weighted_vote_score = true,
 	})
 end)

@@ -162,7 +162,7 @@ function TW_BL.blinds.bootstrap_interactive_blind(blind, args)
 		end, {
 			key = "blind_action",
 			tags = {
-				on_run = true,
+				in_run = true,
 			},
 		})
 	end

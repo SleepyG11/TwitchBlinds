@@ -33,7 +33,7 @@ function TW_BL.blind_voting.connect_blind_voting(reset)
 	end, {
 		key = "blind_voting",
 		tags = {
-			on_run = true,
+			in_run = true,
 			blind_voting = true,
 		},
 	})
@@ -77,7 +77,7 @@ function TW_BL.blind_voting.stop_blind_voting(save)
 	if not save then
 		TW_BL.G.blind_voting_ante = nil
 	end
-	TW_BL.e_mitter.off_tag("new_provider_command", "blind_voting")
+	TW_BL.e_mitter.off_all_tag("blind_voting")
 	TW_BL.UI.top_screen_panel.hide()
 end
 
@@ -87,5 +87,5 @@ TW_BL.e_mitter.on("run_start", function(load)
 	end
 end)
 TW_BL.e_mitter.on("run_delete", function()
-	TW_BL.e_mitter.off_tag("new_provider_command", "on_run")
+	TW_BL.e_mitter.off_all_tag("in_run")
 end)

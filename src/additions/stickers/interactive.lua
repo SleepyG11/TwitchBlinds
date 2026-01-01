@@ -105,7 +105,7 @@ local effect_options = {
 			end, {
 				key = "interactive_action",
 				tags = {
-					on_run = true,
+					in_run = true,
 				},
 			})
 			TW_BL.UI.top_booster_panel.show(function()
@@ -261,7 +261,7 @@ local effect_options = {
 				end, {
 					key = "interactive_action",
 					tags = {
-						on_run = true,
+						in_run = true,
 					},
 				})
 				TW_BL.UI.top_booster_panel.show(function()

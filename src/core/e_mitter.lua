@@ -68,3 +68,13 @@ function TW_BL.e_mitter.off_tag(type, tag)
 		TW_BL.e_mitter.queues[type] = new_queue
 	end
 end
+function TW_BL.e_mitter.off_all(key)
+    for queue, _ in pairs(TW_BL.e_mitter.queues) do
+        TW_BL.e_mitter.off(queue, key)
+    end
+end
+function TW_BL.e_mitter.off_all_tag(tag)
+    for queue, _ in pairs(TW_BL.e_mitter.queues) do
+        TW_BL.e_mitter.off_tag(queue, tag)
+    end
+end
